@@ -8,6 +8,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('report_data', function (Blueprint $table) {
+            $table->id();
             $table->dateTime('StartDate')->nullable();
             $table->dateTime('EndDate')->nullable();
             $table->string('Status')->nullable();
@@ -51,11 +52,11 @@ return new class extends Migration {
 
             // Behavioral Indicators
             $table->integer('BEH_CLASSEXPECT_CL1')->nullable();
-            $table->integer('BEH_IMPULSE')->nullable();
+            $table->integer('BEH_IMPULSE_1')->nullable();
             $table->integer('SS_ADULTSCOMM_1')->nullable();
             $table->integer('EWB_CONFIDENT_1')->nullable();
             $table->integer('EWB_POSITIVE_1')->nullable();
-            $table->integer('PH_ARTICULATE')->nullable();
+            $table->integer('PH_ARTICULATE_1')->nullable();
             $table->integer('SSOS_ACTIVITY3_1')->nullable();
             $table->integer('EWB_CLINGY')->nullable();
             $table->integer('BEH_DESTRUCT')->nullable();
@@ -65,6 +66,7 @@ return new class extends Migration {
             $table->integer('BEH_BULLY')->nullable();
             $table->integer('SIB_PUNITIVE')->nullable();
             $table->integer('BEH_CLASSEXPECT_CL2')->nullable();
+            $table->integer('BEH_IMPULSE_2')->nullable();
             $table->integer('SSOS_NBHDSTRESS_1')->nullable();
             $table->integer('SSOS_FAMSTRESS_1')->nullable();
             $table->integer('AMN_HOUSING_1')->nullable();
@@ -80,7 +82,7 @@ return new class extends Migration {
             $table->integer('SSOS_BELONG2')->nullable();
             $table->integer('EWB_NERVOUS')->nullable();
             $table->integer('EWB_SAD')->nullable();
-            $table->integer('EWB_ACHES')->nullable();
+            $table->integer('EWB_ACHES_1')->nullable();
             $table->integer('EWB_CONFIDENT_2')->nullable();
             $table->integer('EWB_POSITIVE_2')->nullable();
             $table->integer('SS_ADULTSCOMM_2')->nullable();
@@ -97,9 +99,9 @@ return new class extends Migration {
             $table->integer('AMN_HOUSING_2')->nullable();
             $table->integer('SSOS_FAMSTRESS_2')->nullable();
             $table->integer('SSOS_NBHDSTRESS_2')->nullable();
-            $table->integer('AMN_CLOTHES')->nullable();
+            $table->integer('AMN_CLOTHES_1')->nullable();
             $table->integer('AMN_HYGEINE')->nullable();
-            $table->integer('AMN_HUNGER')->nullable();
+            $table->integer('AMN_HUNGER_1')->nullable();
 
             // Physical & Participation Indicators
             $table->integer('SSOS_ACTIVITY3')->nullable();
@@ -109,6 +111,10 @@ return new class extends Migration {
             $table->integer('AMN_HYGIENE')->nullable();
             $table->integer('AMN_ORAL')->nullable();
             $table->integer('AMN_PHYS')->nullable();
+            $table->integer('AMN_HUNGER_2')->nullable();
+            $table->integer('PH_ARTICULATE_2')->nullable();
+            $table->integer('AMN_CLOTHES_2')->nullable();
+            $table->integer('EWB_ACHES_2')->nullable();
             $table->integer('PH_RESTED1')->nullable();
             $table->integer('BEH_SH')->nullable();
             $table->integer('EWB_REGULATE')->nullable();
@@ -137,19 +143,13 @@ return new class extends Migration {
             $table->boolean('DEM_504')->nullable();
             $table->boolean('DEM_CI')->nullable();
             $table->boolean('DEM_ELL')->nullable();
+
+            $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::create('report_data', function (Blueprint $table) {
-            $table->dropColumn([
-                'StartDate', 'EndDate', 'Status', 'IPAddress', 'Progress', 'Duration',
-                'Finished', 'RecordedDate', 'ResponseId', 'RecipientLastName', 'RecipientFirstName', 
-                'RecipientEmail', 'ExternalReference', 'LocationLatitude', 'LocationLongitude', 
-                'DistributionChannel', 'UserLanguage', 'INITIALS',
-                // All other columns
-            ]);
-        });
+        Schema::dropIfExists('report_data');
     }
 };
