@@ -1,23 +1,40 @@
 @extends('layouts.app')
 
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('content')
+    <h1>ESSY Database Reports</h1>
 
-        <title>ESSY Database</title>
-
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
-            <style></style>
-        @endif
-    </head>
-    <body>
-        
-    </body>
-</html>
+    @if ($reports->isEmpty())
+        <p>No reports found.</p>
+    @else
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Finished</th>
+                    <th>Response ID</th>
+                    <th>Recipient Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($reports as $report)
+                    <tr>
+                        <td><a href="{{ url('/reports/' . $report->id) }}">{{ $report->id }}</a></td>
+                        <td>{{ $report->StartDate }}</td>
+                        <td>{{ $report->EndDate }}</td>
+                        <td>{{ $report->Status }}</td>
+                        <td>{{ $report->Progress }}%</td>
+                        <td>{{ $report->Finished ? 'Yes' : 'No' }}</td>
+                        <td>{{ $report->ResponseId }}</td>
+                        <td>{{ $report->RecipientFirstName }} {{ $report->RecipientLastName }}</td>
+                        <td>{{ $report->RecipientEmail }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+@endsection
