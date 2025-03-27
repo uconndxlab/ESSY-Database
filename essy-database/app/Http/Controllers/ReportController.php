@@ -20,4 +20,11 @@ class ReportController extends Controller
 
     }
 
+    public function print_all()
+    {
+        $report = ReportData::all();
+        return view('print', compact('report'));
+
+    }
+
 }

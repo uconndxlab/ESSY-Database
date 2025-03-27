@@ -5,27 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'ESSY Index')</title>
 
-    <style>
-        table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-            th {
-                background-color: #f4f4f4;
-            }
-        </style>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 print-display-none">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">ESSY Study Database</a>
             <div class="collapse navbar-collapse">
@@ -38,7 +23,7 @@
         </div>
     </nav>
 
-    <main class="container">
+    <main class="container print-remove-margin-padding main-print">
         @yield('content')
     </main>
 
