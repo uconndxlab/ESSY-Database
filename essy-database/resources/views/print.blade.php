@@ -31,7 +31,20 @@
         </section>
 
 
+        <section class="student-teacher-info">
+            <p><strong>Student Name: </strong> {{ $report->RecipientFirstName }} {{ $report->RecipientLastName }}</p>
+            <p><strong>Grade: </strong> {{ $report->GRADE }}</p>
+            <p><strong>Teacher: </strong> {{ $report->INITIALS }}</p>
+            <p><strong>Data of Submission: </strong> {{ $report->RecordedDate }}</p>
+        </section>
 
+        <section class="gate-1-summary">
+            <h3>ESSY Gate 1 Summary</h3>
+
+            <p>Broad domain ratings for <strong>___{{ $report->RecipientFirstName }}___</strong> suggest the following areas of strength and concern:</p>
+            <article class="area-sub-strength"></article>
+
+        </section>
 
 
     </main>

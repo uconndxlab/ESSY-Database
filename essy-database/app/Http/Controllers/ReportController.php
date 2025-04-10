@@ -20,11 +20,10 @@ class ReportController extends Controller
 
     }
 
-    public function print_all()
+    public function print_all($id)
     {
-        $report = ReportData::all();
+        $report = ReportData::findOrFail($id);
         return view('print', compact('report'));
-
     }
 
 }
