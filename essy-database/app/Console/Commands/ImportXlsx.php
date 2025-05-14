@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ImportDataSanitized extends Command
 {
-    protected $signature = 'report-data:import-xlsx {file}';
+    protected $signature = 'report-data:importxlsx {file}';
     protected $description = 'Import XLSX data into the database, starting from row 3, sanitizing column headers';
 
     public function handle()
