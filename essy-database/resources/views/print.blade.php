@@ -31,8 +31,8 @@
     <!-- Demographic Information Table -->
     <table>
         <tr>
-            <td class="label-cell"><strong>Student Name:</strong> {{ $report->INITIALS }}</td>
-            <td class="label-cell"><strong>School:</strong> {{ $report->ExternalReference ?? 'N/A' }}</td>
+            <td class="label-cell"><strong>Student Name:</strong> {{ $report->FN_STUDENT }} {{ $report->LN_STUDENT }}</td>
+            <td class="label-cell"><strong>School:</strong> {{ $report->SCHOOL ?? 'N/A' }}</td>
         </tr>
         <tr>
             <td class="label-cell"><strong>Race / Ethnicity:</strong> {{ $report->DEM_RACE }} {{ $report->DEM_ETHNIC == 'No' ? '' : '/ Hispanic' }}</td>
@@ -40,10 +40,10 @@
         </tr>
         <tr>
             <td class="label-cell"><strong>Gender:</strong> {{ $report->DEM_GENDER }}</td>
-            <td class="label-cell"><strong>Classroom Teacher:</strong> {{ $report->RecipientLastName ?? 'N/A' }}</td>
+            <td class="label-cell"><strong>Classroom Teacher:</strong> {{ $report->DEM_CLASSTEACH }}</td>
         </tr>
         <tr>
-            <td class="label-cell"><strong>IEP/504:</strong> {{ ($report->DEM_IEP === 'Yes' || $report->DEM_504 === 'Yes') ? 'Yes' : 'No' }}</td>
+            <td class="label-cell"><strong>IEP/504:</strong> {{ $report->DEM_IEP }} / {{ $report->DEM_504 }}</td>
             <td></td>
         </tr>
         <tr>
@@ -51,22 +51,23 @@
             <td class="label-cell"><strong>Chronic Illness:</strong> {{ $report->DEM_CI }}</td>
         </tr>
         <tr>
-            <td class="label-cell"><strong>Date of Assessment:</strong> {{ \Carbon\Carbon::parse($report->RecordedDate)->format('m/d/y') }}</td>
-            <td class="label-cell"><strong>Rater:</strong> {{ $report->RecipientFirstName ?? 'N/A' }}</td>
+            <td class="label-cell"><strong>Date of Assessment:</strong> {{ \Carbon\Carbon::parse($report->EndDate)->format('m/d/y') }}</td>
+            <td class="label-cell"><strong>Rater:</strong> {{ $report->FN_TEACHER }} {{ $report->LN_TEACHER }}</td>
         </tr>
     </table>
 
     <!-- Gate 1 Summary -->
     <h3>ESSY Gate 1 Summary of Broad Concerns</h3>
+    <p>Broad domain ratings for <strong>{{ $report->FN_STUDENT }} {{ $report->LN_STUDENT }}</strong> suggest the following areas of strength and concern:</p>
 
     @php
         $domainValues = [
-            'Academic Skills' => $report->AS_DOMAIN,
-            'Behavior' => $report->BEH_DOMAIN,
-            'Social & Emotional Well-Being' => $report->SEW_DOMAIN,
-            'Physical Health' => $report->PH2_DOMAIN,
-            'Supports Outside of School' => $report->SOS2_DOMAIN,
-            'Attendance' => $report->ATT_C_DOMAIN,
+            'Academic Skills' => $report->A_DOMAIN,
+            'Behavior' => $report->B_DOMAIN,
+            'Social & Emotional Well-Being' => $report->S_DOMAIN,
+            'Physical Health' => $report->P_DOMAIN,
+            'Supports Outside of School' => $report->O_DOMAIN,
+            'Attendance' => $report->ATT_DOMAIN,
         ];
 
         $substantialStrength = [];
@@ -75,26 +76,39 @@
         $someConcern = [];
         $substantialConcern = [];
 
+        $raterConfidenceFlag = false;
+
         foreach ($domainValues as $domain => $rating) {
-            switch (trim(strtolower($rating))) {
+            if (!$rating) continue;
+
+            $hasConfidenceNote = str_contains($rating, 'Check here');
+            $cleanRating = explode(',', $rating)[0]; // Get just the rating portion
+            $domainLabel = $domain . ($hasConfidenceNote ? '*' : '');
+
+            if ($hasConfidenceNote) {
+                $raterConfidenceFlag = true;
+            }
+
+            switch (trim(strtolower($cleanRating))) {
                 case 'an area of substantial strength':
-                    $substantialStrength[] = $domain;
+                    $substantialStrength[] = $domainLabel;
                     break;
                 case 'an area of some strength':
-                    $someStrength[] = $domain;
+                    $someStrength[] = $domainLabel;
                     break;
                 case 'neither an area of concern or strength':
-                    $neutral[] = $domain;
+                    $neutral[] = $domainLabel;
                     break;
                 case 'an area of some concern':
-                    $someConcern[] = $domain;
+                    $someConcern[] = $domainLabel;
                     break;
-                case 'an area of substantial concern':
-                    $substantialConcern[] = $domain;
+                case 'an area of substantial  concern':
+                    $substantialConcern[] = $domainLabel;
                     break;
             }
         }
     @endphp
+
 
     <table>
         <thead>
@@ -143,21 +157,99 @@
             <td>
                 <p><strong>Proceed:</strong></p>
                 <ul>
-                    <li></li>
+                    @if (
+                        str_contains(strtolower($report->RELATION_CLOSE), 'positive') &&
+                        (str_contains($report->RELATION_CONFLICT, 'No conflict') ||
+                        str_contains($report->RELATION_CONFLICT, 'Low conflict'))
+                    )
+                        <p>Student-rater relationship</p>
+                    @endif
+                    @if (
+                        $report->SPEEDING_GATE1 != 1 &&
+                        $report->SPEEDING_ESS != 1 &&
+                        $report->SPEEDING_GATE2 != 1
+                    )
+                    <li> Potentially fast completion time - </li>
+                    @endif
+
 
                 </ul>
             </td>
             <td>
                 <p><strong>Caution:</strong></p>
                 <ul>
-                    <li></li>
+                    @if ($raterConfidenceFlag)
+                        <li>*Rater confidence - see specific domains above</li>
+                    @endif
+
+                    @if (
+                        (str_contains($report->RELATION_CLOSE, 'Somewhat negative') || 
+                        str_contains($report->RELATION_CLOSE, 'Strong and negative') ||
+                        str_contains($report->RELATION_CLOSE, 'Neither positive nor negative')) ||
+                        (str_contains(strtolower($report->RELATION_CONFLICT), 'high') || str_contains(strtolower($report->RELATION_CONFLICT), 'some'))
+                    )
+                        <li>Student-rater relationship</li>
+                    @endif
+                    @if (
+                        $report->SPEEDING_GATE1 == 1 ||
+                        $report->SPEEDING_ESS == 1 ||
+                        $report->SPEEDING_GATE2 == 1
+                    )
+                    <li> Potentially fast completion time - 
+                        @php
+                            $sections = [];
+
+                            if ($report->SPEEDING_GATE1 == 1) $sections[] = 'Gate 1';
+                            if ($report->SPEEDING_ESS == 1)  $sections[] = 'Essential Items';
+                            if ($report->SPEEDING_GATE2 == 1) $sections[] = 'Gate 2';
+                        @endphp
+
+                        {{ implode(', ', $sections) }}
+                    </li>
+                    @endif
 
                 </ul>
+                
             </td>
 
         </tbody>
     </table>
 
+    <!-- Page #2 ---------------------->
+    <br/><br/><br/>
+    <hr/>
+    <br/>
+
+    <table>
+        <tr>
+            <td class="label-cell"><strong>Student Name:</strong> {{ $report->FN_STUDENT }} {{ $report->LN_STUDENT }}</td>
+            <td class="label-cell"><strong>Rater:</strong> {{ $report->FN_TEACHER }} {{ $report->LN_TEACHER }}</td>
+        </tr>
+    </table>
+
+    <br/>
+
+    <p><strong>ESSY Gate 2 Summary of Specific Concerns</strong></p>
+    <p>Before reviewing Gate 2 ratings, please consider results on the following essential items:</p>
+
+    <table>
+        <tbody>
+            <td>
+                <p><strong>Proceed:</strong></p>
+                <ul>
+                    
+                </ul>
+            </td>
+            <td>
+                <p><strong>Caution:</strong></p>
+                <ul>
+
+                </ul>
+                
+            </td>
+
+        </tbody>
+    </table>
 
 </body>
 </html>

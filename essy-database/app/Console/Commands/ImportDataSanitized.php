@@ -17,7 +17,7 @@ class ImportDataSanitized extends Command
 
         // Load the spreadsheet
         $spreadsheet = IOFactory::load($filePath);
-
+ 
         // Attempt to get the desired sheet
         $sheet = $spreadsheet->getSheetByName('Qualtrics Output');
 
