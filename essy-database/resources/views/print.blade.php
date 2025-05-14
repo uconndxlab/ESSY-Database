@@ -138,6 +138,26 @@
     </table>
 
     <p><strong>In addition, please consider the following information regarding endorsed items:</strong></p>
+    <table>
+        <tbody>
+            <td>
+                <p><strong>Proceed:</strong></p>
+                <ul>
+                    <li></li>
+
+                </ul>
+            </td>
+            <td>
+                <p><strong>Caution:</strong></p>
+                <ul>
+                    <li></li>
+
+                </ul>
+            </td>
+
+        </tbody>
+    </table>
+
 
 </body>
 </html>
