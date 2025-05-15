@@ -107,6 +107,41 @@
                     break;
             }
         }
+        $notOfConcern = array_diff(
+            array_keys($domainValues),
+            array_map(fn($v) => str_replace('*', '', $v), array_merge($someConcern, $substantialConcern))
+        );
+
+        $notOfConcern = array_values($notOfConcern); // reset keys to ensure order
+
+        $notOfConcernText = '';
+        $count = count($notOfConcern);
+        if ($count === 1) {
+            $notOfConcernText = $notOfConcern[0];
+        } elseif ($count === 2) {
+            $notOfConcernText = $notOfConcern[0] . ' and ' . $notOfConcern[1];
+        } elseif ($count > 2) {
+            $last = array_pop($notOfConcern);
+            $notOfConcernText = implode(', ', $notOfConcern) . ', and ' . $last;
+        }
+
+        $ofConcern = array_merge($someConcern, $substantialConcern);
+        $ofConcern = array_map(fn($v) => str_replace('*', '', $v), $ofConcern); // remove asterisks for this summary
+        $ofConcern = array_unique($ofConcern); // prevent duplicates
+        $ofConcern = array_values($ofConcern); // reindex
+
+        $ofConcernText = '';
+        $countConcern = count($ofConcern);
+        if ($countConcern === 1) {
+            $ofConcernText = $ofConcern[0];
+        } elseif ($countConcern === 2) {
+            $ofConcernText = $ofConcern[0] . ' and ' . $ofConcern[1];
+        } elseif ($countConcern > 2) {
+            $last = array_pop($ofConcern);
+            $ofConcernText = implode(', ', $ofConcern) . ', and ' . $last;
+        }
+
+
     @endphp
 
 
@@ -303,7 +338,30 @@
             </td>
         </tbody>
     </table>
-    
+
+    @if (!empty($notOfConcernText))
+        <p>
+            At Gate 1, the following domains were not identified as areas of concern:
+            <strong>{{ $notOfConcernText }}</strong>.
+            Therefore, no additional items in these domains were rated.
+            These domains are not included in the table below.
+        </p>
+    @endif
+
+    @if (!empty($ofConcernText))
+        <p>
+            However, at Gate 1, the following domains were identified as areas of some or substantial concern:
+            <strong>{{ $ofConcernText }}</strong>.
+            Therefore, additional items within each of these domains were rated at Gate 2 and are shown below.
+        </p>
+    @endif
+
+    <p>The table below is organized using three categories: strengths to maintain, areas to monitor 
+    (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
+
+    <table>
+
+    </table>
 
 </body>
 </html>
