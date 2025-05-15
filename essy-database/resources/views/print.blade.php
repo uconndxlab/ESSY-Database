@@ -229,6 +229,57 @@
 
     <br/>
 
+    @php
+    $proceedItems = [];
+    $cautionItems = [];
+
+    $items = [
+        'E_SHARM' => [
+            'value' => trim($report->E_SHARM ?? ''),
+            'text' => 'engages in <strong>self-harming behaviors</strong>',
+            'proceed' => ['Almost never'],
+        ],
+        'E_BULLIED' => [
+            'value' => trim($report->E_BULLIED ?? ''),
+            'text' => 'has been <strong>bullied</strong> by other students',
+            'proceed' => ['Almost never'],
+        ],
+        'E_EXCLUDE' => [
+            'value' => trim($report->E_EXCLUDE ?? ''),
+            'text' => 'experiences <strong>social exclusion</strong> in school',
+            'proceed' => ['Almost never'],
+        ],
+        'E_WITHDRAW' => [
+            'value' => trim($report->E_WITHDRAW ?? ''),
+            'text' => '<strong>avoids or withdraws</strong> from peers',
+            'proceed' => ['Almost never', 'Occasionally'],
+        ],
+        'E_REGULATE' => [
+            'value' => trim($report->E_REGULATE ?? ''),
+            'text' => '<strong>regulates emotions</strong>',
+            'proceed' => ['Almost always', 'Frequently'],
+        ],
+        'E_RESTED' => [
+            'value' => trim($report->E_RESTED ?? ''),
+            'text' => 'appears <strong>well-rested</strong>',
+            'proceed' => ['Almost always', 'Frequently'],
+        ],
+    ];
+
+    foreach ($items as $item) {
+        $line = ucfirst($item['value']) . ' ' . $item['text'] . '.';
+
+        if (in_array($item['value'], $item['proceed'])) {
+            $proceedItems[] = $line;
+        } else {
+            $cautionItems[] = $line;
+        }
+    }
+@endphp
+
+
+
+
     <p><strong>ESSY Gate 2 Summary of Specific Concerns</strong></p>
     <p>Before reviewing Gate 2 ratings, please consider results on the following essential items:</p>
 
@@ -237,19 +288,22 @@
             <td>
                 <p><strong>Proceed:</strong></p>
                 <ul>
-                    
+                    @foreach ($proceedItems as $item)
+                        <li>{!! $item !!}</li>
+                    @endforeach
                 </ul>
             </td>
             <td>
                 <p><strong>Caution:</strong></p>
                 <ul>
-
+                    @foreach ($cautionItems as $item)
+                        <li>{!! $item !!}</li>
+                    @endforeach
                 </ul>
-                
             </td>
-
         </tbody>
     </table>
+    
 
 </body>
 </html>
