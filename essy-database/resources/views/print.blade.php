@@ -359,9 +359,199 @@
     <p>The table below is organized using three categories: strengths to maintain, areas to monitor 
     (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
 
-    <table>
+    {{-- filtering for academic skills! --}}
+{{-- filtering for academic skills! --}}
+@php
+    $academicIndicators = [
+        'A_READ' => 'meets grade-level expectations for reading skills.',
+        'A_WRITE' => 'meets expectations for grade-level writing skills.',
+        'A_MATH' => 'meets expectations for grade-level math skills.',
+        'A_P_ARTICULATE_CL1' => 'articulates clearly enough to be understood.',
+        'A_S_ADULTCOMM_CL1' => 'effectively communicates with adults.',
+        'A_DIRECTIONS' => 'understands directions.',
+        'A_INITIATE' => 'initiates academic tasks.',
+        'A_PLANORG' => 'demonstrates ability to plan, organize, focus, and prioritize tasks.',
+        'A_TURNIN' => 'completes and turns in assigned work.',
+        'A_B_CLASSEXPECT_CL1' => 'follows classroom expectations.',
+        'A_ENGAGE' => 'engaged in academic activities.',
+        'A_INTEREST' => 'shows interest in learning activities.',
+        'A_PERSIST' => 'persists with challenging tasks.',
+        'A_GROWTH' => 'demonstrates a growth mindset.',
+        'A_S_CONFIDENT_CL1' => 'displays confidence in self.',
+        'A_S_POSOUT_CL1' => 'demonstrates positive outlook.',
+        'A_S_O_ACTIVITY3_CL1' => 'is engaged in at least one extracurricular activity.',
+        'A_B_IMPULSE_CL1' => 'exhibits impulsivity.'
+    ];
 
-    </table>
+    $academic_skills_strengths = [];
+    $academic_monitor = [];
+    $academic_concerns = [];
+
+    foreach ($academicIndicators as $field => $message) {
+        $value = $report->$field ?? null;
+        if (!$value) continue;
+
+        $normalized = strtolower(trim($value));
+        $frequency = ucfirst($normalized);
+        $needsFlag = str_contains($value, ',');
+
+        $flaggedSentence = "$frequency $message" . ($needsFlag ? '*' : '');
+
+        if ($field === 'A_B_IMPULSE_CL1') {
+            if (in_array($normalized, ['almost always', 'frequently'])) {
+                $academic_concerns[] = $flaggedSentence;
+            } elseif ($normalized === 'sometimes') {
+                $academic_monitor[] = $flaggedSentence;
+            } elseif (in_array($normalized, ['occasionally', 'almost never'])) {
+                $academic_skills_strengths[] = $flaggedSentence;
+            }
+        } else {
+            if (in_array($normalized, ['almost always', 'frequently'])) {
+                $academic_skills_strengths[] = $flaggedSentence;
+            } elseif ($normalized === 'sometimes') {
+                $academic_monitor[] = $flaggedSentence;
+            } elseif (in_array($normalized, ['occasionally', 'almost never'])) {
+                $academic_concerns[] = $flaggedSentence;
+            }
+        }
+    }
+@endphp
+
+
+{{-- filtering for behaviors --}}
+@php
+    $behaviorIndicators = [
+        'A_B_CLASSEXPECT_CL2' => 'follows classroom expectations.',
+        'A_B_IMPULSE_CL2' => 'exhibits impulsivity.',
+        'B_CLINGY' => 'exhibits clingy or attention-seeking behaviors.',
+        'B_SNEAK' => 'demonstrates sneaky or dishonest behavior.',
+        'BEH_VERBAGGRESS' => 'engages in verbally aggressive behavior.',
+        'BEH_PHYSAGGRESS' => 'engages in physically aggressive behavior.',
+        'B_DESTRUCT' => 'engages in destructive behavior toward property.',
+        'B_BULLY' => 'bullies/has bullied another student.',
+        'B_PUNITIVE' => 'experiences punitive or exclusionary discipline.',
+        'B_O_HOUSING_CL1' => 'reports not having a stable living situation.',
+        'B_O_FAMSTRESS_CL1' => 'family is experiencing significant stressors.',
+        'B_O_NBHDSTRESS_CL1' => 'neighborhood is experiencing significant stressors.'
+    ];
+
+    $behavior_strengths = [];
+    $behavior_monitor = [];
+    $behavior_concerns = [];
+
+    foreach ($behaviorIndicators as $field => $description) {
+        $value = strtolower(trim($report->$field ?? ''));
+        $raw = $report->$field ?? '';
+        $needsFlag = str_contains($raw, ',');
+        $sentence = ucfirst($value) . ' ' . $description . ($needsFlag ? '*' : '');
+
+        switch ($field) {
+            case 'A_B_CLASSEXPECT_CL2':
+                if (in_array($value, ['almost always', 'frequently'])) {
+                    $behavior_strengths[] = $sentence;
+                } elseif ($value === 'sometimes') {
+                    $behavior_monitor[] = $sentence;
+                } elseif (in_array($value, ['occasionally', 'almost never'])) {
+                    $behavior_concerns[] = $sentence;
+                }
+                break;
+
+            case 'A_B_IMPULSE_CL2':
+            case 'B_CLINGY':
+            case 'B_O_FAMSTRESS_CL1':
+            case 'B_O_NBHDSTRESS_CL1':
+                if (in_array($value, ['occasionally', 'almost never'])) {
+                    $behavior_strengths[] = $sentence;
+                } elseif ($value === 'sometimes') {
+                    $behavior_monitor[] = $sentence;
+                } elseif (in_array($value, ['almost always', 'frequently'])) {
+                    $behavior_concerns[] = $sentence;
+                }
+                break;
+
+            case 'B_SNEAK':
+            case 'BEH_VERBAGGRESS':
+            case 'B_DESTRUCT':
+            case 'B_O_HOUSING_CL1':
+                if ($value === 'almost never') {
+                    $behavior_strengths[] = $sentence;
+                } elseif (in_array($value, ['sometimes', 'occasionally'])) {
+                    $behavior_monitor[] = $sentence;
+                } elseif (in_array($value, ['almost always', 'frequently'])) {
+                    $behavior_concerns[] = $sentence;
+                }
+                break;
+
+            case 'BEH_PHYSAGGRESS':
+            case 'B_BULLY':
+            case 'B_PUNITIVE':
+                if (in_array($value, ['almost never'])) {
+                    $behavior_strengths[] = $sentence;
+                } else {
+                    $behavior_concerns[] = $sentence;
+                }
+                break;
+        }
+    }
+@endphp
+
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Domain</th>
+            <th>Strengths to Maintain</th>
+            <th>Areas to Monitor</th>
+            <th>Concerns for Follow Up</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Academic Skills</td>
+            <td>
+                @foreach ($academic_skills_strengths as $item)
+                    <p>{{ $item }}</p>
+                    <br/>
+                @endforeach
+            </td>
+            <td>
+                @foreach ($academic_monitor as $item)
+                    <p>{{ $item }}</p>
+                    <br/>
+                @endforeach
+            </td>
+            <td>
+                @foreach ($academic_concerns as $item)
+                    <p>{{ $item }}</p>
+                    <br/>
+                @endforeach
+            </td>
+        </tr>
+        <tr>
+            <td>Behavior</td>
+            <td>
+                @foreach ($behavior_strengths as $item)
+                    <p>{{ $item }}</p>
+                    <br/>
+                @endforeach
+            </td>
+            <td>
+                @foreach ($behavior_monitor as $item)
+                    <p>{{ $item }}</p>
+                    <br/>
+                @endforeach
+            </td>
+            <td>
+                @foreach ($behavior_concerns as $item)
+                    <p>{{ $item }}</p>
+                    <br/>
+                @endforeach
+            </td>
+        </tr>
+    </tbody>
+</table>    
 
 </body>
 </html>
