@@ -362,8 +362,6 @@
 {{-- cross filtering information --}}
 @php
 
-
-
     $crossLoadedMap = [
         'A_P_ARTICULATE_CL1' => 'A_P_ARTICULATE_CL2',
         'A_S_ADULTCOMM_CL1' => 'A_S_ADULTCOMM_CL2',
@@ -700,6 +698,7 @@ foreach ($sosIndicators as $field => $message) {
     if (!$raw) continue;
 
     $hasConfidence = str_contains($raw, ',');
+
     $value = strtolower(trim(explode(',', $raw)[0]));
 
     $prefix = ucfirst($value);
@@ -758,77 +757,6 @@ foreach ($sosIndicators as $field => $message) {
             break;
     }
 }
-@endphp
-
-@php
-    $allCrossItemsUsed = collect([
-        ...$academicIndicators,
-        ...$behaviorIndicators,
-        ...$physicalIndicators,
-        ...$sewbIndicators,
-        ...$sosIndicators
-    ])->keys()->filter(function ($key) use ($report) {
-        return !empty($report->$key);
-    })->toArray();
-
-    $domainPresence = [
-        'academic' => count($academic_skills_strengths) + count($academic_monitor) + count($academic_concerns) > 0,
-        'behavior' => count($behavior_strengths) + count($behavior_monitor) + count($behavior_concerns) > 0,
-        'physical' => count($ph_strengths) + count($ph_monitor) + count($ph_concerns) > 0,
-        'sewb' => count($sewb_strengths) + count($sewb_monitor) + count($sewb_concerns) > 0,
-        'sos' => count($sos_strengths) + count($sos_monitor) + count($sos_concerns) > 0
-    ];
-
-    $crossAppearsIn = [];
-    foreach ($crossLoadedMap as $cl1 => $cl2) {
-        $domains = [];
-        foreach (['academic', 'behavior', 'physical', 'sewb', 'sos'] as $domain) {
-            $all = ${"{$domain}_strengths"} ?? [];
-            $all = array_merge($all, ${"{$domain}_monitor"} ?? [], ${"{$domain}_concerns"} ?? []);
-            foreach ($all as $item) {
-                if (str_contains($item, $cl1) || str_contains($item, $cl2)) {
-                    $domains[] = $domain;
-                    break;
-                }
-            }
-        }
-        if (count(array_unique($domains)) > 1) {
-            $crossAppearsIn[$cl1] = true;
-            $crossAppearsIn[$cl2] = true;
-        }
-    }
-
-    function markCrossLoaded($list, $crossAppearsIn, $map) {
-        return array_map(function ($sentence) use ($crossAppearsIn, $map) {
-            foreach ($map as $cl1 => $cl2) {
-                if ((str_contains($sentence, $cl1) || str_contains($sentence, $cl2)) &&
-                    isset($crossAppearsIn[$cl1]) && isset($crossAppearsIn[$cl2])) {
-                    return preg_replace('/(\s*)(\*)?$/', ' †$2', $sentence);
-                }
-            }
-            return $sentence;
-        }, $list);
-    }
-
-    $academic_skills_strengths = markCrossLoaded($academic_skills_strengths, $crossAppearsIn, $crossLoadedMap);
-    $academic_monitor = markCrossLoaded($academic_monitor, $crossAppearsIn, $crossLoadedMap);
-    $academic_concerns = markCrossLoaded($academic_concerns, $crossAppearsIn, $crossLoadedMap);
-
-    $behavior_strengths = markCrossLoaded($behavior_strengths, $crossAppearsIn, $crossLoadedMap);
-    $behavior_monitor = markCrossLoaded($behavior_monitor, $crossAppearsIn, $crossLoadedMap);
-    $behavior_concerns = markCrossLoaded($behavior_concerns, $crossAppearsIn, $crossLoadedMap);
-
-    $ph_strengths = markCrossLoaded($ph_strengths, $crossAppearsIn, $crossLoadedMap);
-    $ph_monitor = markCrossLoaded($ph_monitor, $crossAppearsIn, $crossLoadedMap);
-    $ph_concerns = markCrossLoaded($ph_concerns, $crossAppearsIn, $crossLoadedMap);
-
-    $sewb_strengths = markCrossLoaded($sewb_strengths, $crossAppearsIn, $crossLoadedMap);
-    $sewb_monitor = markCrossLoaded($sewb_monitor, $crossAppearsIn, $crossLoadedMap);
-    $sewb_concerns = markCrossLoaded($sewb_concerns, $crossAppearsIn, $crossLoadedMap);
-
-    $sos_strengths = markCrossLoaded($sos_strengths, $crossAppearsIn, $crossLoadedMap);
-    $sos_monitor = markCrossLoaded($sos_monitor, $crossAppearsIn, $crossLoadedMap);
-    $sos_concerns = markCrossLoaded($sos_concerns, $crossAppearsIn, $crossLoadedMap);
 @endphp
 
 

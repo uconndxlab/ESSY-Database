@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\ReportData;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Str;
+
 
 class ImportDataSanitized extends Command
 {
@@ -13,6 +15,8 @@ class ImportDataSanitized extends Command
 
     public function handle()
     {
+        $batchId = (string) Str::uuid();
+
         $filePath = $this->argument('file');
 
         // Load the spreadsheet
@@ -41,13 +45,8 @@ class ImportDataSanitized extends Command
         }
 
         foreach ($rows as $rowIndex => $row) {
-            // Explicitly skip rows 1 and 2
-            if ($rowIndex == 1 || $rowIndex == 2) {
-                continue;
-            }
-        
-            // Skip empty or whitespace-only rows
-            if (collect($row)->every(fn($cell) => trim((string) $cell) === '')) {
+            // Skip headers and empty rows
+            if ($rowIndex == 1 || $rowIndex == 2 || collect($row)->every(fn($cell) => trim((string) $cell) === '')) {
                 continue;
             }
         
@@ -56,9 +55,21 @@ class ImportDataSanitized extends Command
                 $data[$sanitizedKey] = $row[$col] ?? null;
             }
         
+            if (empty(trim($data['ResponseId'] ?? ''))) {
+                continue;
+            }
+        
+            if (isset($data['StartDate']) && str_contains($data['StartDate'], 'Ignore')) {
+                continue;
+            }
+        
+            $data['batch_id'] = $batchId;
             ReportData::create($data);
-        }        
 
-        $this->info('Data Imported Successfully.');
+        }
+          
+
+        $this->info("Batch import complete. Batch ID: $batchId");
+        file_put_contents(storage_path("app/last_batch.txt"), $batchId);
     }
 }

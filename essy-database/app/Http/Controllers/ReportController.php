@@ -4,20 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\ReportData;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
     public function index()
     {
-        $reports = ReportData::all();
-        return view('index', compact('reports'));
-    }
+        $batches = ReportData::whereNotNull('batch_id')
+            ->select('batch_id')
+            ->distinct()
+            ->orderByDesc('created_at')
+            ->get();
 
-    public function show_individual($id)
-    {
-        $report = ReportData::findOrFail($id);
-        return view('show', compact('report'));
-
+        return view('index', compact('batches'));
     }
 
     public function print_all($id)
@@ -26,4 +25,14 @@ class ReportController extends Controller
         return view('print', compact('report'));
     }
 
+
+    public function downloadPdf($id)
+    {
+        $report = ReportData::findOrFail($id);
+
+        $pdf = Pdf::loadView('print', compact('report'))
+                ->setPaper('letter', 'portrait');
+
+        return $pdf->download("report_{$report->id}.pdf");
+    }
 }
