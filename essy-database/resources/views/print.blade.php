@@ -413,7 +413,7 @@
 
     foreach ($academicIndicators as $field => $message) {
         $valueRaw = $report->$field ?? '';
-        if (!$valueRaw) continue;
+        if (!$valueRaw || trim($valueRaw) === '-99') continue;
 
         $hasConfidence = str_contains($valueRaw, ',');
 
@@ -469,7 +469,7 @@ $behavior_concerns = [];
 
 foreach ($behaviorIndicators as $field => $description) {
     $raw = $report->$field ?? '';
-    if (!$raw) continue;
+    if (!$raw || trim($raw) === '-99') continue;
 
     $hasConfidence = str_contains($raw, ',');
     $value = strtolower(trim(explode(',', $raw)[0]));
@@ -552,7 +552,7 @@ $ph_concerns = [];
 
 foreach ($physicalIndicators as $field => $description) {
     $raw = $report->$field ?? '';
-    if (!$raw) continue;
+    if (!$raw || trim($raw) === '-99') continue;
 
     $hasConfidence = str_contains($raw, ',');
     $value = strtolower(trim(explode(',', $raw)[0]));
@@ -638,7 +638,7 @@ $sewb_concerns = [];
 
 foreach ($sewbIndicators as $field => $description) {
     $raw = $report->$field ?? '';
-    if (!$raw) continue;
+    if (!$raw || trim($raw) === '-99') continue;
 
     $hasConfidence = str_contains($raw, ',');
     $value = strtolower(trim(explode(',', $raw)[0]));
@@ -695,7 +695,7 @@ $sos_concerns = [];
 
 foreach ($sosIndicators as $field => $message) {
     $raw = $report->$field ?? '';
-    if (!$raw) continue;
+    if (!$raw || trim($raw) === '-99') continue;
 
     $hasConfidence = str_contains($raw, ',');
 
@@ -877,7 +877,148 @@ foreach ($sosIndicators as $field => $message) {
             </td>
         </tr>
     </tbody>
-</table>   
+</table>
+<p>* Rater reported less confidence in these responses.</p>
+<p>† Item appears on multiple domains.</p>
+<br/>
+
+<h4>Additional Information</h4>
+<table>
+    <tr>
+        <td>
+            # of unanswered items:
+            @php
+                $missingItems = [];
+                $indicatorMessages = [
+                    'A_READ' => 'Meets grade-level expectations for reading skills.',
+                    'A_WRITE' => 'Meets expectations for grade-level writing skills.',
+                    'A_MATH' => 'Meets expectations for grade-level math skills.',
+                    'A_P_ARTICULATE_CL1' => 'Articulates clearly enough to be understood.',
+                    'A_S_ADULTCOMM_CL1' => 'Effectively communicates with adults.',
+                    'A_DIRECTIONS' => 'Understands directions.',
+                    'A_INITIATE' => 'Initiates academic tasks.',
+                    'A_PLANORG' => 'Demonstrates ability to plan, organize, focus, and prioritize tasks.',
+                    'A_TURNIN' => 'Completes and turns in assigned work.',
+                    'A_B_CLASSEXPECT_CL1' => 'Follows classroom expectations.',
+                    'A_B_IMPULSE_CL1' => 'Exhibits impulsivity.',
+                    'A_ENGAGE' => 'Engaged in academic activities.',
+                    'A_INTEREST' => 'Shows interest in learning activities.',
+                    'A_PERSIST' => 'Persists with challenging tasks.',
+                    'A_GROWTH' => 'Demonstrates a growth mindset.',
+                    'A_S_CONFIDENT_CL1' => 'Displays confidence in self.',
+                    'A_S_POSOUT_CL1' => 'Demonstrates positive outlook.',
+                    'A_S_O_ACTIVITY3_CL1' => 'Is engaged in at least one extracurricular activity.',
+                    'A_B_CLASSEXPECT_CL2' => 'Follows classroom expectations.',
+                    'A_B_IMPULSE_CL2' => 'Exhibits impulsivity.',
+                    'B_CLINGY' => 'Exhibits overly clingy or attention-seeking behaviors.',
+                    'B_SNEAK' => 'Demonstrates sneaky or dishonest behavior.',
+                    'BEH_VERBAGGRESS' => 'Engages in verbally aggressive behavior toward others.',
+                    'BEH_PHYSAGGRESS' => 'Engages in physically aggressive behavior toward others.',
+                    'B_DESTRUCT' => 'Engages in destructive behavior towards property.',
+                    'B_BULLY' => 'Bullies/has bullied another student.',
+                    'B_PUNITIVE' => 'Experiences/has experienced punitive or exclusionary discipline at school.',
+                    'B_O_HOUSING_CL1' => 'Reports not having a stable living situation.',
+                    'B_O_FAMSTRESS_CL1' => 'Family is experiencing significant stressors.',
+                    'B_O_NBHDSTRESS_CL1' => 'Neighborhood is experiencing significant stressors.',
+                    'P_SIGHT' => 'Able to see, from a distance or up close.',
+                    'P_HEAR' => 'Able to hear information.',
+                    'A_P_ARTICULATE_CL2' => 'Articulates clearly enough to be understood.',
+                    'A_ORAL' => 'Oral health appears to be addressed.',
+                    'A_PHYS' => 'Physical health appears to be addressed.',
+                    'P_PARTICIPATE' => 'Physical health allows for participation in school activities.',
+                    'S_P_ACHES_CL1' => 'Complains of headaches, stomachaches, or body aches.',
+                    'O_P_HUNGER_CL1' => 'Reports being hungry.',
+                    'O_P_HYGEINE_CL1' => 'Appears to have the resources to address basic hygiene needs.',
+                    'O_P_CLOTHES_CL1' => 'Shows up to school with adequate clothing.',
+                    'S_CONTENT' => 'Appears content.',
+                    'A_S_CONFIDENT_CL2' => 'Displays confidence in self.',
+                    'A_S_POSOUT_CL2' => 'Demonstrates positive outlook.',
+                    'S_P_ACHES_CL2' => 'Complains of headaches, stomachaches, or body aches.',
+                    'S_NERVOUS' => 'Appears nervous, worried, tense, or fearful.',
+                    'S_SAD' => 'Appears sad.',
+                    'S_SOCIALCONN' => 'Has friends/social connections.',
+                    'S_FRIEND' => 'Has at least one close friend at school.',
+                    'S_PROSOCIAL' => 'Demonstrates prosocial skills.',
+                    'S_PEERCOMM' => 'Effectively communicates with peers.',
+                    'A_S_ADULTCOMM_CL2' => 'Effectively communicates with adults.',
+                    'S_POSADULT' => 'Has a positive relationship with at least one adult in the school.',
+                    'S_SCHOOLCONN' => 'Appears to experience a sense of connection in their school.',
+                    'S_COMMCONN' => 'Appears to experience a sense of connection in their community.',
+                    'A_S_O_ACTIVITY_CL2' => 'Is engaged in at least one extracurricular activity.',
+                    'O_RECIPROCAL' => 'Family-school communication is reciprocal.',
+                    'O_POSADULT' => 'Has a positive adult outside of school with whom they feel close.',
+                    'O_ADULTBEST' => 'Reports having an adult outside of school who wants them to do their best.',
+                    'O_TALK' => 'Reports having someone outside of school to talk to about their interests and problems.',
+                    'O_ROUTINE' => 'Shares having a caregiver who helps them with daily routines.',
+                    'O_FAMILY' => 'Reports getting along with family members.',
+                    'O_P_HUNGER_CL2' => 'Reports being hungry.',
+                    'O_P_HYGIENE_CL2' => 'Appears to have the resources to address basic hygiene needs.',
+                    'O_P_CLOTHES_CL2' => 'Shows up to school with adequate clothing.',
+                    'O_RESOURCE' => 'Reports having access to resources (materials, internet) to complete schoolwork.',
+                    'B_O_HOUSING_CL2' => 'Reports not having a stable living situation.',
+                    'B_O_FAMSTRESS_CL2' => 'Family is experiencing significant stressors.',
+                    'B_O_NBHDSTRESS_CL2' => 'Neighborhood is experiencing significant stressors.',
+                    'A_S_O_ACTIVITY_CL3' => 'Is engaged in at least one extracurricular activity.',
+                ];
+
+                $excludedSuffixes = ['CL2'];
+                $excludedPrefixes = ['COMMENTS_'];
+
+                foreach ($indicatorMessages as $field => $message) {
+                    $value = $report->$field ?? null;
+
+                    $isCL2 = str_ends_with($field, 'CL2');
+                    $isComment = str_starts_with($field, 'COMMENTS_');
+
+                    if ($isCL2 || $isComment) {
+                        continue;
+                    }
+
+                    if ((string) $value === '-99') {
+                        $missingItems[] = $message;
+                    }
+                }
+            @endphp
+
+            {{ count($missingItems) }}
+            @if (!empty($missingItems))
+                        <ul>
+                            @foreach ($missingItems as $msg)
+                                <li>{{ $msg }}</li>
+                            @endforeach
+                        </ul>
+                @endif
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Rater comments:
+            <ul>
+                @php
+                    $comments = [
+                        'COMMENTS_GATE1' => 'Gate 1',
+                        'COMMENTS_STR'   => 'Student-rater relationship',
+                        'COMMENTS_ESS'   => 'Essential Items',
+                        'COMMENTS_AS'    => 'Academics',
+                        'COMMENTS_BEH'   => 'Behavior',
+                        'COMMENTS_PH'    => 'Physical Health',
+                        'COMMENTS_SEW'   => 'Social & Emotional Well-Being',
+                        'COMMENTS_SOS'   => 'Supports Outside of School',
+                    ];
+                @endphp
+
+                @foreach ($comments as $field => $label)
+                    @if (!empty($report->$field))
+                        <li><strong>{{ $label }}:</strong> {{ $report->$field }}</li>
+                    @endif
+                @endforeach
+            </ul>
+        </td>
+    </tr>
+</table>
+
+
+
 
 </body>
 </html>
