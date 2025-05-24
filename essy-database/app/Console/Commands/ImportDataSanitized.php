@@ -22,7 +22,7 @@ class ImportDataSanitized extends Command
         $sheet = $spreadsheet->getSheetByName('Qualtrics Output');
 
         if (!$sheet) {
-            $this->error('Sheet "output-sample" not found.');
+            $this->error('Sheet "Qualtrics Output" not found.');
             $sheetNames = $spreadsheet->getSheetNames();
             $this->warn('Available sheets: ' . implode(', ', $sheetNames));
             return 1;
