@@ -20,3 +20,7 @@ Route::get('/batches/{batch}', [BatchController::class, 'show'])->name('batches.
 Route::get('/reports/pdf/{id}', [ReportController::class, 'downloadPdf'])->name('reports.download');
 
 Route::get('/batches/{batch}/download-zip', [\App\Http\Controllers\BatchController::class, 'downloadZip'])->name('batches.downloadZip');
+
+Route::delete('/batches/{batch}', [BatchController::class, 'destroy'])->name('batches.destroy');
+
+Route::delete('/reports/{id}', [ReportController::class, 'destroy'])->name('reports.destroy');

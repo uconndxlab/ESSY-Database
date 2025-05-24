@@ -52,6 +52,13 @@ class BatchController extends Controller
 
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
+
+    public function destroy($batch)
+    {
+        $deleted = ReportData::where('batch_id', $batch)->delete();
+
+        return redirect('/')->with('success', "Batch Deleted Successfully ($deleted Reports were Removed).");
+    }
 }
 
 

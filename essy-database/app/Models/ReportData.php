@@ -40,6 +40,6 @@ class ReportData extends Model
         'COMMENTS_SOS', 'TIMING_SOS_FirstClick', 'TIMING_SOS_LastClick', 'TIMING_SOS_PageSubmit', 'TIMING_SOS_ClickCount',
         'RELATION_CLOSE', 'RELATION_CONFLICT', 'COMMENTS_STR',
         'DEM_RACE', 'DEM_RACE_14_TEXT', 'DEM_ETHNIC', 'DEM_GENDER', 'DEM_ELL', 'DEM_IEP',
-        'DEM_504', 'DEM_CI', 'DEM_GRADE', 'DEM_CLASSTEACH', 'SPEEDING_GATE1', 'SPEEDING_ESS', 'SPEEDING_GATE2', 'batch_id'
+        'DEM_504', 'DEM_CI', 'DEM_GRADE', 'DEM_CLASSTEACH', 'SPEEDING_GATE1', 'SPEEDING_ESS', 'SPEEDING_GATE2', 'batch_id', 'created_at', 'updated_at'
     ];
 }

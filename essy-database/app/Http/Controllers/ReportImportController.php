@@ -18,9 +18,13 @@ class ReportImportController extends Controller
 
         $tempPath = $file->getRealPath();
 
-        Artisan::call('report-data:importxlsx', [
+        $exitCode = Artisan::call('report-data:importxlsx', [
             'file' => $tempPath,
         ]);
+
+        if ($exitCode !== 0) {
+            return redirect()->back()->with('error', 'Error Importing Spreadsheet');
+        }
 
         $batchFile = storage_path('app/last_batch.txt');
         $batchId = File::exists($batchFile) ? trim(File::get($batchFile)) : null;
@@ -28,7 +32,7 @@ class ReportImportController extends Controller
         if ($batchId) {
             return redirect()->route('batches.show', ['batch' => $batchId]);
         } else {
-            return redirect()->back()->with('error', 'Import completed, but no batch ID was returned.');
+            return redirect()->back()->with('error', 'Import succeeded, but batch ID not found.');
         }
     }
 }

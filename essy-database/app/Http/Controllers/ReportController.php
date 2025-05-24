@@ -35,4 +35,16 @@ class ReportController extends Controller
 
         return $pdf->download("report_{$report->id}.pdf");
     }
+
+    public function destroy($id)
+    {
+        $report = ReportData::findOrFail($id);
+        $batchId = $report->batch_id;
+        $report->delete();
+
+        return redirect()->route('batches.show', ['batch' => $batchId])
+                        ->with('success', 'Report Deleted Successfully.');
+    }
+    
+
 }
