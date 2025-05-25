@@ -35,7 +35,7 @@
             @foreach ($batches as $batch)
                 <tr>
                     <td>{{ $batch->batch_id }}</td>
-                    <td>{{ \Carbon\Carbon::parse($batch->created_at)->format('m/d/Y') }}</td>
+                    <td>{{ $batch->created_at }}</td>
                     <td>
                         <a href="{{ route('batches.show', ['batch' => $batch->batch_id]) }}">View</a>
                     </td>

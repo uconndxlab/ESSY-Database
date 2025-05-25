@@ -389,20 +389,20 @@
         'A_WRITE' => 'meets expectations for grade-level writing skills.',
         'A_MATH' => 'meets expectations for grade-level math skills.',
         'A_P_ARTICULATE_CL1' => 'articulates clearly enough to be understood.',
-        'A_S_ADULTCOMM_CL1' => 'effectively communicates with adults.',
+        'A_S_ADULTCOMM_CL1' => 'communicates with adults effectively.',
         'A_DIRECTIONS' => 'understands directions.',
         'A_INITIATE' => 'initiates academic tasks.',
         'A_PLANORG' => 'demonstrates ability to plan, organize, focus, and prioritize tasks.',
         'A_TURNIN' => 'completes and turns in assigned work.',
         'A_B_CLASSEXPECT_CL1' => 'follows classroom expectations.',
+        'A_B_IMPULSE_CL1' => 'exhibits impulsivity.',
         'A_ENGAGE' => 'engaged in academic activities.',
         'A_INTEREST' => 'shows interest in learning activities.',
         'A_PERSIST' => 'persists with challenging tasks.',
         'A_GROWTH' => 'demonstrates a growth mindset.',
         'A_S_CONFIDENT_CL1' => 'displays confidence in self.',
         'A_S_POSOUT_CL1' => 'demonstrates positive outlook.',
-        'A_S_O_ACTIVITY3_CL1' => 'is engaged in at least one extracurricular activity.',
-        'A_B_IMPULSE_CL1' => 'exhibits impulsivity.'
+        'A_S_O_ACTIVITY3_CL1' => 'is engaged in at least one extracurricular activity.'
     ];
 
     $academic_skills_strengths = [];
@@ -451,16 +451,16 @@
 $behaviorIndicators = [
     'A_B_CLASSEXPECT_CL2' => 'follows classroom expectations.',
     'A_B_IMPULSE_CL2' => 'exhibits impulsivity.',
-    'B_CLINGY' => 'exhibits clingy or attention-seeking behaviors.',
+    'B_CLINGY' => 'exhibits overly clingy or attention-seeking behaviors.',
     'B_SNEAK' => 'demonstrates sneaky or dishonest behavior.',
-    'BEH_VERBAGGRESS' => 'engages in verbally aggressive behavior.',
-    'BEH_PHYSAGGRESS' => 'engages in physically aggressive behavior.',
+    'BEH_VERBAGGRESS' => 'engages in verbally aggressive behavior toward others.',
+    'BEH_PHYSAGGRESS' => 'engages in physically aggressive behavior toward others.',
     'B_DESTRUCT' => 'engages in destructive behavior toward property.',
     'B_BULLY' => 'bullies/has bullied another student.',
-    'B_PUNITIVE' => 'experiences punitive or exclusionary discipline.',
+    'B_PUNITIVE' => 'experiences/has experienced punitive or exclusionary discipline at school.',
     'B_O_HOUSING_CL1' => 'reports not having a stable living situation.',
-    'B_O_FAMSTRESS_CL1' => 'family is experiencing significant stressors.',
-    'B_O_NBHDSTRESS_CL1' => 'neighborhood is experiencing significant stressors.'
+    'B_O_FAMSTRESS_CL1' => 'The student\'s family is _____ experiencing significant stressors.',
+    'B_O_NBHDSTRESS_CL1' => 'The student\'s neighborhood is _____ experiencing significant stressors. '
 ];
 
 $behavior_strengths = [];
@@ -475,9 +475,12 @@ foreach ($behaviorIndicators as $field => $description) {
     $value = strtolower(trim(explode(',', $raw)[0]));
     $prefix = ucfirst($value);
     $suffix = ($hasConfidence ? ' *' : '');
-          
 
-    $sentence = "{$prefix} {$description}{$suffix}";
+    if (str_contains($description, '_____')) {
+        $sentence = str_replace('_____', strtolower($prefix), $description) . $suffix;
+    } else {
+        $sentence = "{$prefix} {$description}{$suffix}";
+    }
 
     switch ($field) {
         case 'A_B_CLASSEXPECT_CL2':
@@ -534,16 +537,16 @@ foreach ($behaviorIndicators as $field => $description) {
 {{-- filtering for physical health --}}
 @php
 $physicalIndicators = [
-    'P_SIGHT' => 'has vision concerns.',
-    'P_HEAR' => 'has hearing concerns.',
+    'P_SIGHT' => 'able to see, from a distance or up close.',
+    'P_HEAR' => 'able to hear information.',
     'A_P_ARTICULATE_CL2' => 'articulates clearly enough to be understood.',
-    'A_ORAL' => 'has clear oral communication.',
-    'A_PHYS' => 'demonstrates physical coordination.',
-    'P_PARTICIPATE' => 'participates in physical activities.',
-    'S_P_ACHES_CL1' => 'reports physical discomfort or frequent aches.',
-    'O_P_HUNGER_CL1' => 'often comes to school hungry.',
-    'O_P_HYGEINE_CL1' => 'displays appropriate hygiene.',
-    'O_P_CLOTHES_CL1' => 'has appropriate clothing for school.'
+    'A_ORAL' => 'Oral health _____ appears to be addressed.',
+    'A_PHYS' => 'Physical health _____ appears to be addressed.',
+    'P_PARTICIPATE' => 'Physical health _____ allows for participation in school activities.',
+    'S_P_ACHES_CL1' => 'complains of headaches, stomachaches, or body aches.',
+    'O_P_HUNGER_CL1' => 'reports being hungry.',
+    'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs.',
+    'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing.'
 ];
 
 $ph_strengths = [];
@@ -559,7 +562,11 @@ foreach ($physicalIndicators as $field => $description) {
     $prefix = ucfirst($value);
     $suffix = ($hasConfidence ? ' *' : '');
 
-    $sentence = "{$prefix} {$description}{$suffix}";
+    if (str_contains($description, '_____')) {
+        $sentence = str_replace('_____', strtolower($prefix), $description) . $suffix;
+    } else {
+        $sentence = "{$prefix} {$description}{$suffix}";
+    }
 
     switch ($field) {
         case 'P_SIGHT':
@@ -610,6 +617,7 @@ foreach ($physicalIndicators as $field => $description) {
     }
 }
 @endphp
+
 
 
 
@@ -673,7 +681,7 @@ foreach ($sewbIndicators as $field => $description) {
 {{-- filtering for Supports Outside of School --}}
 @php
 $sosIndicators = [
-    'O_RECIPROCAL' => 'family-school communication is reciprocal.',
+    'O_RECIPROCAL' => 'Family-school communication is _____ reciprocal.',
     'O_POSADULT' => 'has a positive adult outside of school with whom they feel close.',
     'O_ADULTBEST' => 'reports having an adult outside of school who wants them to do their best.',
     'O_TALK' => 'reports having someone outside of school to talk to about their interests and problems.',
@@ -684,8 +692,8 @@ $sosIndicators = [
     'O_P_CLOTHES_CL2' => 'shows up to school with adequate clothing.',
     'O_RESOURCE' => 'reports having access to resources (materials, internet) to complete schoolwork.',
     'B_O_HOUSING_CL2' => 'reports not having a stable living situation.',
-    'B_O_FAMSTRESS_CL2' => 'family is experiencing significant stressors.',
-    'B_O_NBHDSTRESS_CL2' => 'neighborhood is experiencing significant stressors.',
+    'B_O_FAMSTRESS_CL2' => 'The student\'s family is _____ experiencing significant stressors.',
+    'B_O_NBHDSTRESS_CL2' => 'The student\'s neighborhood is _____ experiencing significant stressors.',
     'A_S_O_ACTIVITY_CL3' => 'is engaged in at least one extracurricular activity.'
 ];
 
@@ -704,7 +712,12 @@ foreach ($sosIndicators as $field => $message) {
     $prefix = ucfirst($value);
     $suffix = ($hasConfidence ? ' *' : '');
 
-    $sentence = "{$prefix} {$message}{$suffix}";
+    if (str_contains($message, '_____')) {
+        $sentence = str_replace('_____', strtolower($prefix), $message) . $suffix;
+    } else {
+        $sentence = "{$prefix} {$message}{$suffix}";
+    }
+
 
     switch ($field) {
         case 'O_P_HYGIENE_CL2':
@@ -759,6 +772,16 @@ foreach ($sosIndicators as $field => $message) {
 }
 @endphp
 
+@php
+    $domainFlags = [
+        'Academic Skills' => in_array('Academic Skills', $ofConcern),
+        'Behavior' => in_array('Behavior', $ofConcern),
+        'Physical Health' => in_array('Physical Health', $ofConcern),
+        'Social & Emotional Well-Being' => in_array('Social & Emotional Well-Being', $ofConcern),
+        'Supports Outside of School' => in_array('Supports Outside of School', $ofConcern),
+    ];
+@endphp
+
 
 <table>
     <thead>
@@ -770,6 +793,7 @@ foreach ($sosIndicators as $field => $message) {
         </tr>
     </thead>
     <tbody>
+        @if ($domainFlags['Academic Skills'])
         <tr>
             <td>Academic Skills</td>
             <td style="background-color: #C8E6C9;">
@@ -791,6 +815,8 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
+        @if ($domainFlags['Behavior'])
         <tr>
             <td>Behavior</td>
             <td style="background-color: #C8E6C9;">
@@ -812,6 +838,8 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
+        @if ($domainFlags['Physical Health'])
         <tr>
             <td>Physical Health</td>
             <td style="background-color: #C8E6C9;">
@@ -833,6 +861,8 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
+        @if ($domainFlags['Social & Emotional Well-Being'])
         <tr>
             <td>Social & Emotional Well-Being</td>
             <td style="background-color: #C8E6C9;">
@@ -854,6 +884,8 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
+        @if ($domainFlags['Supports Outside of School'])
         <tr>
             <td>Supports Outside of School</td>
             <td style="background-color: #C8E6C9;">
@@ -876,6 +908,7 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
     </tbody>
 </table>
 <p>* Rater reported less confidence in these responses.</p>
