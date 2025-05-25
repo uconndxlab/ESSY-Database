@@ -359,30 +359,9 @@
     <p>The table below is organized using three categories: strengths to maintain, areas to monitor 
     (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
 
-{{-- cross filtering information --}}
-@php
-
-    $crossLoadedMap = [
-        'A_P_ARTICULATE_CL1' => 'A_P_ARTICULATE_CL2',
-        'A_S_ADULTCOMM_CL1' => 'A_S_ADULTCOMM_CL2',
-        'A_B_CLASSEXPECT_CL1' => 'A_B_CLASSEXPECT_CL2',
-        'A_B_IMPULSE_CL1' => 'A_B_IMPULSE_CL2',
-        'A_S_CONFIDENT_CL1' => 'A_S_CONFIDENT_CL2',
-        'A_S_POSOUT_CL1' => 'A_S_POSOUT_CL2',
-        'B_O_HOUSING_CL1' => 'B_O_HOUSING_CL2',
-        'B_O_FAMSTRESS_CL1' => 'B_O_FAMSTRESS_CL2',
-        'B_O_NBHDSTRESS_CL1' => 'B_O_NBHDSTRESS_CL2',
-        'S_P_ACHES_CL1' => 'S_P_ACHES_CL2',
-        'O_P_HUNGER_CL1' => 'O_P_HUNGER_CL2',
-        'O_P_CLOTHES_CL1' => 'O_P_CLOTHES_CL2'
-    ];
-
-
-@endphp
     
 
-{{-- filtering for academic skills! --}}
-{{-- filtering for academic skills! --}}
+{{-- Define all domain indicators --}}
 @php
     $academicIndicators = [
         'A_READ' => 'meets grade-level expectations for reading skills.',
@@ -405,30 +384,123 @@
         'A_S_O_ACTIVITY3_CL1' => 'is engaged in at least one extracurricular activity.'
     ];
 
+    $behaviorIndicators = [
+        'A_B_CLASSEXPECT_CL2' => 'follows classroom expectations.',
+        'A_B_IMPULSE_CL2' => 'exhibits impulsivity.',
+        'B_CLINGY' => 'exhibits overly clingy or attention-seeking behaviors.',
+        'B_SNEAK' => 'demonstrates sneaky or dishonest behavior.',
+        'BEH_VERBAGGRESS' => 'engages in verbally aggressive behavior toward others.',
+        'BEH_PHYSAGGRESS' => 'engages in physically aggressive behavior toward others.',
+        'B_DESTRUCT' => 'engages in destructive behavior toward property.',
+        'B_BULLY' => 'bullies/has bullied another student.',
+        'B_PUNITIVE' => 'experiences/has experienced punitive or exclusionary discipline at school.',
+        'B_O_HOUSING_CL1' => 'reports not having a stable living situation.',
+        'B_O_FAMSTRESS_CL1' => 'The student\'s family is _____ experiencing significant stressors.',
+        'B_O_NBHDSTRESS_CL1' => 'The student\'s neighborhood is _____ experiencing significant stressors.'
+    ];
+
+    $physicalIndicators = [
+        'P_SIGHT' => 'able to see, from a distance or up close.',
+        'P_HEAR' => 'able to hear information.',
+        'A_P_ARTICULATE_CL2' => 'articulates clearly enough to be understood.',
+        'A_ORAL' => 'Oral health _____ appears to be addressed.',
+        'A_PHYS' => 'Physical health _____ appears to be addressed.',
+        'P_PARTICIPATE' => 'Physical health _____ allows for participation in school activities.',
+        'S_P_ACHES_CL1' => 'complains of headaches, stomachaches, or body aches.',
+        'O_P_HUNGER_CL1' => 'reports being hungry.',
+        'O_P_HYGIENE_CL1' => 'appears to have the resources to address basic hygiene needs.',
+        'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing.'
+    ];
+
+    $sewbIndicators = [
+        'S_CONTENT' => 'appears content.',
+        'A_S_CONFIDENT_CL2' => 'displays confidence in self.',
+        'A_S_POSOUT_CL2' => 'demonstrates positive outlook.',
+        'S_P_ACHES_CL2' => 'complains of headaches, stomachaches, or body aches.',
+        'S_NERVOUS' => 'appears nervous, worried, tense, or fearful.',
+        'S_SAD' => 'appears sad.',
+        'S_SOCIALCONN' => 'has friends/social connections.',
+        'S_FRIEND' => 'has at least one close friend at school.',
+        'S_PROSOCIAL' => 'demonstrates prosocial skills.',
+        'S_PEERCOMM' => 'communicates with peers effectively.',
+        'A_S_ADULTCOMM_CL2' => 'communicates with adults effectively.',
+        'S_POSADULT' => 'has a positive relationship with at least one adult in the school.',
+        'S_SCHOOLCONN' => 'appears to experience a sense of connection in their school.',
+        'S_COMMCONN' => 'appears to experience a sense of connection in their community.',
+        'A_S_O_ACTIVITY_CL2' => 'is engaged in at least one extracurricular activity.'
+    ];
+
+    $sosIndicators = [
+        'O_RECIPROCAL' => 'Family-school communication is _____ reciprocal.',
+        'O_POSADULT' => 'has a positive adult outside of school with whom they feel close.',
+        'O_ADULTBEST' => 'reports having an adult outside of school who wants them to do their best.',
+        'O_TALK' => 'reports having someone outside of school to talk to about their interests and problems.',
+        'O_ROUTINE' => 'shares having a caregiver who helps them with daily routines.',
+        'O_FAMILY' => 'reports getting along with family members.',
+        'O_P_HUNGER_CL2' => 'reports being hungry.',
+        'O_P_HYGIENE_CL2' => 'appears to have the resources to address basic hygiene needs.',
+        'O_P_CLOTHES_CL2' => 'shows up to school with adequate clothing.',
+        'O_RESOURCE' => 'reports having access to resources (materials, internet) to complete schoolwork.',
+        'B_O_HOUSING_CL2' => 'reports not having a stable living situation.',
+        'B_O_FAMSTRESS_CL2' => 'The student\'s family is _____ experiencing significant stressors.',
+        'B_O_NBHDSTRESS_CL2' => 'The student\'s neighborhood is _____ experiencing significant stressors.',
+        'A_S_O_ACTIVITY_CL3' => 'is engaged in at least one extracurricular activity.'
+    ];
+@endphp
+
+{{-- Cross-loaded helper definitions --}}
+@php
+    $crossLoadedMap = [
+        'A_P_ARTICULATE'     => ['A_P_ARTICULATE_CL1', 'A_P_ARTICULATE_CL2'],
+        'A_S_ADULTCOMM'      => ['A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2'],
+        'A_B_CLASSEXPECT'    => ['A_B_CLASSEXPECT_CL1', 'A_B_CLASSEXPECT_CL2'],
+        'A_B_IMPULSE'        => ['A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2'],
+        'A_S_CONFIDENT'      => ['A_S_CONFIDENT_CL1', 'A_S_CONFIDENT_CL2'],
+        'A_S_POSOUT'         => ['A_S_POSOUT_CL1', 'A_S_POSOUT_CL2'],
+        'A_S_O_ACTIVITY3'    => ['A_S_O_ACTIVITY3_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'],
+        'B_O_HOUSING'        => ['B_O_HOUSING_CL1', 'B_O_HOUSING_CL2'],
+        'B_O_FAMSTRESS'      => ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],
+        'B_O_NBHDSTRESS'     => ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'],
+        'S_P_ACHES'          => ['S_P_ACHES_CL1', 'S_P_ACHES_CL2'],
+        'O_P_HUNGER'         => ['O_P_HUNGER_CL1',  'O_P_HUNGER_CL2'],
+        'O_P_HYGIENE'        => ['O_P_HYGEINE_CL1', 'O_P_HYGEINE_CL2'],
+        'O_P_CLOTHES'        => ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],
+    ];
+    function hasCrossLoadedValue(string $key, $report, array $map): bool
+    {
+        foreach ($map as $variants) {
+            if (in_array($key, $variants, true)) {
+                foreach ($variants as $variant) {
+                    if (!empty($report->$variant)) return true;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+@endphp
+
+{{-- filtering for academic skills --}}
+@php
     $academic_skills_strengths = [];
     $academic_monitor = [];
     $academic_concerns = [];
-
-    $allReportKeys = array_keys((array) $report);
-
     foreach ($academicIndicators as $field => $message) {
-        $valueRaw = $report->$field ?? '';
-        if (!$valueRaw || trim($valueRaw) === '-99') continue;
-
-        $hasConfidence = str_contains($valueRaw, ',');
-
-        $value = strtolower(trim(explode(',', $valueRaw)[0]));
+        $raw = $report->$field ?? '';
+        if (!$raw || trim($raw) === '-99') continue;
+        $hasConfidence = str_contains($raw, ',');
+        $value = strtolower(trim(explode(',', $raw)[0]));
         $prefix = ucfirst($value);
         $suffix = $hasConfidence ? ' *' : '';
-
-        $sentence = "{$prefix} {$message}{$suffix}";
+        $dagger = hasCrossLoadedValue($field, $report, $crossLoadedMap) ? '†' : '';
+        $sentence = "{$prefix} {$message}{$dagger}{$suffix}";
 
         if ($field === 'A_B_IMPULSE_CL1') {
             if (in_array($value, ['almost always', 'frequently'])) {
                 $academic_concerns[] = $sentence;
             } elseif ($value === 'sometimes') {
                 $academic_monitor[] = $sentence;
-            } elseif (in_array($value, ['occasionally', 'almost never'])) {
+            } else {
                 $academic_skills_strengths[] = $sentence;
             }
         } else {
@@ -436,341 +508,255 @@
                 $academic_skills_strengths[] = $sentence;
             } elseif ($value === 'sometimes') {
                 $academic_monitor[] = $sentence;
-            } elseif (in_array($value, ['occasionally', 'almost never'])) {
+            } else {
                 $academic_concerns[] = $sentence;
             }
         }
     }
 @endphp
 
-
-
-
 {{-- filtering for behaviors --}}
 @php
-$behaviorIndicators = [
-    'A_B_CLASSEXPECT_CL2' => 'follows classroom expectations.',
-    'A_B_IMPULSE_CL2' => 'exhibits impulsivity.',
-    'B_CLINGY' => 'exhibits overly clingy or attention-seeking behaviors.',
-    'B_SNEAK' => 'demonstrates sneaky or dishonest behavior.',
-    'BEH_VERBAGGRESS' => 'engages in verbally aggressive behavior toward others.',
-    'BEH_PHYSAGGRESS' => 'engages in physically aggressive behavior toward others.',
-    'B_DESTRUCT' => 'engages in destructive behavior toward property.',
-    'B_BULLY' => 'bullies/has bullied another student.',
-    'B_PUNITIVE' => 'experiences/has experienced punitive or exclusionary discipline at school.',
-    'B_O_HOUSING_CL1' => 'reports not having a stable living situation.',
-    'B_O_FAMSTRESS_CL1' => 'The student\'s family is _____ experiencing significant stressors.',
-    'B_O_NBHDSTRESS_CL1' => 'The student\'s neighborhood is _____ experiencing significant stressors. '
-];
+    $behavior_strengths = [];
+    $behavior_monitor = [];
+    $behavior_concerns = [];
+    foreach ($behaviorIndicators as $field => $description) {
+        $raw = $report->$field ?? '';
+        if (!$raw || trim($raw) === '-99') continue;
+        $hasConfidence = str_contains($raw, ',');
+        $value = strtolower(trim(explode(',', $raw)[0]));
+        $prefix = ucfirst($value);
+        $suffix = $hasConfidence ? ' *' : '';
+        $dagger = hasCrossLoadedValue($field, $report, $crossLoadedMap) ? '†' : '';
 
-$behavior_strengths = [];
-$behavior_monitor = [];
-$behavior_concerns = [];
+        if (str_contains($description, '_____')) {
+            $base = str_replace('_____', strtolower($prefix), $description);
+        } else {
+            $base = "{$prefix} {$description}";
+        }
+        $sentence = $base . $dagger . $suffix;
 
-foreach ($behaviorIndicators as $field => $description) {
-    $raw = $report->$field ?? '';
-    if (!$raw || trim($raw) === '-99') continue;
-
-    $hasConfidence = str_contains($raw, ',');
-    $value = strtolower(trim(explode(',', $raw)[0]));
-    $prefix = ucfirst($value);
-    $suffix = ($hasConfidence ? ' *' : '');
-
-    if (str_contains($description, '_____')) {
-        $sentence = str_replace('_____', strtolower($prefix), $description) . $suffix;
-    } else {
-        $sentence = "{$prefix} {$description}{$suffix}";
+        switch ($field) {
+            case 'A_B_CLASSEXPECT_CL2':
+                if (in_array($value, ['almost always', 'frequently'])) {
+                    $behavior_strengths[] = $sentence;
+                } elseif ($value === 'sometimes') {
+                    $behavior_monitor[] = $sentence;
+                } else {
+                    $behavior_concerns[] = $sentence;
+                }
+                break;
+            case 'A_B_IMPULSE_CL2':
+            case 'B_CLINGY':
+            case 'B_O_FAMSTRESS_CL1':
+            case 'B_O_NBHDSTRESS_CL1':
+                if (in_array($value, ['occasionally', 'almost never'])) {
+                    $behavior_strengths[] = $sentence;
+                } elseif ($value === 'sometimes') {
+                    $behavior_monitor[] = $sentence;
+                } else {
+                    $behavior_concerns[] = $sentence;
+                }
+                break;
+            case 'B_SNEAK':
+            case 'BEH_VERBAGGRESS':
+            case 'B_DESTRUCT':
+            case 'B_O_HOUSING_CL1':
+                if ($value === 'almost never') {
+                    $behavior_strengths[] = $sentence;
+                } elseif (in_array($value, ['sometimes', 'occasionally'])) {
+                    $behavior_monitor[] = $sentence;
+                } else {
+                    $behavior_concerns[] = $sentence;
+                }
+                break;
+            case 'BEH_PHYSAGGRESS':
+            case 'B_BULLY':
+            case 'B_PUNITIVE':
+                if ($value === 'almost never') {
+                    $behavior_strengths[] = $sentence;
+                } else {
+                    $behavior_concerns[] = $sentence;
+                }
+                break;
+        }
     }
-
-    switch ($field) {
-        case 'A_B_CLASSEXPECT_CL2':
-            if (in_array($value, ['almost always', 'frequently'])) {
-                $behavior_strengths[] = $sentence;
-            } elseif ($value === 'sometimes') {
-                $behavior_monitor[] = $sentence;
-            } elseif (in_array($value, ['occasionally', 'almost never'])) {
-                $behavior_concerns[] = $sentence;
-            }
-            break;
-
-        case 'A_B_IMPULSE_CL2':
-        case 'B_CLINGY':
-        case 'B_O_FAMSTRESS_CL1':
-        case 'B_O_NBHDSTRESS_CL1':
-            if (in_array($value, ['occasionally', 'almost never'])) {
-                $behavior_strengths[] = $sentence;
-            } elseif ($value === 'sometimes') {
-                $behavior_monitor[] = $sentence;
-            } elseif (in_array($value, ['almost always', 'frequently'])) {
-                $behavior_concerns[] = $sentence;
-            }
-            break;
-
-        case 'B_SNEAK':
-        case 'BEH_VERBAGGRESS':
-        case 'B_DESTRUCT':
-        case 'B_O_HOUSING_CL1':
-            if ($value === 'almost never') {
-                $behavior_strengths[] = $sentence;
-            } elseif (in_array($value, ['sometimes', 'occasionally'])) {
-                $behavior_monitor[] = $sentence;
-            } elseif (in_array($value, ['almost always', 'frequently'])) {
-                $behavior_concerns[] = $sentence;
-            }
-            break;
-
-        case 'BEH_PHYSAGGRESS':
-        case 'B_BULLY':
-        case 'B_PUNITIVE':
-            if ($value === 'almost never') {
-                $behavior_strengths[] = $sentence;
-            } else {
-                $behavior_concerns[] = $sentence;
-            }
-            break;
-    }
-}
 @endphp
-
-
 
 {{-- filtering for physical health --}}
 @php
-$physicalIndicators = [
-    'P_SIGHT' => 'able to see, from a distance or up close.',
-    'P_HEAR' => 'able to hear information.',
-    'A_P_ARTICULATE_CL2' => 'articulates clearly enough to be understood.',
-    'A_ORAL' => 'Oral health _____ appears to be addressed.',
-    'A_PHYS' => 'Physical health _____ appears to be addressed.',
-    'P_PARTICIPATE' => 'Physical health _____ allows for participation in school activities.',
-    'S_P_ACHES_CL1' => 'complains of headaches, stomachaches, or body aches.',
-    'O_P_HUNGER_CL1' => 'reports being hungry.',
-    'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs.',
-    'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing.'
-];
+    $ph_strengths = [];
+    $ph_monitor = [];
+    $ph_concerns = [];
+    foreach ($physicalIndicators as $field => $description) {
+        $raw = $report->$field ?? '';
+        if (!$raw || trim($raw) === '-99') continue;
+        $hasConfidence = str_contains($raw, ',');
+        $value = strtolower(trim(explode(',', $raw)[0]));
+        $prefix = ucfirst($value);
+        $suffix = $hasConfidence ? ' *' : '';
+        $dagger = hasCrossLoadedValue($field, $report, $crossLoadedMap) ? '†' : '';
 
-$ph_strengths = [];
-$ph_monitor = [];
-$ph_concerns = [];
-
-foreach ($physicalIndicators as $field => $description) {
-    $raw = $report->$field ?? '';
-    if (!$raw || trim($raw) === '-99') continue;
-
-    $hasConfidence = str_contains($raw, ',');
-    $value = strtolower(trim(explode(',', $raw)[0]));
-    $prefix = ucfirst($value);
-    $suffix = ($hasConfidence ? ' *' : '');
-
-    if (str_contains($description, '_____')) {
-        $sentence = str_replace('_____', strtolower($prefix), $description) . $suffix;
-    } else {
-        $sentence = "{$prefix} {$description}{$suffix}";
-    }
-
-    switch ($field) {
-        case 'P_SIGHT':
-        case 'P_HEAR':
-            if ($value === 'almost always') {
-                $ph_strengths[] = $sentence;
-            } elseif ($value === 'frequently') {
-                $ph_monitor[] = $sentence;
-            } else {
-                $ph_concerns[] = $sentence;
-            }
-            break;
-
-        case 'A_P_ARTICULATE_CL2':
-        case 'A_ORAL':
-        case 'A_PHYS':
-        case 'P_PARTICIPATE':
-        case 'O_P_HYGEINE_CL1':
-        case 'O_P_CLOTHES_CL1':
-            if (in_array($value, ['almost always', 'frequently'])) {
-                $ph_strengths[] = $sentence;
-            } elseif ($value === 'sometimes') {
-                $ph_monitor[] = $sentence;
-            } else {
-                $ph_concerns[] = $sentence;
-            }
-            break;
-
-        case 'S_P_ACHES_CL1':
-            if (in_array($value, ['occasionally', 'almost never'])) {
-                $ph_strengths[] = $sentence;
-            } elseif ($value === 'sometimes') {
-                $ph_monitor[] = $sentence;
-            } else {
-                $ph_concerns[] = $sentence;
-            }
-            break;
-
-        case 'O_P_HUNGER_CL1':
-            if ($value === 'almost never') {
-                $ph_strengths[] = $sentence;
-            } elseif (in_array($value, ['sometimes', 'occasionally'])) {
-                $ph_monitor[] = $sentence;
-            } else {
-                $ph_concerns[] = $sentence;
-            }
-            break;
-    }
-}
-@endphp
-
-
-
-
-@php
-$sewbIndicators = [
-    'S_CONTENT' => 'appears content.',
-    'A_S_CONFIDENT_CL2' => 'displays confidence in self.',
-    'A_S_POSOUT_CL2' => 'demonstrates positive outlook.',
-    'S_P_ACHES_CL2' => 'complains of headaches, stomachaches, or body aches.',
-    'S_NERVOUS' => 'appears nervous, worried, tense, or fearful.',
-    'S_SAD' => 'appears sad.',
-    'S_SOCIALCONN' => 'has friends/social connections.',
-    'S_FRIEND' => 'has at least one close friend at school.',
-    'S_PROSOCIAL' => 'demonstrates prosocial skills.',
-    'S_PEERCOMM' => 'effectively communicates with peers.',
-    'A_S_ADULTCOMM_CL2' => 'effectively communicates with adults.',
-    'S_POSADULT' => 'has a positive relationship with at least one adult in the school.',
-    'S_SCHOOLCONN' => 'appears to experience a sense of connection in their school.',
-    'S_COMMCONN' => 'appears to experience a sense of connection in their community.',
-    'A_S_O_ACTIVITY_CL2' => 'is engaged in at least one extracurricular activity.'
-];
-
-$sewb_strengths = [];
-$sewb_monitor = [];
-$sewb_concerns = [];
-
-foreach ($sewbIndicators as $field => $description) {
-    $raw = $report->$field ?? '';
-    if (!$raw || trim($raw) === '-99') continue;
-
-    $hasConfidence = str_contains($raw, ',');
-    $value = strtolower(trim(explode(',', $raw)[0]));
-    $prefix = ucfirst($value);
-    $suffix =($hasConfidence ? ' *' : '');
-
-    $sentence = "{$prefix} {$description}{$suffix}";
-
-    if (in_array($field, ['S_P_ACHES_CL2', 'S_NERVOUS', 'S_SAD'])) {
-        if (in_array($value, ['almost never', 'occasionally'])) {
-            $sewb_strengths[] = $sentence;
-        } elseif ($value === 'sometimes') {
-            $sewb_monitor[] = $sentence;
-        } elseif (in_array($value, ['frequently', 'almost always'])) {
-            $sewb_concerns[] = $sentence;
+        if (str_contains($description, '_____')) {
+            $base = str_replace('_____', strtolower($prefix), $description);
+        } else {
+            $base = "{$prefix} {$description}";
         }
-    } else {
-        if (in_array($value, ['almost always', 'frequently'])) {
-            $sewb_strengths[] = $sentence;
-        } elseif ($value === 'sometimes') {
-            $sewb_monitor[] = $sentence;
-        } elseif (in_array($value, ['occasionally', 'almost never'])) {
-            $sewb_concerns[] = $sentence;
+        $sentence = $base . $dagger . $suffix;
+
+        switch ($field) {
+            case 'P_SIGHT':
+            case 'P_HEAR':
+                if ($value === 'almost always') {
+                    $ph_strengths[] = $sentence;
+                } elseif ($value === 'frequently') {
+                    $ph_monitor[] = $sentence;
+                } else {
+                    $ph_concerns[] = $sentence;
+                }
+                break;
+            case 'A_P_ARTICULATE_CL2':
+            case 'A_ORAL':
+            case 'A_PHYS':
+            case 'P_PARTICIPATE':
+            case 'O_P_HYGIENE_CL1':
+            case 'O_P_CLOTHES_CL1':
+                if (in_array($value, ['almost always', 'frequently'])) {
+                    $ph_strengths[] = $sentence;
+                } elseif ($value === 'sometimes') {
+                    $ph_monitor[] = $sentence;
+                } else {
+                    $ph_concerns[] = $sentence;
+                }
+                break;
+            case 'S_P_ACHES_CL1':
+                if (in_array($value, ['occasionally', 'almost never'])) {
+                    $ph_strengths[] = $sentence;
+                } elseif ($value === 'sometimes') {
+                    $ph_monitor[] = $sentence;
+                } else {
+                    $ph_concerns[] = $sentence;
+                }
+                break;
+            case 'O_P_HUNGER_CL1':
+                if ($value === 'almost never') {
+                    $ph_strengths[] = $sentence;
+                } elseif (in_array($value, ['sometimes', 'occasionally'])) {
+                    $ph_monitor[] = $sentence;
+                } else {
+                    $ph_concerns[] = $sentence;
+                }
+                break;
         }
     }
-}
 @endphp
 
-
-
-{{-- filtering for Supports Outside of School --}}
-{{-- filtering for Supports Outside of School --}}
+{{-- filtering for SEWB --}}
 @php
-$sosIndicators = [
-    'O_RECIPROCAL' => 'Family-school communication is _____ reciprocal.',
-    'O_POSADULT' => 'has a positive adult outside of school with whom they feel close.',
-    'O_ADULTBEST' => 'reports having an adult outside of school who wants them to do their best.',
-    'O_TALK' => 'reports having someone outside of school to talk to about their interests and problems.',
-    'O_ROUTINE' => 'shares having a caregiver who helps them with daily routines.',
-    'O_FAMILY' => 'reports getting along with family members.',
-    'O_P_HUNGER_CL2' => 'reports being hungry.',
-    'O_P_HYGIENE_CL2' => 'appears to have the resources to address basic hygiene needs.',
-    'O_P_CLOTHES_CL2' => 'shows up to school with adequate clothing.',
-    'O_RESOURCE' => 'reports having access to resources (materials, internet) to complete schoolwork.',
-    'B_O_HOUSING_CL2' => 'reports not having a stable living situation.',
-    'B_O_FAMSTRESS_CL2' => 'The student\'s family is _____ experiencing significant stressors.',
-    'B_O_NBHDSTRESS_CL2' => 'The student\'s neighborhood is _____ experiencing significant stressors.',
-    'A_S_O_ACTIVITY_CL3' => 'is engaged in at least one extracurricular activity.'
-];
+    $sewb_strengths = [];
+    $sewb_monitor = [];
+    $sewb_concerns = [];
+    foreach ($sewbIndicators as $field => $description) {
+        $raw = $report->$field ?? '';
+        if (!$raw || trim($raw) === '-99') continue;
+        $hasConfidence = str_contains($raw, ',');
+        $value = strtolower(trim(explode(',', $raw)[0]));
+        $prefix = ucfirst($value);
+        $suffix = $hasConfidence ? ' *' : '';
+        $dagger = hasCrossLoadedValue($field, $report, $crossLoadedMap) ? '†' : '';
 
-$sos_strengths = [];
-$sos_monitor = [];
-$sos_concerns = [];
-
-foreach ($sosIndicators as $field => $message) {
-    $raw = $report->$field ?? '';
-    if (!$raw || trim($raw) === '-99') continue;
-
-    $hasConfidence = str_contains($raw, ',');
-
-    $value = strtolower(trim(explode(',', $raw)[0]));
-
-    $prefix = ucfirst($value);
-    $suffix = ($hasConfidence ? ' *' : '');
-
-    if (str_contains($message, '_____')) {
-        $sentence = str_replace('_____', strtolower($prefix), $message) . $suffix;
-    } else {
-        $sentence = "{$prefix} {$message}{$suffix}";
-    }
-
-
-    switch ($field) {
-        case 'O_P_HYGIENE_CL2':
-        case 'O_P_CLOTHES_CL2':
-        case 'O_RESOURCE':
-        case 'O_RECIPROCAL':
-        case 'O_POSADULT':
-        case 'O_ADULTBEST':
-        case 'O_TALK':
-        case 'O_ROUTINE':
-        case 'O_FAMILY':
-        case 'A_S_O_ACTIVITY_CL3':
-            if (in_array($value, ['almost always', 'frequently'])) {
-                $sos_strengths[] = $sentence;
-            } elseif ($value === 'sometimes') {
-                $sos_monitor[] = $sentence;
-            } else {
-                $sos_concerns[] = $sentence;
-            }
-            break;
-
-        case 'B_O_FAMSTRESS_CL2':
-        case 'B_O_NBHDSTRESS_CL2':
+        $sentence = "{$prefix} {$description}{$dagger}{$suffix}";
+        if (in_array($field, ['S_P_ACHES_CL2', 'S_NERVOUS', 'S_SAD'])) {
             if (in_array($value, ['almost never', 'occasionally'])) {
-                $sos_strengths[] = $sentence;
+                $sewb_strengths[] = $sentence;
             } elseif ($value === 'sometimes') {
-                $sos_monitor[] = $sentence;
+                $sewb_monitor[] = $sentence;
             } else {
-                $sos_concerns[] = $sentence;
+                $sewb_concerns[] = $sentence;
             }
-            break;
-
-        case 'O_P_HUNGER_CL2':
-        case 'B_O_HOUSING_CL2':
-            if ($value === 'almost never') {
-                $sos_strengths[] = $sentence;
-            } elseif (in_array($value, ['sometimes', 'occasionally'])) {
-                $sos_monitor[] = $sentence;
+        } else {
+            if (in_array($value, ['almost always', 'frequently'])) {
+                $sewb_strengths[] = $sentence;
+            } elseif ($value === 'sometimes') {
+                $sewb_monitor[] = $sentence;
             } else {
-                $sos_concerns[] = $sentence;
+                $sewb_concerns[] = $sentence;
             }
-            break;
-
-        default:
-            if ($value === 'sometimes') {
-                $sos_monitor[] = $sentence;
-            } else {
-                $sos_concerns[] = $sentence;
-            }
-            break;
+        }
     }
-}
 @endphp
+
+{{-- filtering for Supports Outside of School --}}
+@php
+    $sos_strengths = [];
+    $sos_monitor = [];
+    $sos_concerns = [];
+    foreach ($sosIndicators as $field => $message) {
+        $raw = $report->$field ?? '';
+        if (!$raw || trim($raw) === '-99') continue;
+        $hasConfidence = str_contains($raw, ',');
+        $value = strtolower(trim(explode(',', $raw)[0]));
+        $prefix = ucfirst($value);     
+        $suffix = $hasConfidence ? ' *' : '';
+        $dagger = hasCrossLoadedValue($field, $report, $crossLoadedMap) ? '†' : '';
+
+        if (str_contains($message, '_____')) {
+            $base = str_replace('_____', strtolower($prefix), $message);
+        } else {
+            $base = "{$prefix} {$message}";
+        }
+        $sentence = $base . $dagger . $suffix;
+
+        switch ($field) {
+            case 'O_P_HYGIENE_CL2':
+            case 'O_P_CLOTHES_CL2':
+            case 'O_RESOURCE':
+            case 'O_RECIPROCAL':
+            case 'O_POSADULT':
+            case 'O_ADULTBEST':
+            case 'O_TALK':
+            case 'O_ROUTINE':
+            case 'O_FAMILY':
+            case 'A_S_O_ACTIVITY_CL3':
+                if (in_array($value, ['almost always', 'frequently'])) {
+                    $sos_strengths[] = $sentence;
+                } elseif ($value === 'sometimes') {
+                    $sos_monitor[] = $sentence;
+                } else {
+                    $sos_concerns[] = $sentence;
+                }
+                break;
+            case 'B_O_FAMSTRESS_CL2':
+            case 'B_O_NBHDSTRESS_CL2':
+                if (in_array($value, ['almost never', 'occasionally'])) {
+                    $sos_strengths[] = $sentence;
+                } elseif ($value === 'sometimes') {
+                    $sos_monitor[] = $sentence;
+                } else {
+                    $sos_concerns[] = $sentence;
+                }
+                break;
+            case 'O_P_HUNGER_CL2':
+            case 'B_O_HOUSING_CL2':
+                if ($value === 'almost never') {
+                    $sos_strengths[] = $sentence;
+                } elseif (in_array($value, ['sometimes', 'occasionally'])) {
+                    $sos_monitor[] = $sentence;
+                } else {
+                    $sos_concerns[] = $sentence;
+                }
+                break;
+            default:
+                if ($value === 'sometimes') {
+                    $sos_monitor[] = $sentence;
+                } else {
+                    $sos_concerns[] = $sentence;
+                }
+                break;
+        }
+    }
+@endphp
+
 
 @php
     $domainFlags = [
@@ -781,6 +767,7 @@ foreach ($sosIndicators as $field => $message) {
         'Supports Outside of School' => in_array('Supports Outside of School', $ofConcern),
     ];
 @endphp
+
 
 
 <table>
@@ -1055,3 +1042,4 @@ foreach ($sosIndicators as $field => $message) {
 
 </body>
 </html>
+
