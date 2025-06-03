@@ -466,18 +466,22 @@
         'O_P_HYGIENE'        => ['O_P_HYGEINE_CL1', 'O_P_HYGEINE_CL2'],
         'O_P_CLOTHES'        => ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],
     ];
+    if (! function_exists('hasCrossLoadedValue')) {
     function hasCrossLoadedValue(string $key, $report, array $map): bool
     {
         foreach ($map as $variants) {
             if (in_array($key, $variants, true)) {
                 foreach ($variants as $variant) {
-                    if (!empty($report->$variant)) return true;
+                    if (! empty($report->$variant)) {
+                        return true;
+                    }
                 }
                 return false;
             }
         }
         return false;
     }
+}
 @endphp
 
 {{-- filtering for academic skills --}}
@@ -767,8 +771,6 @@
         'Supports Outside of School' => in_array('Supports Outside of School', $ofConcern),
     ];
 @endphp
-
-
 
 <table>
     <thead>
