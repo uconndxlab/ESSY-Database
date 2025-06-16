@@ -770,6 +770,13 @@ foreach ($sosIndicators as $field => $message) {
         </tr>
     </thead>
     <tbody>
+
+        @php
+            $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]),
+                                array_merge($someConcern, $substantialConcern));
+        @endphp
+
+        @if(in_array('Academic Skills', $concernDomains))
         <tr>
             <td>Academic Skills</td>
             <td style="background-color: #C8E6C9;">
@@ -791,6 +798,9 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
+
+        @if(in_array('Behavior', $concernDomains))
         <tr>
             <td>Behavior</td>
             <td style="background-color: #C8E6C9;">
@@ -812,6 +822,9 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
+
+        @if(in_array('Physical Health', $concernDomains))
         <tr>
             <td>Physical Health</td>
             <td style="background-color: #C8E6C9;">
@@ -833,6 +846,9 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
+
+        @if(in_array('Social & Emotional Well-Being', $concernDomains))
         <tr>
             <td>Social & Emotional Well-Being</td>
             <td style="background-color: #C8E6C9;">
@@ -854,6 +870,9 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
+
+        @if(in_array('Supports Outside of School', $concernDomains))
         <tr>
             <td>Supports Outside of School</td>
             <td style="background-color: #C8E6C9;">
@@ -876,6 +895,7 @@ foreach ($sosIndicators as $field => $message) {
                 @endforeach
             </td>
         </tr>
+        @endif
     </tbody>
 </table>
 <p>* Rater reported less confidence in these responses.</p>
