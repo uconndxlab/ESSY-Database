@@ -898,6 +898,7 @@ foreach ($sosIndicators as $field => $message) {
         @endif
     </tbody>
 </table>
+
 <p>* Rater reported less confidence in these responses.</p>
 <p>† Item appears on multiple domains.</p>
 <br/>
