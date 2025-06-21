@@ -100,7 +100,7 @@ return new class extends Migration {
             $table->integer('SSOS_FAMSTRESS_2')->nullable();
             $table->integer('SSOS_NBHDSTRESS_2')->nullable();
             $table->integer('AMN_CLOTHES_1')->nullable();
-            $table->integer('AMN_HYGEINE')->nullable();
+            $table->integer('AMN_HYGIENE')->nullable();
             $table->integer('AMN_HUNGER_1')->nullable();
 
             // Physical & Participation Indicators
