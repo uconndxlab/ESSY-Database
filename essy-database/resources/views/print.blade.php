@@ -312,7 +312,28 @@
     }
 @endphp
 
+@php
 
+    // Define cross-loaded item relationships using actual database column IDs from ReportData.php model
+    $crossLoadItemGroups = [
+        ['A_P_ARTICULATE_CL1', 'A_P_ARTICULATE_CL2'], // AV (Acad) / CI (Phys) - Articulates clearly
+        ['A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2'],   // AW (Acad) / DF (SEWB) - Effectively communicates with adults
+        ['A_B_CLASSEXPECT_CL1', 'A_B_CLASSEXPECT_CL2'],// BB (Acad) / BP (Beh) - Follows classroom expectations
+        ['A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2'],       // BC (Acad) / BQ (Beh) - Exhibits impulsivity
+        ['A_S_CONFIDENT_CL1', 'A_S_CONFIDENT_CL2'],   // BH (Acad) / CW (SEWB) - Displays confidence in self
+        ['A_S_POSOUT_CL1', 'A_S_POSOUT_CL2'],         // BI (Acad) / CX (SEWB) - Demonstrates positive outlook
+        ['S_P_ACHES_CL1', 'S_P_ACHES_CL2'],           // CM (Phys) / CY (SEWB) - Complains of aches
+        ['B_O_HOUSING_CL1', 'B_O_HOUSING_CL2'],       // BY (Beh) / DZ (SOS) - Unstable living situation
+        ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],   // BZ (Beh) / EA (SOS) - Family stressors
+        ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'], // CA (Beh) / EB (SOS) - Neighborhood stressors
+        ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],         // CN (Phys) / DV (SOS) - Reports being hungry
+        ['O_P_HYGIENE_CL1', 'O_P_HYGIENE_CL2'],       // CO (Phys) / DW (SOS) - Hygiene resources (Note: O_P_HYGIENE_CL1 from model)
+        ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],       // CP (Phys) / DX (SOS) - Adequate clothing
+        ['A_S_O_ACTIVITY3_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // BJ (Acad) / DJ (SEWB) / EC (SOS) - Extracurricular activity
+    ];
+
+
+@endphp
 
 
     <p><strong>ESSY Gate 2 Summary of Specific Concerns</strong></p>
@@ -358,119 +379,16 @@
 
     <p>The table below is organized using three categories: strengths to maintain, areas to monitor 
     (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
-
-{{-- cross filtering information --}}
-@php
-
-    // Define cross-loaded item relationships using actual database column IDs from ReportData.php model
-    $crossLoadItemGroups = [
-        ['A_P_ARTICULATE_CL1', 'A_P_ARTICULATE_CL2'], // AV (Acad) / CI (Phys) - Articulates clearly
-        ['A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2'],   // AW (Acad) / DF (SEWB) - Effectively communicates with adults
-        ['A_B_CLASSEXPECT_CL1', 'A_B_CLASSEXPECT_CL2'],// BB (Acad) / BP (Beh) - Follows classroom expectations
-        ['A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2'],       // BC (Acad) / BQ (Beh) - Exhibits impulsivity
-        ['A_S_CONFIDENT_CL1', 'A_S_CONFIDENT_CL2'],   // BH (Acad) / CW (SEWB) - Displays confidence in self
-        ['A_S_POSOUT_CL1', 'A_S_POSOUT_CL2'],         // BI (Acad) / CX (SEWB) - Demonstrates positive outlook
-        ['S_P_ACHES_CL1', 'S_P_ACHES_CL2'],           // CM (Phys) / CY (SEWB) - Complains of aches
-        ['B_O_HOUSING_CL1', 'B_O_HOUSING_CL2'],       // BY (Beh) / DZ (SOS) - Unstable living situation
-        ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],   // BZ (Beh) / EA (SOS) - Family stressors
-        ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'], // CA (Beh) / EB (SOS) - Neighborhood stressors
-        ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],         // CN (Phys) / DV (SOS) - Reports being hungry
-        ['O_P_HYGEINE_CL1', 'O_P_HYGIENE_CL2'],       // CO (Phys) / DW (SOS) - Hygiene resources (Note: O_P_HYGEINE_CL1 from model)
-        ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],       // CP (Phys) / DX (SOS) - Adequate clothing
-        ['A_S_O_ACTIVITY3_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // BJ (Acad) / DJ (SEWB) / EC (SOS) - Extracurricular activity
-    ];
-
-
-@endphp
     
 
 @php
-    // Define domain indicators using actual database column IDs from ReportData.php model
-    $academicIndicators = [
-        'A_READ' => 'meets grade-level expectations for reading skills.',
-        'A_WRITE' => 'meets expectations for grade-level writing skills.',
-        'A_MATH' => 'meets expectations for grade-level math skills.',
-        'A_P_ARTICULATE_CL1' => 'articulates clearly enough to be understood.',
-        'A_S_ADULTCOMM_CL1' => 'effectively communicates with adults.',
-        'A_DIRECTIONS' => 'understands directions.',
-        'A_INITIATE' => 'initiates academic tasks.',
-        'A_PLANORG' => 'demonstrates ability to plan, organize, focus, and prioritize tasks.',
-        'A_TURNIN' => 'completes and turns in assigned work.',
-        'A_B_CLASSEXPECT_CL1' => 'follows classroom expectations.',
-        'A_B_IMPULSE_CL1' => 'exhibits impulsivity.',
-        'A_ENGAGE' => 'engaged in academic activities.',
-        'A_INTEREST' => 'shows interest in learning activities.',
-        'A_PERSIST' => 'persists with challenging tasks.',
-        'A_GROWTH' => 'demonstrates a growth mindset.',
-        'A_S_CONFIDENT_CL1' => 'displays confidence in self.',
-        'A_S_POSOUT_CL1' => 'demonstrates positive outlook.',
-        'A_S_O_ACTIVITY3_CL1' => 'is engaged in at least one extracurricular activity.'
-    ];
+    $crossLoadItemGroups = \App\Models\ReportData::getCrossLoadItemGroups();
+    $academicIndicators = \App\Models\ReportData::getAcademicIndicators();
+    $behaviorIndicators = \App\Models\ReportData::getBehaviorIndicators();
+    $physicalIndicators = \App\Models\ReportData::getPhysicalHealthIndicators();
+    $sewbIndicators = \App\Models\ReportData::getSewbIndicators();
+    $sosIndicators = \App\Models\ReportData::getSosIndicators();
 
-    $behaviorIndicators = [
-        'A_B_CLASSEXPECT_CL2' => 'follows classroom expectations.',
-        'A_B_IMPULSE_CL2' => 'exhibits impulsivity.',
-        'B_CLINGY' => 'exhibits overly clingy or attention-seeking behaviors.',
-        'B_SNEAK' => 'demonstrates sneaky or dishonest behavior.',
-        'BEH_VERBAGGRESS' => 'engages in verbally aggressive behavior toward others.',
-        'BEH_PHYSAGGRESS' => 'engages in physically aggressive behavior toward others.',
-        'B_DESTRUCT' => 'engages in destructive behavior towards property.',
-        'B_BULLY' => 'bullies/has bullied another student.',
-        'B_PUNITIVE' => 'experiences/has experienced punitive or exclusionary discipline at school.',
-        'B_O_HOUSING_CL1' => 'reports not having a stable living situation.',
-        'B_O_FAMSTRESS_CL1' => 'family is experiencing significant stressors.',
-        'B_O_NBHDSTRESS_CL1' => 'neighborhood is experiencing significant stressors.'
-    ];
-
-    $physicalIndicators = [
-        'P_SIGHT' => 'able to see, from a distance or up close.',
-        'P_HEAR' => 'able to hear information.',
-        'A_P_ARTICULATE_CL2' => 'articulates clearly enough to be understood.',
-        'A_ORAL' => 'oral health appears to be addressed.',
-        'A_PHYS' => 'physical health appears to be addressed.',
-        'P_PARTICIPATE' => 'physical health allows for participation in school activities.',
-        'S_P_ACHES_CL1' => 'complains of headaches, stomachaches, or body aches.',
-        'O_P_HUNGER_CL1' => 'reports being hungry.',
-        'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs.', // Note: O_P_HYGEINE_CL1 from model
-        'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing.'
-    ];
-
-    $sewbIndicators = [
-        'S_CONTENT' => 'appears content.',
-        'A_S_CONFIDENT_CL2' => 'displays confidence in self.',
-        'A_S_POSOUT_CL2' => 'demonstrates positive outlook.',
-        'S_P_ACHES_CL2' => 'complains of headaches, stomachaches, or body aches.',
-        'S_NERVOUS' => 'appears nervous, worried, tense, or fearful.',
-        'S_SAD' => 'appears sad.',
-        'S_SOCIALCONN' => 'has friends/social connections.',
-        'S_FRIEND' => 'has at least one close friend at school.',
-        'S_PROSOCIAL' => 'demonstrates prosocial skills.',
-        'S_PEERCOMM' => 'effectively communicates with peers.',
-        'A_S_ADULTCOMM_CL2' => 'effectively communicates with adults.',
-        'S_POSADULT' => 'has a positive relationship with at least one adult in the school.',
-        'S_SCHOOLCONN' => 'appears to experience a sense of connection in their school.',
-        'S_COMMCONN' => 'appears to experience a sense of connection in their community.',
-        'A_S_O_ACTIVITY_CL2' => 'is engaged in at least one extracurricular activity.'
-    ];
-
-    $sosIndicators = [
-        'O_RECIPROCAL' => 'family-school communication is reciprocal.',
-        'O_POSADULT' => 'has a positive adult outside of school with whom they feel close.',
-        'O_ADULTBEST' => 'reports having an adult outside of school who wants them to do their best.',
-        'O_TALK' => 'reports having someone outside of school to talk to about their interests and problems.',
-        'O_ROUTINE' => 'shares having a caregiver who helps them with daily routines.',
-        'O_FAMILY' => 'reports getting along with family members.',
-        'O_P_HUNGER_CL2' => 'reports being hungry.',
-        'O_P_HYGIENE_CL2' => 'appears to have the resources to address basic hygiene needs.',
-        'O_P_CLOTHES_CL2' => 'shows up to school with adequate clothing.',
-        'O_RESOURCE' => 'reports having access to resources (materials, internet) to complete schoolwork.',
-        'B_O_HOUSING_CL2' => 'reports not having a stable living situation.',
-        'B_O_FAMSTRESS_CL2' => 'family is experiencing significant stressors.',
-        'B_O_NBHDSTRESS_CL2' => 'neighborhood is experiencing significant stressors.',
-        'A_S_O_ACTIVITY_CL3' => 'is engaged in at least one extracurricular activity.'
-    ];
-
-    // Map fields to their domains for cross-loading checks
     $fieldToDomainMap = [];
     $allDomainIndicators = [
         'Academic Skills' => $academicIndicators,
@@ -482,51 +400,67 @@
     
     foreach ($allDomainIndicators as $domain => $indicators) {
         foreach (array_keys($indicators) as $field) {
-            // $field is now the database column name
             $fieldToDomainMap[$field] = $domain;
         }
     }
 
-    // Calculate which fields need a dagger (†) symbol
+    // Calculate which fields need a dagger (†) symbol - improved calculation
     $fieldsThatNeedDagger = [];
     
-
-    $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]), array_merge($someConcern ?? [], $substantialConcern ?? []));
-
-    // Identify fields that need the cross symbol
-    foreach ($crossLoadItemGroups as $group) { // $group contains database field names
-        $domainsInGroupThatAreConcerns = [];
-        
-        // Check which domains in this group are concerns
-        foreach ($group as $field) { // $field is a database field name
-            if (isset($fieldToDomainMap[$field]) && in_array($fieldToDomainMap[$field], $concernDomains)) {
-                $domainsInGroupThatAreConcerns[$fieldToDomainMap[$field]] = true;
+    // First, find all groups that span multiple domains
+    foreach ($crossLoadItemGroups as $group) {
+        $domainsInGroup = [];
+        foreach ($group as $field) {
+            if (isset($fieldToDomainMap[$field])) {
+                $domainsInGroup[] = $fieldToDomainMap[$field];
             }
         }
+        $domainsInGroup = array_unique($domainsInGroup);
         
-        // If more than one domain in this group is a concern, mark all fields in that group (that belong to a concern domain) for a dagger
-        if (count($domainsInGroupThatAreConcerns) > 1) {
-            foreach ($group as $field) { // $field is a database field name
-                if (isset($fieldToDomainMap[$field]) && in_array($fieldToDomainMap[$field], $concernDomains)) {
-                    $fieldsThatNeedDagger[$field] = true;
-                }
+        // If this group spans multiple domains, mark ALL fields in the group for dagger
+        if (count($domainsInGroup) > 1) {
+            foreach ($group as $field) {
+                $fieldsThatNeedDagger[$field] = true;
             }
         }
     }
     
-    $academic_skills_strengths = []; $academic_monitor = []; $academic_concerns = [];
-    $behavior_strengths = []; $behavior_monitor = []; $behavior_concerns = [];
-    $ph_strengths = []; $ph_monitor = []; $ph_concerns = [];
-    $sewb_strengths = []; $sewb_monitor = []; $sewb_concerns = [];
-    $sos_strengths = []; $sos_monitor = []; $sos_concerns = [];
+    // Now, refine by concern domains if needed
+    $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]), 
+                               array_merge($someConcern ?? [], $substantialConcern ?? []));
+
+    $academic_skills_strengths = $academic_monitor = $academic_concerns = [];
+    $behavior_strengths = $behavior_monitor = $behavior_concerns = [];
+    $ph_strengths = $ph_monitor = $ph_concerns = [];
+    $sewb_strengths = $sewb_monitor = $sewb_concerns = [];
+    $sos_strengths = $sos_monitor = $sos_concerns = [];
+
+    function getCrossLoadedValue($report, $field, $crossLoadedGroups) {
+        $value = $report->$field ?? null;
+
+        if (!$value || trim($value) === '-99') {
+            foreach($crossLoadedGroups as $group) {
+                if (in_array($field, $group)) {
+                    foreach ($group as $relatedField) {
+                        if ($relatedField !== $field) {
+                            $relatedValue = $report->$relatedField ?? null;
+                            if ($relatedValue && trim($relatedValue) !== '-99') {
+                                return $relatedValue; 
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $value;
+    }
 @endphp
 
 {{-- Academic section--}}
 @php
     // Process Academic Skills items
     foreach ($academicIndicators as $field => $message) { // $field is now the database column name
-        $valueRaw = $report->$field ?? ''; // Accessing $report using database column name
-        if (!$valueRaw || trim($valueRaw) === '-99') continue;
+        $valueRaw = getCrossLoadedValue($report, $field, $crossLoadItemGroups);
         
         $hasConfidence = str_contains($valueRaw, ','); // Assuming confidence is still marked by a comma
         $value = strtolower(trim(explode(',', $valueRaw)[0]));
@@ -565,8 +499,7 @@
 @php
     // Process Behavior items
     foreach ($behaviorIndicators as $field => $message) { // $field is now the database column name
-        $valueRaw = $report->$field ?? '';
-        if (!$valueRaw || trim($valueRaw) === '-99') continue;
+        $valueRaw = getCrossLoadedValue($report, $field, $crossLoadItemGroups);
         
         $hasConfidence = str_contains($valueRaw, ',');
         $value = strtolower(trim(explode(',', $valueRaw)[0]));
@@ -639,8 +572,7 @@
 @php
     // Process Physical Health items
     foreach ($physicalIndicators as $field => $message) { // $field is now the database column name
-        $valueRaw = $report->$field ?? '';
-        if (!$valueRaw || trim($valueRaw) === '-99') continue;
+        $valueRaw = getCrossLoadedValue($report, $field, $crossLoadItemGroups);
         
         $hasConfidence = str_contains($valueRaw, ',');
         $value = strtolower(trim(explode(',', $valueRaw)[0]));
@@ -662,7 +594,7 @@
             case 'A_ORAL': // oral health addressed (was CJ)
             case 'A_PHYS': // physical health addressed (was CK)
             case 'P_PARTICIPATE': // participates in activities (was CL)
-            case 'O_P_HYGEINE_CL1': // hygiene resources (was CO) - Note: O_P_HYGEINE_CL1 from model
+            case 'O_P_HYGIENE_CL1': // hygiene resources (was CO) - Note: O_P_HYGIENE_CL1 from model
             case 'O_P_CLOTHES_CL1': // adequate clothing (was CP)
                 if (in_array($value, ['almost always', 'frequently'])) {
                     $ph_strengths[] = $sentence;
@@ -695,8 +627,7 @@
 @php
     // Process Social & Emotional Well-Being items
     foreach ($sewbIndicators as $field => $message) { // $field is now the database column name
-        $valueRaw = $report->$field ?? '';
-        if (!$valueRaw || trim($valueRaw) === '-99') continue;
+        $valueRaw = getCrossLoadedValue($report, $field, $crossLoadItemGroups);
         
         $hasConfidence = str_contains($valueRaw, ',');
         $value = strtolower(trim(explode(',', $valueRaw)[0]));
@@ -740,8 +671,7 @@
 @php
     // Process Supports Outside of School items
     foreach ($sosIndicators as $field => $message) { // $field is now the database column name
-        $valueRaw = $report->$field ?? '';
-        if (!$valueRaw || trim($valueRaw) === '-99') continue;
+        $valueRaw = getCrossLoadedValue($report, $field, $crossLoadItemGroups);
         
         $hasConfidence = str_contains($valueRaw, ',');
         $value = strtolower(trim(explode(',', $valueRaw)[0]));
@@ -821,19 +751,16 @@
             <td style="background-color: #C8E6C9;">
                 @foreach ($academic_skills_strengths as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #BBDEFB;">
                 @foreach ($academic_monitor as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #EF9A9A;">
                 @foreach ($academic_concerns as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
         </tr>
@@ -845,19 +772,16 @@
             <td style="background-color: #C8E6C9;">
                 @foreach ($behavior_strengths as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #BBDEFB;">
                 @foreach ($behavior_monitor as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #EF9A9A;">
                 @foreach ($behavior_concerns as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
         </tr>
@@ -869,19 +793,16 @@
             <td style="background-color: #C8E6C9;">
                 @foreach ($ph_strengths as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #BBDEFB;">
                 @foreach ($ph_monitor as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #EF9A9A;">
                 @foreach ($ph_concerns as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
         </tr>
@@ -893,19 +814,16 @@
             <td style="background-color: #C8E6C9;">
                 @foreach ($sewb_strengths as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #BBDEFB;">
                 @foreach ($sewb_monitor as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #EF9A9A;">
                 @foreach ($sewb_concerns as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
         </tr>
@@ -917,19 +835,16 @@
             <td style="background-color: #C8E6C9;">
                 @foreach ($sos_strengths as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #BBDEFB;">
                 @foreach ($sos_monitor as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
             <td style="background-color: #EF9A9A;">
                 @foreach ($sos_concerns as $item)
                     <p>{!! $item !!}</p>
-                    <br/>
                 @endforeach
             </td>
         </tr>
@@ -994,7 +909,7 @@
                     'P_PARTICIPATE' => 'physical health allows for participation in school activities.',
                     'S_P_ACHES_CL1' => 'complains of headaches, stomachaches, or body aches (Physical Health primary).',
                     'O_P_HUNGER_CL1' => 'reports being hungry (Physical Health primary).',
-                    'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs (Physical Health primary).', // Note: O_P_HYGEINE_CL1 from model
+                    'O_P_HYGIENE_CL1' => 'appears to have the resources to address basic hygiene needs (Physical Health primary).', // Note: O_P_HYGIENE_CL1 from model
                     'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing (Physical Health primary).',
 
                     // Social & Emotional Well-Being - Primary Instances
@@ -1045,7 +960,7 @@
                     'B_O_FAMSTRESS_CL2',    // EA (SOS) - secondary to BZ (Beh)
                     'B_O_NBHDSTRESS_CL2',   // EB (SOS) - secondary to CA (Beh)
                     'O_P_HUNGER_CL2',       // DV (SOS) - secondary to CN (Phys)
-                    'O_P_HYGIENE_CL2',      // DW (SOS) - secondary to O_P_HYGEINE_CL1 (Phys)
+                    'O_P_HYGIENE_CL2',      // DW (SOS) - secondary to O_P_HYGIENE_CL1 (Phys)
                     'O_P_CLOTHES_CL2',      // DX (SOS) - secondary to O_P_CLOTHES_CL1 (Phys)
                     'A_S_O_ACTIVITY_CL2',   // DJ (SEWB) - secondary to BJ (Acad)
                     'A_S_O_ACTIVITY_CL3'    // EC (SOS) - tertiary to BJ (Acad)

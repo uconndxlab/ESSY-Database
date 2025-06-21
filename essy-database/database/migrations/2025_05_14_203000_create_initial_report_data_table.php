@@ -104,7 +104,7 @@ class CreateInitialReportDataTable extends Migration
             $table->string('P_PARTICIPATE')->nullable();
             $table->string('S_P_ACHES_CL1')->nullable();
             $table->string('O_P_HUNGER_CL1')->nullable();
-            $table->string('O_P_HYGEINE_CL1')->nullable();
+            $table->string('O_P_HYGIENE_CL1')->nullable();
             $table->string('O_P_CLOTHES_CL1')->nullable();
             $table->string('COMMENTS_PH')->nullable();
             $table->string('TIMING_PH_FirstClick')->nullable();
