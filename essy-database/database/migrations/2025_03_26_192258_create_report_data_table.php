@@ -108,7 +108,7 @@ return new class extends Migration {
             $table->integer('PH_SIGHT')->nullable();
             $table->integer('PH_HEAR')->nullable();
             $table->integer('PH_PARTICIPATE')->nullable();
-            $table->integer('AMN_HYGIENE')->nullable();
+            //$table->integer('AMN_HYGIENE')->nullable();
             $table->integer('AMN_ORAL')->nullable();
             $table->integer('AMN_PHYS')->nullable();
             $table->integer('AMN_HUNGER_2')->nullable();
