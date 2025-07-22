@@ -1,3 +1,4 @@
+# Laravel Framework
 /.phpunit.cache
 /node_modules
 /public/build
@@ -9,6 +10,8 @@
 .env
 .env.backup
 .env.production
+.env.local
+.env.testing
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
@@ -16,10 +19,120 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /auth.json
+
+# IDE and Editor Files
 /.fleet
 /.idea
 /.nova
 /.vscode
 /.zed
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# Logs
+*.log
+logs/
+storage/logs/*.log
+
+# Cache and temporary files
+*.cache
+*.tmp
+*.temp
+/bootstrap/cache/*.php
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/app/public/*
+!/storage/app/public/.gitkeep
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Compiled assets
+/public/css/
+/public/js/
+/public/mix-manifest.logs
+
+# Testing
+/coverage/
+/.phpunit.cache
+phpunit.xml
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Project specific
 storage/sample.csv
 output-sample.csv
+*.xlsx
+*.xls
+*.csv
+/storage/app/uploads/*
+!/storage/app/uploads/.gitkeep
+
+# Kiro IDE
+/.kiro/
+../kiro/
+
+# Composer
+composer.phar
+/vendor/
+
+# NPM/Yarn
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment and secrets
+.env*
+!.env.example
+secrets.json
+config/secrets.php
+
+# IDE specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db

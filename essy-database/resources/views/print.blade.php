@@ -277,9 +277,15 @@
     ];
 
     foreach ($items as $item) {
-        $line = ucfirst($item['value']) . ' ' . $item['text'] . '.';
+        // Handle confidence flags properly
+        $hasConfidence = str_contains($item['value'], ',');
+        $cleanValue = trim(explode(',', $item['value'])[0]);
+        $prefix = ucfirst($cleanValue);
+        
+        $confidenceFlag = $hasConfidence ? ' *' : '';
+        $line = $prefix . ' ' . $item['text'] . '.' . $confidenceFlag;
 
-        if (in_array($item['value'], $item['proceed'])) {
+        if (in_array($cleanValue, $item['proceed'])) {
             $proceedItems[] = $line;
         } else {
             $cautionItems[] = $line;
