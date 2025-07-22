@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class ReportData extends Model
 {
@@ -28,7 +29,7 @@ class ReportData extends Model
         'B_DESTRUCT', 'B_BULLY', 'B_PUNITIVE', 'B_O_HOUSING_CL1', 'B_O_FAMSTRESS_CL1', 'B_O_NBHDSTRESS_CL1',
         'COMMENTS_BEH', 'TIMING_BEH_FirstClick', 'TIMING_BEH_LastClick', 'TIMING_BEH_PageSubmit', 'TIMING_BEH_ClickCount',
         'P_SIGHT', 'P_HEAR', 'A_P_ARTICULATE_CL2', 'A_ORAL', 'A_PHYS', 'P_PARTICIPATE', 'S_P_ACHES_CL1',
-        'O_P_HUNGER_CL1', 'O_P_HYGEINE_CL1', 'O_P_CLOTHES_CL1', 'COMMENTS_PH', 'TIMING_PH_FirstClick',
+        'O_P_HUNGER_CL1', 'O_P_HYGIENE_CL1', 'O_P_CLOTHES_CL1', 'COMMENTS_PH', 'TIMING_PH_FirstClick',
         'TIMING_PH_LastClick', 'TIMING_PH_PageSubmit', 'TIMING_PH_ClickCount',
         'S_CONTENT', 'A_S_CONFIDENT_CL2', 'A_S_POSOUT_CL2', 'S_P_ACHES_CL2', 'S_NERVOUS', 'S_SAD',
         'S_SOCIALCONN', 'S_FRIEND', 'S_PROSOCIAL', 'S_PEERCOMM', 'A_S_ADULTCOMM_CL2',
@@ -42,4 +43,200 @@ class ReportData extends Model
         'DEM_RACE', 'DEM_RACE_14_TEXT', 'DEM_ETHNIC', 'DEM_GENDER', 'DEM_ELL', 'DEM_IEP',
         'DEM_504', 'DEM_CI', 'DEM_GRADE', 'DEM_CLASSTEACH', 'SPEEDING_GATE1', 'SPEEDING_ESS', 'SPEEDING_GATE2', 'batch_id', 'created_at', 'updated_at'
     ];
+
+    /**
+     * Get domains that are marked as concerns
+     */
+    public function getConcernDomains(): array
+    {
+        try {
+            $domainValues = [
+                'Academic Skills' => $this->A_DOMAIN,
+                'Behavior' => $this->B_DOMAIN,
+                'Social & Emotional Well-Being' => $this->S_DOMAIN,
+                'Physical Health' => $this->P_DOMAIN,
+                'Supports Outside of School' => $this->O_DOMAIN,
+                'Attendance' => $this->ATT_DOMAIN,
+            ];
+
+            $concernDomains = [];
+
+            foreach ($domainValues as $domain => $rating) {
+                if (!$rating) continue;
+
+                $cleanRating = $this->getCleanRating($rating);
+                
+                if ($this->isDomainConcern($cleanRating)) {
+                    $concernDomains[] = $domain;
+                }
+            }
+
+            return $concernDomains;
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error getting concern domains', [
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Get item value with safe access
+     */
+    public function getItemValue(string $field): ?string
+    {
+        try {
+            return $this->safeGetAttribute($field);
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error getting item value', [
+                'field' => $field,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Check if field has valid value
+     */
+    public function hasValidValue(string $field): bool
+    {
+        try {
+            $value = $this->safeGetAttribute($field);
+            return $value !== null && $value !== '' && trim($value) !== '-99';
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error checking valid value', [
+                'field' => $field,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Safely get attribute with default value
+     */
+    public function safeGetAttribute(string $field, $default = null): mixed
+    {
+        try {
+            if (!in_array($field, $this->fillable)) {
+                Log::warning('[ReportData] Accessing non-fillable field', [
+                    'field' => $field,
+                    'report_id' => $this->id ?? 'unknown'
+                ]);
+                return $default;
+            }
+
+            $value = $this->getAttribute($field);
+            
+            if ($value === null || $value === '' || trim($value) === '-99') {
+                return $default;
+            }
+            
+            return $value;
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error in safe attribute access', [
+                'field' => $field,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return $default;
+        }
+    }
+
+    /**
+     * Validate domain rating
+     */
+    public function validateDomainRating(string $domain): bool
+    {
+        try {
+            $domainField = $this->getDomainField($domain);
+            if (!$domainField) {
+                return false;
+            }
+
+            $rating = $this->safeGetAttribute($domainField);
+            return $rating !== null && trim($rating) !== '';
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error validating domain rating', [
+                'domain' => $domain,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Get clean rating without confidence flags
+     */
+    public function getCleanRating(string $rawValue): ?string
+    {
+        try {
+            if (!$rawValue || trim($rawValue) === '') {
+                return null;
+            }
+
+            // Remove confidence flag text and get just the rating
+            $cleanRating = explode(',', $rawValue)[0];
+            return trim($cleanRating);
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error cleaning rating', [
+                'raw_value' => $rawValue,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Check if rating has confidence flag
+     */
+    public function hasConfidenceFlag(string $rawValue): bool
+    {
+        try {
+            return str_contains($rawValue, 'Check here');
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error checking confidence flag', [
+                'raw_value' => $rawValue,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Check if domain rating indicates concern
+     */
+    private function isDomainConcern(string $cleanRating): bool
+    {
+        $concernRatings = [
+            'an area of some concern',
+            'an area of substantial concern'
+        ];
+
+        return in_array(trim(strtolower($cleanRating)), $concernRatings);
+    }
+
+    /**
+     * Get domain field name from domain name
+     */
+    private function getDomainField(string $domain): ?string
+    {
+        $domainMap = [
+            'Academic Skills' => 'A_DOMAIN',
+            'Behavior' => 'B_DOMAIN',
+            'Social & Emotional Well-Being' => 'S_DOMAIN',
+            'Physical Health' => 'P_DOMAIN',
+            'Supports Outside of School' => 'O_DOMAIN',
+            'Attendance' => 'ATT_DOMAIN',
+        ];
+
+        return $domainMap[$domain] ?? null;
+    }
 }
