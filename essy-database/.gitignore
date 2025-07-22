@@ -96,9 +96,9 @@ output-sample.csv
 /storage/app/uploads/*
 !/storage/app/uploads/.gitkeep
 
-# Kiro IDE
-/.kiro/
-../kiro/
+# Kiro IDE files
+.kiro/
+../.kiro/
 
 # Composer
 composer.phar
@@ -125,10 +125,10 @@ config/secrets.php
 .phpstorm.meta.php
 _ide_helper.php
 _ide_helper_models.php
-.phpstorm.meta.php
 
 # OS generated files
 .DS_Store
+../.DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
@@ -136,5 +136,3 @@ _ide_helper_models.php
 Icon?
 ehthumbs.db
 Thumbs.db
-../.kiro
-../.DS_Store
