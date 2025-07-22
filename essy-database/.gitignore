@@ -136,3 +136,5 @@ _ide_helper_models.php
 Icon?
 ehthumbs.db
 Thumbs.db
+../.kiro
+../.DS_Store
