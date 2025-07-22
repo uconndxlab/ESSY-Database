@@ -341,17 +341,17 @@ class CrossLoadedDomainService
     }
 
     /**
-     * Get field messages for display
+     * Get field messages for display - Updated to match exact specification wording
      */
     public function getFieldMessages(): array
     {
         return [
-            // Academic Skills
+            // Academic Skills - Exact wording from specification
             'A_READ' => 'meets grade-level expectations for reading skills.',
             'A_WRITE' => 'meets expectations for grade-level writing skills.',
             'A_MATH' => 'meets expectations for grade-level math skills.',
             'A_P_ARTICULATE_CL1' => 'articulates clearly enough to be understood.',
-            'A_S_ADULTCOMM_CL1' => 'effectively communicates with adults.',
+            'A_S_ADULTCOMM_CL1' => 'communicates with adults effectively.',
             'A_DIRECTIONS' => 'understands directions.',
             'A_INITIATE' => 'initiates academic tasks.',
             'A_PLANORG' => 'demonstrates ability to plan, organize, focus, and prioritize tasks.',
@@ -364,9 +364,9 @@ class CrossLoadedDomainService
             'A_GROWTH' => 'demonstrates a growth mindset.',
             'A_S_CONFIDENT_CL1' => 'displays confidence in self.',
             'A_S_POSOUT_CL1' => 'demonstrates positive outlook.',
-            'A_S_O_ACTIVITY3_CL1' => 'is engaged in at least one extracurricular activity.',
+            'A_S_O_ACTIVITY3_CL1' => 'engaged in at least one extracurricular activity.',
             
-            // Behavior
+            // Behavior - Exact wording from specification
             'A_B_CLASSEXPECT_CL2' => 'follows classroom expectations.',
             'A_B_IMPULSE_CL2' => 'exhibits impulsivity.',
             'B_CLINGY' => 'exhibits overly clingy or attention-seeking behaviors.',
@@ -380,7 +380,7 @@ class CrossLoadedDomainService
             'B_O_FAMSTRESS_CL1' => 'family is experiencing significant stressors.',
             'B_O_NBHDSTRESS_CL1' => 'neighborhood is experiencing significant stressors.',
             
-            // Physical Health
+            // Physical Health - Exact wording from specification
             'P_SIGHT' => 'able to see, from a distance or up close.',
             'P_HEAR' => 'able to hear information.',
             'A_P_ARTICULATE_CL2' => 'articulates clearly enough to be understood.',
@@ -392,7 +392,7 @@ class CrossLoadedDomainService
             'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs.',
             'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing.',
             
-            // Social & Emotional Well-Being
+            // Social & Emotional Well-Being - Exact wording from specification
             'S_CONTENT' => 'appears content.',
             'A_S_CONFIDENT_CL2' => 'displays confidence in self.',
             'A_S_POSOUT_CL2' => 'demonstrates positive outlook.',
@@ -402,14 +402,14 @@ class CrossLoadedDomainService
             'S_SOCIALCONN' => 'has friends/social connections.',
             'S_FRIEND' => 'has at least one close friend at school.',
             'S_PROSOCIAL' => 'demonstrates prosocial skills.',
-            'S_PEERCOMM' => 'effectively communicates with peers.',
-            'A_S_ADULTCOMM_CL2' => 'effectively communicates with adults.',
+            'S_PEERCOMM' => 'communicates with peers effectively.',
+            'A_S_ADULTCOMM_CL2' => 'communicates with adults effectively.',
             'S_POSADULT' => 'has a positive relationship with at least one adult in the school.',
             'S_SCHOOLCONN' => 'appears to experience a sense of connection in their school.',
             'S_COMMCONN' => 'appears to experience a sense of connection in their community.',
-            'A_S_O_ACTIVITY_CL2' => 'is engaged in at least one extracurricular activity.',
+            'A_S_O_ACTIVITY_CL2' => 'engaged in at least one extracurricular activity.',
             
-            // Supports Outside of School
+            // Supports Outside of School - Exact wording from specification
             'O_RECIPROCAL' => 'family-school communication is reciprocal.',
             'O_POSADULT' => 'has a positive adult outside of school with whom they feel close.',
             'O_ADULTBEST' => 'reports having an adult outside of school who wants them to do their best.',
@@ -423,7 +423,7 @@ class CrossLoadedDomainService
             'B_O_HOUSING_CL2' => 'reports not having a stable living situation.',
             'B_O_FAMSTRESS_CL2' => 'family is experiencing significant stressors.',
             'B_O_NBHDSTRESS_CL2' => 'neighborhood is experiencing significant stressors.',
-            'A_S_O_ACTIVITY_CL3' => 'is engaged in at least one extracurricular activity.'
+            'A_S_O_ACTIVITY_CL3' => 'engaged in at least one extracurricular activity.'
         ];
     }
 
@@ -437,18 +437,27 @@ class CrossLoadedDomainService
         // Zero-tolerance fields (any occurrence is concern)
         $zeroToleranceFields = ['BEH_PHYSAGGRESS', 'B_BULLY', 'B_PUNITIVE'];
         
-        // Special cases with reversed interpretation (negative items)
+        // Special cases with reversed interpretation (negative items - lower frequency is better)
         $reversedFields = [
-            'A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2', 'B_CLINGY', 'B_SNEAK', 'BEH_VERBAGGRESS', 
-            'B_DESTRUCT', 'B_O_HOUSING_CL1', 'B_O_FAMSTRESS_CL1', 'B_O_NBHDSTRESS_CL1', 
-            'S_P_ACHES_CL1', 'S_P_ACHES_CL2', 'S_NERVOUS', 'S_SAD', 'O_P_HUNGER_CL1', 
-            'O_P_HUNGER_CL2', 'B_O_HOUSING_CL2', 'B_O_FAMSTRESS_CL2', 'B_O_NBHDSTRESS_CL2'
+            // Impulsivity items (negative behavior)
+            'A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2', 
+            // Behavioral problems (negative behaviors)
+            'B_CLINGY', 'B_SNEAK', 'BEH_VERBAGGRESS', 'B_DESTRUCT', 
+            // Housing and family stressors (negative situations)
+            'B_O_HOUSING_CL1', 'B_O_HOUSING_CL2', 'B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2', 
+            'B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2',
+            // Physical and emotional complaints (negative symptoms)
+            'S_P_ACHES_CL1', 'S_P_ACHES_CL2', 'S_NERVOUS', 'S_SAD', 
+            // Hunger (negative condition)
+            'O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'
         ];
         
+        // Handle zero-tolerance fields first
         if (in_array($field, $zeroToleranceFields)) {
             return $value === 'almost never' ? 'strengths' : 'concerns';
         }
         
+        // Handle reversed interpretation fields (negative items)
         if (in_array($field, $reversedFields)) {
             // For negative items, lower frequency is better
             if (in_array($value, ['almost never', 'occasionally'])) {
@@ -459,7 +468,7 @@ class CrossLoadedDomainService
                 return 'concerns';
             }
         } else {
-            // For positive items, higher frequency is better
+            // Handle positive items (higher frequency is better)
             if (in_array($value, ['almost always', 'frequently'])) {
                 return 'strengths';
             } elseif ($value === 'sometimes') {
@@ -491,10 +500,15 @@ class CrossLoadedDomainService
                 $valueRaw = $this->getCrossLoadedValue($report, $field);
             }
             
+            // If still no value, skip this item (don't show items without frequency responses)
             if (!$valueRaw) continue;
             
             $hasConfidence = str_contains($valueRaw, ',');
             $value = trim(explode(',', $valueRaw)[0]);
+            
+            // Ensure we have a valid frequency response
+            if (empty($value) || $value === '-99') continue;
+            
             $prefix = ucfirst(strtolower($value));
             
             $itemSuffix = $hasConfidence ? ' *' : '';

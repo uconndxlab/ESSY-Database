@@ -345,38 +345,42 @@
     $sewbResults = $crossLoadedDomainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
     $sosResults = $crossLoadedDomainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
 
-    // DEBUG: Uncomment below to debug cross-loaded items
+    // DEBUG: Uncomment below to debug frequency responses and categorization
     /*
     $fieldToDomainMap = $crossLoadedDomainService->getFieldToDomainMap();
-    $crossLoadedGroups = $crossLoadedDomainService->getCrossLoadedItemGroups();
-    $fieldsThatNeedDagger = $crossLoadedDomainService->getFieldsRequiringDagger($concernDomains);
     $fieldMessages = $crossLoadedDomainService->getFieldMessages();
+    $fieldsThatNeedDagger = $crossLoadedDomainService->getFieldsRequiringDagger($concernDomains);
     
     $debugInfo = [
         'concernDomains' => $concernDomains,
-        'crossLoadedGroups' => $crossLoadedGroups,
-        'fieldsThatNeedDagger' => $fieldsThatNeedDagger,
-        'impulsivityFields' => [
-            'A_B_IMPULSE_CL1' => [
-                'domain' => $fieldToDomainMap['A_B_IMPULSE_CL1'] ?? 'NOT FOUND',
-                'value' => $crossLoadedDomainService->safeGetFieldValue($report, 'A_B_IMPULSE_CL1'),
-                'needsDagger' => isset($fieldsThatNeedDagger['A_B_IMPULSE_CL1']),
-                'hasMessage' => isset($fieldMessages['A_B_IMPULSE_CL1'])
+        'sampleFieldValues' => [
+            'A_READ' => [
+                'rawValue' => $report->A_READ ?? 'NULL',
+                'safeValue' => $crossLoadedDomainService->safeGetFieldValue($report, 'A_READ'),
+                'category' => $crossLoadedDomainService->categorizeFieldValue('A_READ', $crossLoadedDomainService->safeGetFieldValue($report, 'A_READ') ?? ''),
+                'domain' => $fieldToDomainMap['A_READ'] ?? 'NOT FOUND'
             ],
-            'A_B_IMPULSE_CL2' => [
-                'domain' => $fieldToDomainMap['A_B_IMPULSE_CL2'] ?? 'NOT FOUND',
-                'value' => $crossLoadedDomainService->safeGetFieldValue($report, 'A_B_IMPULSE_CL2'),
-                'needsDagger' => isset($fieldsThatNeedDagger['A_B_IMPULSE_CL2']),
-                'hasMessage' => isset($fieldMessages['A_B_IMPULSE_CL2'])
+            'A_B_IMPULSE_CL1' => [
+                'rawValue' => $report->A_B_IMPULSE_CL1 ?? 'NULL',
+                'safeValue' => $crossLoadedDomainService->safeGetFieldValue($report, 'A_B_IMPULSE_CL1'),
+                'category' => $crossLoadedDomainService->categorizeFieldValue('A_B_IMPULSE_CL1', $crossLoadedDomainService->safeGetFieldValue($report, 'A_B_IMPULSE_CL1') ?? ''),
+                'domain' => $fieldToDomainMap['A_B_IMPULSE_CL1'] ?? 'NOT FOUND'
+            ],
+            'B_CLINGY' => [
+                'rawValue' => $report->B_CLINGY ?? 'NULL',
+                'safeValue' => $crossLoadedDomainService->safeGetFieldValue($report, 'B_CLINGY'),
+                'category' => $crossLoadedDomainService->categorizeFieldValue('B_CLINGY', $crossLoadedDomainService->safeGetFieldValue($report, 'B_CLINGY') ?? ''),
+                'domain' => $fieldToDomainMap['B_CLINGY'] ?? 'NOT FOUND'
             ]
         ]
     ];
     */
+    
 @endphp
 
-{{-- DEBUG INFORMATION - Uncomment to debug cross-loaded items
+{{-- DEBUG INFORMATION - Uncomment to debug frequency responses and categorization
 <div style="background: #f0f0f0; padding: 20px; margin: 20px 0; font-family: monospace; font-size: 12px;">
-    <h4>DEBUG: Cross-Loaded Items Analysis</h4>
+    <h4>DEBUG: Frequency Responses and Categorization</h4>
     <pre>{{ print_r($debugInfo, true) }}</pre>
     
     <h4>DEBUG: Domain Processing Results</h4>
