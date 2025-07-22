@@ -333,7 +333,6 @@
 
     <p>The table below is organized using three categories: strengths to maintain, areas to monitor 
     (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
-    
 
 @php
     // Process all domains using the service
