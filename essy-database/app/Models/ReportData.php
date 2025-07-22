@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class ReportData extends Model
 {
@@ -44,130 +45,199 @@ class ReportData extends Model
     ];
 
     /**
-     * Defines the cross-loaded item relationships.
-     * @return array[]
+     * Get domains that are marked as concerns
      */
-    public static function getCrossLoadItemGroups(): array
+    public function getConcernDomains(): array
     {
-        return [
-            ['A_P_ARTICULATE_CL1', 'A_P_ARTICULATE_CL2'],
-            ['A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2'],
-            ['A_B_CLASSEXPECT_CL1', 'A_B_CLASSEXPECT_CL2'],
-            ['A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2'],
-            ['A_S_CONFIDENT_CL1', 'A_S_CONFIDENT_CL2'],
-            ['A_S_POSOUT_CL1', 'A_S_POSOUT_CL2'],
-            ['S_P_ACHES_CL1', 'S_P_ACHES_CL2'],
-            ['B_O_HOUSING_CL1', 'B_O_HOUSING_CL2'],
-            ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],
-            ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'],
-            ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],
-            ['O_P_HYGIENE_CL1', 'O_P_HYGIENE_CL2'],
-            ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],
-            ['A_S_O_ACTIVITY_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3']
-        ];
+        try {
+            $domainValues = [
+                'Academic Skills' => $this->A_DOMAIN,
+                'Behavior' => $this->B_DOMAIN,
+                'Social & Emotional Well-Being' => $this->S_DOMAIN,
+                'Physical Health' => $this->P_DOMAIN,
+                'Supports Outside of School' => $this->O_DOMAIN,
+                'Attendance' => $this->ATT_DOMAIN,
+            ];
+
+            $concernDomains = [];
+
+            foreach ($domainValues as $domain => $rating) {
+                if (!$rating) continue;
+
+                $cleanRating = $this->getCleanRating($rating);
+                
+                if ($this->isDomainConcern($cleanRating)) {
+                    $concernDomains[] = $domain;
+                }
+            }
+
+            return $concernDomains;
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error getting concern domains', [
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return [];
+        }
     }
 
     /**
-     * Defines indicators for the Academic Skills domain.
-     * @return string[]
+     * Get item value with safe access
      */
-    public static function getAcademicIndicators(): array
+    public function getItemValue(string $field): ?string
     {
-        return [
-            'A_READ' => 'meets grade-level expectations for reading skills.',
-            'A_WRITE' => 'meets expectations for grade-level writing skills.',
-            'A_MATH' => 'meets expectations for grade-level math skills.',
-            'A_P_ARTICULATE_CL1' => 'articulates clearly enough to be understood.',
-            'A_S_ADULTCOMM_CL1' => 'effectively communicates needs and wants to adults.',
-            'A_DIRECTIONS' => 'follows multi-step directions.',
-            'A_INITIATE' => 'initiates tasks.',
-            'A_PLANORG' => 'plans and organizes school tasks.',
-            'A_TURNIN' => 'turns in completed assignments.',
-            'A_B_CLASSEXPECT_CL1' => 'follows classroom expectations.',
-            'A_B_IMPULSE_CL1' => 'exhibits impulsivity.',
-            'A_ENGAGE' => 'is engaged in classroom activities.',
-            'A_INTEREST' => 'shows interest in learning.',
-            'A_PERSIST' => 'persists when faced with challenging tasks.',
-            'A_GROWTH' => 'demonstrates a growth mindset.',
-            'A_S_CONFIDENT_CL1' => 'displays confidence in self.',
-            'A_S_POSOUT_CL1' => 'demonstrates positive outlook.',
-            'A_S_O_ACTIVITY_CL1' => 'is engaged in at least one extracurricular activity.'
-        ];
+        try {
+            return $this->safeGetAttribute($field);
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error getting item value', [
+                'field' => $field,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
     }
 
     /**
-     * Defines indicators for the Behavior domain.
-     * @return string[]
+     * Check if field has valid value
      */
-    public static function getBehaviorIndicators(): array
+    public function hasValidValue(string $field): bool
     {
-        return [
-            'A_B_CLASSEXPECT_CL2' => 'follows classroom expectations.',
-            'A_B_IMPULSE_CL2' => 'exhibits impulsivity.',
-            'B_CLINGY' => 'is clingy with adults.',
-            'B_SNEAK' => 'is sneaky or secretive.',
-            'BEH_VERBAGGRESS' => 'is verbally aggressive with peers or adults.',
-            'BEH_PHYSAGGRESS' => 'is physically aggressive with peers or adults.',
-            'B_DESTRUCT' => 'is destructive of property.',
-            'B_BULLY' => 'bullies or intimidates others.',
-            'B_PUNITIVE' => 'is punitive or mean to others.',
-            'B_O_HOUSING_CL1' => 'has an unstable living situation.',
-            'B_O_FAMSTRESS_CL1' => 'is experiencing family stressors.',
-            'B_O_NBHDSTRESS_CL1' => 'is experiencing neighborhood stressors.'
-        ];
+        try {
+            $value = $this->safeGetAttribute($field);
+            return $value !== null && $value !== '' && trim($value) !== '-99';
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error checking valid value', [
+                'field' => $field,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
     }
 
     /**
-     * Defines indicators for the Physical Health domain.
-     * @return string[]
+     * Safely get attribute with default value
      */
-    public static function getPhysicalHealthIndicators(): array
+    public function safeGetAttribute(string $field, $default = null): mixed
     {
-        return [
-            'P_SIGHT' => 'has vision-related difficulties.',
-            'P_HEAR' => 'has hearing-related difficulties.',
-            'A_P_ARTICULATE_CL2' => 'articulates clearly enough to be understood.',
-            'A_ORAL' => 'has oral motor difficulties (e.g., drooling, chewing).',
-            'A_PHYS' => 'has fine or gross motor difficulties.',
-            'P_PARTICIPATE' => 'participates in physical activities at school.',
-            'S_P_ACHES_CL1' => 'complains of aches and pains (e.g., headaches, stomachaches).',
-            'O_P_HUNGER_CL1' => 'reports being hungry.',
-            'O_P_HYGIENE_CL1' => 'has access to adequate hygiene resources.',
-            'O_P_CLOTHES_CL1' => 'has adequate clothing for the weather.'
-        ];
+        try {
+            if (!in_array($field, $this->fillable)) {
+                Log::warning('[ReportData] Accessing non-fillable field', [
+                    'field' => $field,
+                    'report_id' => $this->id ?? 'unknown'
+                ]);
+                return $default;
+            }
+
+            $value = $this->getAttribute($field);
+            
+            if ($value === null || $value === '' || trim($value) === '-99') {
+                return $default;
+            }
+            
+            return $value;
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error in safe attribute access', [
+                'field' => $field,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return $default;
+        }
     }
 
     /**
-     * Defines indicators for the Social & Emotional Well-Being domain.
-     * @return string[]
+     * Validate domain rating
      */
-    public static function getSewbIndicators(): array
+    public function validateDomainRating(string $domain): bool
     {
-        return [
-            'S_CONTENT' => 'appears happy or content.',
-            'A_S_ADULTCOMM_CL2' => 'effectively communicates needs and wants to adults.',
-            'A_S_CONFIDENT_CL2' => 'displays confidence in self.',
-            'A_S_POSOUT_CL2' => 'demonstrates positive outlook.',
-            'S_P_ACHES_CL2' => 'complains of aches and pains (e.g., headaches, stomachaches).',
-            'A_S_O_ACTIVITY_CL2' => 'is engaged in at least one extracurricular activity.'
-        ];
+        try {
+            $domainField = $this->getDomainField($domain);
+            if (!$domainField) {
+                return false;
+            }
+
+            $rating = $this->safeGetAttribute($domainField);
+            return $rating !== null && trim($rating) !== '';
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error validating domain rating', [
+                'domain' => $domain,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
     }
 
     /**
-     * Defines indicators for the Supports Outside of School domain.
-     * @return string[]
+     * Get clean rating without confidence flags
      */
-    public static function getSosIndicators(): array
+    public function getCleanRating(string $rawValue): ?string
     {
-        return [
-            'B_O_HOUSING_CL2' => 'has an unstable living situation.',
-            'B_O_FAMSTRESS_CL2' => 'is experiencing family stressors.',
-            'B_O_NBHDSTRESS_CL2' => 'is experiencing neighborhood stressors.',
-            'O_P_HUNGER_CL2' => 'reports being hungry.',
-            'O_P_HYGIENE_CL2' => 'has access to adequate hygiene resources.',
-            'O_P_CLOTHES_CL2' => 'has adequate clothing for the weather.',
-            'A_S_O_ACTIVITY_CL3' => 'is engaged in at least one extracurricular activity.'
+        try {
+            if (!$rawValue || trim($rawValue) === '') {
+                return null;
+            }
+
+            // Remove confidence flag text and get just the rating
+            $cleanRating = explode(',', $rawValue)[0];
+            return trim($cleanRating);
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error cleaning rating', [
+                'raw_value' => $rawValue,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Check if rating has confidence flag
+     */
+    public function hasConfidenceFlag(string $rawValue): bool
+    {
+        try {
+            return str_contains($rawValue, 'Check here');
+        } catch (\Exception $e) {
+            Log::error('[ReportData] Error checking confidence flag', [
+                'raw_value' => $rawValue,
+                'report_id' => $this->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Check if domain rating indicates concern
+     */
+    private function isDomainConcern(string $cleanRating): bool
+    {
+        $concernRatings = [
+            'an area of some concern',
+            'an area of substantial concern'
         ];
+
+        return in_array(trim(strtolower($cleanRating)), $concernRatings);
+    }
+
+    /**
+     * Get domain field name from domain name
+     */
+    private function getDomainField(string $domain): ?string
+    {
+        $domainMap = [
+            'Academic Skills' => 'A_DOMAIN',
+            'Behavior' => 'B_DOMAIN',
+            'Social & Emotional Well-Being' => 'S_DOMAIN',
+            'Physical Health' => 'P_DOMAIN',
+            'Supports Outside of School' => 'O_DOMAIN',
+            'Attendance' => 'ATT_DOMAIN',
+        ];
+
+        return $domainMap[$domain] ?? null;
     }
 }
 
