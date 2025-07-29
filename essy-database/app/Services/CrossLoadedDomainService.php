@@ -238,7 +238,7 @@ class CrossLoadedDomainService
             ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],   // Family stressors
             ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'], // Neighborhood stressors
             ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],         // Reports being hungry
-            ['O_P_HYGEINE_CL1', 'O_P_HYGIENE_CL2'],       // Hygiene resources
+            ['O_P_HYGIENE_CL1', 'O_P_HYGIENE_CL2'],       // Hygiene resources
             ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],       // Adequate clothing
             ['A_S_O_ACTIVITY3_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // Extracurricular activity
         ];
@@ -389,7 +389,7 @@ class CrossLoadedDomainService
             'P_PARTICIPATE' => 'physical health allows for participation in school activities.',
             'S_P_ACHES_CL1' => 'complains of headaches, stomachaches, or body aches.',
             'O_P_HUNGER_CL1' => 'reports being hungry.',
-            'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs.',
+            'O_P_HYGIENE_CL1' => 'appears to have the resources to address basic hygiene needs.',
             'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing.',
             
             // Social & Emotional Well-Being - Exact wording from specification

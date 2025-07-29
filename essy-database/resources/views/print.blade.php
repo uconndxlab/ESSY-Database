@@ -108,6 +108,9 @@
         }
 
         $crossLoadedDomainService = new \App\Services\CrossLoadedDomainService();
+        $decisionRulesService = config('essy.use_decision_rules') 
+            ? new \App\Services\DecisionRulesService($crossLoadedDomainService)
+            : null;
 
         $notOfConcern = array_diff(
             array_keys($domainValues),
@@ -362,14 +365,17 @@
     (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
 
 @php
-    // Process all domains using the service
+    // Process all domains using the appropriate service based on configuration
     $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]), array_merge($someConcern ?? [], $substantialConcern ?? []));
     
-    $academicResults = $crossLoadedDomainService->processDomainItems($report, 'Academic Skills', $concernDomains);
-    $behaviorResults = $crossLoadedDomainService->processDomainItems($report, 'Behavior', $concernDomains);
-    $physicalResults = $crossLoadedDomainService->processDomainItems($report, 'Physical Health', $concernDomains);
-    $sewbResults = $crossLoadedDomainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
-    $sosResults = $crossLoadedDomainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
+    // Use DecisionRulesService if enabled, otherwise fall back to CrossLoadedDomainService
+    $domainService = $decisionRulesService ?? $crossLoadedDomainService;
+    
+    $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);
+    $behaviorResults = $domainService->processDomainItems($report, 'Behavior', $concernDomains);
+    $physicalResults = $domainService->processDomainItems($report, 'Physical Health', $concernDomains);
+    $sewbResults = $domainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
+    $sosResults = $domainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
 
     // DEBUG: Uncomment below to debug frequency responses and categorization
     /*
