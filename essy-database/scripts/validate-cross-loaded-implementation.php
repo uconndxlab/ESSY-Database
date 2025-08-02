@@ -298,7 +298,7 @@ class CrossLoadedImplementationValidator
             }
 
             // Should include articulate fields since they're cross-loaded between these domains
-            if (!isset($daggerFields['A_P_ARTICULATE_CL1']) || !isset($daggerFields['A_P_ARTICULATE_CL2'])) {
+            if (!isset($daggerFields['A_P_S_ARTICULATE_CL1']) || !isset($daggerFields['A_P_S_ARTICULATE_CL2'])) {
                 $this->errors[] = "Articulate fields should require dagger when both Academic Skills and Physical Health are concerns";
             }
 
@@ -312,7 +312,7 @@ class CrossLoadedImplementationValidator
             }
 
             // Test item formatting
-            $formattedItem = $this->templateHelper->formatItemWithDagger('Test item', 'A_P_ARTICULATE_CL1', $daggerFields);
+            $formattedItem = $this->templateHelper->formatItemWithDagger('Test item', 'A_P_S_ARTICULATE_CL1', $daggerFields);
             if (!str_contains($formattedItem, '†')) {
                 $this->errors[] = "formatItemWithDagger should add dagger symbol";
             }

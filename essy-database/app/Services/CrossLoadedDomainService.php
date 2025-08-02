@@ -222,41 +222,45 @@ class CrossLoadedDomainService
     }
 
     /**
-     * Initialize cross-loaded item groups configuration
+     * Initialize cross-loaded item groups configuration - Updated to match Excel field names
      */
     private function initializeCrossLoadedConfiguration(): void
     {
         $this->crossLoadedItemGroups = [
-            ['A_P_ARTICULATE_CL1', 'A_P_ARTICULATE_CL2'], // Articulates clearly
+            ['A_P_S_ARTICULATE_CL1', 'A_P_S_ARTICULATE_CL2', 'A_P_S_ARTICULATE_CL3'], // Articulates clearly - added CL3
             ['A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2'],   // Effectively communicates with adults
             ['A_B_CLASSEXPECT_CL1', 'A_B_CLASSEXPECT_CL2'], // Follows classroom expectations
             ['A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2'],       // Exhibits impulsivity
             ['A_S_CONFIDENT_CL1', 'A_S_CONFIDENT_CL2'],   // Displays confidence in self
             ['A_S_POSOUT_CL1', 'A_S_POSOUT_CL2'],         // Demonstrates positive outlook
+            ['A_B_DIRECTIONS_CL1', 'A_B_DIRECTIONS_CL2'], // Understands directions - new group
             ['S_P_ACHES_CL1', 'S_P_ACHES_CL2'],           // Complains of aches
             ['B_O_HOUSING_CL1', 'B_O_HOUSING_CL2'],       // Unstable living situation
             ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],   // Family stressors
             ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'], // Neighborhood stressors
             ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],         // Reports being hungry
-            ['O_P_HYGIENE_CL1', 'O_P_HYGIENE_CL2'],       // Hygiene resources
+            ['O_P_HYGEINE_CL1', 'O_P_HYGEINE_CL2'],       // Hygiene resources - fixed spelling to match Excel
             ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],       // Adequate clothing
-            ['A_S_O_ACTIVITY3_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // Extracurricular activity
+            ['S_O_COMMCONN_CL1', 'S_O_COMMCONN_CL2'],     // Community connection - new group
+            ['A_S_O_ACTIVITY_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // Extracurricular activity
         ];
     }
 
     /**
-     * Build field to domain mapping
+     * Build field to domain mapping - Updated to match Excel field names
      */
     private function buildFieldToDomainMap(): void
     {
         $this->fieldToDomainMap = [
-            // Academic Skills
+            // Academic Skills - Updated field names to match Excel
             'A_READ' => 'Academic Skills',
             'A_WRITE' => 'Academic Skills',
             'A_MATH' => 'Academic Skills',
-            'A_P_ARTICULATE_CL1' => 'Academic Skills',
+            'A_P_S_ARTICULATE_CL1' => 'Academic Skills',
+            'A_P_S_ARTICULATE_CL3' => 'Academic Skills',
             'A_S_ADULTCOMM_CL1' => 'Academic Skills',
-            'A_DIRECTIONS' => 'Academic Skills',
+            'A_B_DIRECTIONS_CL1' => 'Academic Skills',
+            'A_B_DIRECTIONS_CL2' => 'Academic Skills',
             'A_INITIATE' => 'Academic Skills',
             'A_PLANORG' => 'Academic Skills',
             'A_TURNIN' => 'Academic Skills',
@@ -268,15 +272,15 @@ class CrossLoadedDomainService
             'A_GROWTH' => 'Academic Skills',
             'A_S_CONFIDENT_CL1' => 'Academic Skills',
             'A_S_POSOUT_CL1' => 'Academic Skills',
-            'A_S_O_ACTIVITY3_CL1' => 'Academic Skills',
+            'A_S_O_ACTIVITY_CL1' => 'Academic Skills',
 
-            // Behavior
+            // Behavior - Updated field names to match Excel
             'A_B_CLASSEXPECT_CL2' => 'Behavior',
             'A_B_IMPULSE_CL2' => 'Behavior',
             'B_CLINGY' => 'Behavior',
             'B_SNEAK' => 'Behavior',
-            'BEH_VERBAGGRESS' => 'Behavior',
-            'BEH_PHYSAGGRESS' => 'Behavior',
+            'B_VERBAGGRESS' => 'Behavior',
+            'B_PHYSAGGRESS' => 'Behavior',
             'B_DESTRUCT' => 'Behavior',
             'B_BULLY' => 'Behavior',
             'B_PUNITIVE' => 'Behavior',
@@ -284,19 +288,19 @@ class CrossLoadedDomainService
             'B_O_FAMSTRESS_CL1' => 'Behavior',
             'B_O_NBHDSTRESS_CL1' => 'Behavior',
 
-            // Physical Health
+            // Physical Health - Updated field names to match Excel
             'P_SIGHT' => 'Physical Health',
             'P_HEAR' => 'Physical Health',
-            'A_P_ARTICULATE_CL2' => 'Physical Health',
-            'A_ORAL' => 'Physical Health',
-            'A_PHYS' => 'Physical Health',
+            'A_P_S_ARTICULATE_CL2' => 'Physical Health',
+            'P_ORAL' => 'Physical Health',
+            'P_PHYS' => 'Physical Health',
             'P_PARTICIPATE' => 'Physical Health',
             'S_P_ACHES_CL1' => 'Physical Health',
             'O_P_HUNGER_CL1' => 'Physical Health',
-            'O_P_HYGIENE_CL1' => 'Physical Health',
+            'O_P_HYGEINE_CL1' => 'Physical Health',
             'O_P_CLOTHES_CL1' => 'Physical Health',
 
-            // Social & Emotional Well-Being
+            // Social & Emotional Well-Being - Updated field names to match Excel
             'S_CONTENT' => 'Social & Emotional Well-Being',
             'A_S_CONFIDENT_CL2' => 'Social & Emotional Well-Being',
             'A_S_POSOUT_CL2' => 'Social & Emotional Well-Being',
@@ -310,10 +314,11 @@ class CrossLoadedDomainService
             'A_S_ADULTCOMM_CL2' => 'Social & Emotional Well-Being',
             'S_POSADULT' => 'Social & Emotional Well-Being',
             'S_SCHOOLCONN' => 'Social & Emotional Well-Being',
-            'S_COMMCONN' => 'Social & Emotional Well-Being',
+            'S_O_COMMCONN_CL1' => 'Social & Emotional Well-Being',
+            'S_O_COMMCONN_CL2' => 'Social & Emotional Well-Being',
             'A_S_O_ACTIVITY_CL2' => 'Social & Emotional Well-Being',
 
-            // Supports Outside of School
+            // Supports Outside of School - Updated field names to match Excel
             'O_RECIPROCAL' => 'Supports Outside of School',
             'O_POSADULT' => 'Supports Outside of School',
             'O_ADULTBEST' => 'Supports Outside of School',
@@ -321,7 +326,7 @@ class CrossLoadedDomainService
             'O_ROUTINE' => 'Supports Outside of School',
             'O_FAMILY' => 'Supports Outside of School',
             'O_P_HUNGER_CL2' => 'Supports Outside of School',
-            'O_P_HYGIENE_CL2' => 'Supports Outside of School',
+            'O_P_HYGEINE_CL2' => 'Supports Outside of School',
             'O_P_CLOTHES_CL2' => 'Supports Outside of School',
             'O_RESOURCE' => 'Supports Outside of School',
             'B_O_HOUSING_CL2' => 'Supports Outside of School',
@@ -341,18 +346,20 @@ class CrossLoadedDomainService
     }
 
     /**
-     * Get field messages for display - Updated to match exact specification wording
+     * Get field messages for display - Updated to match Excel field names
      */
     public function getFieldMessages(): array
     {
         return [
-            // Academic Skills - Exact wording from specification
+            // Academic Skills - Updated field names to match Excel
             'A_READ' => 'meets grade-level expectations for reading skills.',
             'A_WRITE' => 'meets expectations for grade-level writing skills.',
             'A_MATH' => 'meets expectations for grade-level math skills.',
-            'A_P_ARTICULATE_CL1' => 'articulates clearly enough to be understood.',
+            'A_P_S_ARTICULATE_CL1' => 'articulates clearly enough to be understood.',
+            'A_P_S_ARTICULATE_CL3' => 'articulates clearly enough to be understood.',
             'A_S_ADULTCOMM_CL1' => 'communicates with adults effectively.',
-            'A_DIRECTIONS' => 'understands directions.',
+            'A_B_DIRECTIONS_CL1' => 'understands directions.',
+            'A_B_DIRECTIONS_CL2' => 'understands directions.',
             'A_INITIATE' => 'initiates academic tasks.',
             'A_PLANORG' => 'demonstrates ability to plan, organize, focus, and prioritize tasks.',
             'A_TURNIN' => 'completes and turns in assigned work.',
@@ -364,15 +371,15 @@ class CrossLoadedDomainService
             'A_GROWTH' => 'demonstrates a growth mindset.',
             'A_S_CONFIDENT_CL1' => 'displays confidence in self.',
             'A_S_POSOUT_CL1' => 'demonstrates positive outlook.',
-            'A_S_O_ACTIVITY3_CL1' => 'engaged in at least one extracurricular activity.',
+            'A_S_O_ACTIVITY_CL1' => 'engaged in at least one extracurricular activity.',
             
-            // Behavior - Exact wording from specification
+            // Behavior - Updated field names to match Excel
             'A_B_CLASSEXPECT_CL2' => 'follows classroom expectations.',
             'A_B_IMPULSE_CL2' => 'exhibits impulsivity.',
             'B_CLINGY' => 'exhibits overly clingy or attention-seeking behaviors.',
             'B_SNEAK' => 'demonstrates sneaky or dishonest behavior.',
-            'BEH_VERBAGGRESS' => 'engages in verbally aggressive behavior toward others.',
-            'BEH_PHYSAGGRESS' => 'engages in physically aggressive behavior toward others.',
+            'B_VERBAGGRESS' => 'engages in verbally aggressive behavior toward others.',
+            'B_PHYSAGGRESS' => 'engages in physically aggressive behavior toward others.',
             'B_DESTRUCT' => 'engages in destructive behavior towards property.',
             'B_BULLY' => 'bullies/has bullied another student.',
             'B_PUNITIVE' => 'experiences/has experienced punitive or exclusionary discipline at school.',
@@ -380,19 +387,19 @@ class CrossLoadedDomainService
             'B_O_FAMSTRESS_CL1' => 'family is experiencing significant stressors.',
             'B_O_NBHDSTRESS_CL1' => 'neighborhood is experiencing significant stressors.',
             
-            // Physical Health - Exact wording from specification
+            // Physical Health - Updated field names to match Excel
             'P_SIGHT' => 'able to see, from a distance or up close.',
             'P_HEAR' => 'able to hear information.',
-            'A_P_ARTICULATE_CL2' => 'articulates clearly enough to be understood.',
-            'A_ORAL' => 'oral health appears to be addressed.',
-            'A_PHYS' => 'physical health appears to be addressed.',
+            'A_P_S_ARTICULATE_CL2' => 'articulates clearly enough to be understood.',
+            'P_ORAL' => 'oral health appears to be addressed.',
+            'P_PHYS' => 'physical health appears to be addressed.',
             'P_PARTICIPATE' => 'physical health allows for participation in school activities.',
             'S_P_ACHES_CL1' => 'complains of headaches, stomachaches, or body aches.',
             'O_P_HUNGER_CL1' => 'reports being hungry.',
-            'O_P_HYGIENE_CL1' => 'appears to have the resources to address basic hygiene needs.',
+            'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs.',
             'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing.',
             
-            // Social & Emotional Well-Being - Exact wording from specification
+            // Social & Emotional Well-Being - Updated field names to match Excel
             'S_CONTENT' => 'appears content.',
             'A_S_CONFIDENT_CL2' => 'displays confidence in self.',
             'A_S_POSOUT_CL2' => 'demonstrates positive outlook.',
@@ -406,10 +413,11 @@ class CrossLoadedDomainService
             'A_S_ADULTCOMM_CL2' => 'communicates with adults effectively.',
             'S_POSADULT' => 'has a positive relationship with at least one adult in the school.',
             'S_SCHOOLCONN' => 'appears to experience a sense of connection in their school.',
-            'S_COMMCONN' => 'appears to experience a sense of connection in their community.',
+            'S_O_COMMCONN_CL1' => 'appears to experience a sense of connection in their community.',
+            'S_O_COMMCONN_CL2' => 'appears to experience a sense of connection in their community.',
             'A_S_O_ACTIVITY_CL2' => 'engaged in at least one extracurricular activity.',
             
-            // Supports Outside of School - Exact wording from specification
+            // Supports Outside of School - Updated field names to match Excel
             'O_RECIPROCAL' => 'family-school communication is reciprocal.',
             'O_POSADULT' => 'has a positive adult outside of school with whom they feel close.',
             'O_ADULTBEST' => 'reports having an adult outside of school who wants them to do their best.',
@@ -417,7 +425,7 @@ class CrossLoadedDomainService
             'O_ROUTINE' => 'shares having a caregiver who helps them with daily routines.',
             'O_FAMILY' => 'reports getting along with family members.',
             'O_P_HUNGER_CL2' => 'reports being hungry.',
-            'O_P_HYGIENE_CL2' => 'appears to have the resources to address basic hygiene needs.',
+            'O_P_HYGEINE_CL2' => 'appears to have the resources to address basic hygiene needs.',
             'O_P_CLOTHES_CL2' => 'shows up to school with adequate clothing.',
             'O_RESOURCE' => 'reports having access to resources (materials, internet) to complete schoolwork.',
             'B_O_HOUSING_CL2' => 'reports not having a stable living situation.',
@@ -435,14 +443,14 @@ class CrossLoadedDomainService
         $value = strtolower(trim($value));
         
         // Zero-tolerance fields (any occurrence is concern)
-        $zeroToleranceFields = ['BEH_PHYSAGGRESS', 'B_BULLY', 'B_PUNITIVE'];
+        $zeroToleranceFields = ['B_PHYSAGGRESS', 'B_BULLY', 'B_PUNITIVE'];
         
         // Special cases with reversed interpretation (negative items - lower frequency is better)
         $reversedFields = [
             // Impulsivity items (negative behavior)
             'A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2', 
             // Behavioral problems (negative behaviors)
-            'B_CLINGY', 'B_SNEAK', 'BEH_VERBAGGRESS', 'B_DESTRUCT', 
+            'B_CLINGY', 'B_SNEAK', 'B_VERBAGGRESS', 'B_DESTRUCT', 
             // Housing and family stressors (negative situations)
             'B_O_HOUSING_CL1', 'B_O_HOUSING_CL2', 'B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2', 
             'B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2',

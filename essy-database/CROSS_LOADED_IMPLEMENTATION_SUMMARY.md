@@ -96,7 +96,7 @@ This document summarizes the completed implementation of cross-loaded domain fun
 
 The implementation handles 14 cross-loaded item groups:
 
-1. **Articulates clearly** (A_P_ARTICULATE_CL1/CL2)
+1. **Articulates clearly** (A_P_S_ARTICULATE_CL1/CL2)
 2. **Communicates with adults** (A_S_ADULTCOMM_CL1/CL2)
 3. **Follows classroom expectations** (A_B_CLASSEXPECT_CL1/CL2)
 4. **Exhibits impulsivity** (A_B_IMPULSE_CL1/CL2)
@@ -107,9 +107,9 @@ The implementation handles 14 cross-loaded item groups:
 9. **Family stressors** (B_O_FAMSTRESS_CL1/CL2)
 10. **Neighborhood stressors** (B_O_NBHDSTRESS_CL1/CL2)
 11. **Reports hunger** (O_P_HUNGER_CL1/CL2)
-12. **Hygiene resources** (O_P_HYGIENE_CL1/O_P_HYGIENE_CL2)
+12. **Hygiene resources** (O_P_HYGEINE_CL1/O_P_HYGIENE_CL2)
 13. **Adequate clothing** (O_P_CLOTHES_CL1/CL2)
-14. **Extracurricular activities** (A_S_O_ACTIVITY3_CL1/CL2/CL3)
+14. **Extracurricular activities** (A_S_O_ACTIVITY_CL1/CL2/CL3)
 
 
 

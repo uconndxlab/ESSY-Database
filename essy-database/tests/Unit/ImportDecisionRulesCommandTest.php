@@ -46,16 +46,16 @@ class ImportDecisionRulesCommandTest extends TestCase
         // Assert command succeeded
         $this->assertEquals(0, $exitCode);
 
-        // Assert decision rules were created
+        // Assert decision rules were created with corrected field names
         $this->assertDatabaseHas('decision_rules', [
-            'item_code' => 'AS_READING',
+            'item_code' => 'A_READ', // Corrected from AS_READING
             'frequency' => 'Almost Always',
             'domain' => 'Academic Skills',
             'decision_text' => 'The student almost always demonstrates strong reading skills.'
         ]);
 
         $this->assertDatabaseHas('decision_rules', [
-            'item_code' => 'BEH_IMPULSE',
+            'item_code' => 'A_B_IMPULSE_CL2', // Corrected from BEH_IMPULSE
             'frequency' => 'Sometimes',
             'domain' => 'Behavior',
             'decision_text' => 'The student sometimes shows impulsive behavior.'
@@ -65,9 +65,9 @@ class ImportDecisionRulesCommandTest extends TestCase
     /** @test */
     public function it_can_update_existing_decision_rules()
     {
-        // Create existing decision rule
+        // Create existing decision rule with corrected field name
         DecisionRule::create([
-            'item_code' => 'AS_READING',
+            'item_code' => 'A_READ', // Use corrected field name
             'frequency' => 'Almost Always',
             'domain' => 'Academic Skills',
             'decision_text' => 'Old text'
@@ -81,16 +81,16 @@ class ImportDecisionRulesCommandTest extends TestCase
             'file' => $this->testFilePath
         ]);
 
-        // Assert decision rule was updated
+        // Assert decision rule was updated with corrected field name
         $this->assertDatabaseHas('decision_rules', [
-            'item_code' => 'AS_READING',
+            'item_code' => 'A_READ', // Corrected field name
             'frequency' => 'Almost Always',
             'domain' => 'Academic Skills',
             'decision_text' => 'The student almost always demonstrates strong reading skills.'
         ]);
 
         // Assert only one record exists (updated, not duplicated)
-        $this->assertEquals(1, DecisionRule::where('item_code', 'AS_READING')
+        $this->assertEquals(1, DecisionRule::where('item_code', 'A_READ')
             ->where('frequency', 'Almost Always')->count());
     }
 
@@ -159,19 +159,19 @@ class ImportDecisionRulesCommandTest extends TestCase
             'file' => $this->testFilePath
         ]);
 
-        // Test various domain mappings
+        // Test various domain mappings with corrected field names
         $this->assertDatabaseHas('decision_rules', [
-            'item_code' => 'AS_READING',
+            'item_code' => 'A_READ', // Corrected from AS_READING
             'domain' => 'Academic Skills'
         ]);
 
         $this->assertDatabaseHas('decision_rules', [
-            'item_code' => 'BEH_IMPULSE',
+            'item_code' => 'A_B_IMPULSE_CL2', // Corrected from BEH_IMPULSE
             'domain' => 'Behavior'
         ]);
 
         $this->assertDatabaseHas('decision_rules', [
-            'item_code' => 'EWB_CONFIDENT',
+            'item_code' => 'A_S_CONFIDENT_CL2', // Corrected from EWB_CONFIDENT
             'domain' => 'Social-Emotional Well-being'
         ]);
     }
@@ -186,16 +186,19 @@ class ImportDecisionRulesCommandTest extends TestCase
         
         // Set headers
         $sheet->setCellValue('A39', 'Question Column');
-        $sheet->setCellValue('B39', 'Almost Always');
-        $sheet->setCellValue('C39', 'Sometimes');
+        $sheet->setCellValue('B39', 'Qualtrics Column');
+        $sheet->setCellValue('C39', 'Almost Always');
+        $sheet->setCellValue('D39', 'Sometimes');
         
         // Set data with empty cells
-        $sheet->setCellValue('A40', 'AS_READING');
-        $sheet->setCellValue('B40', 'Good reading skills');
-        // C40 is empty
+        $sheet->setCellValue('A40', 'Meets grade-level expectations for reading skills.');
+        $sheet->setCellValue('B40', 'AS_READING');
+        $sheet->setCellValue('C40', 'Good reading skills');
+        // D40 is empty
         
-        $sheet->setCellValue('A41', ''); // Empty item code
-        $sheet->setCellValue('B41', 'Should be skipped');
+        $sheet->setCellValue('A41', 'Some question text'); // Question text
+        $sheet->setCellValue('B41', ''); // Empty Qualtrics Column
+        $sheet->setCellValue('C41', 'Should be skipped');
         
         $writer = new Xlsx($spreadsheet);
         $writer->save($this->testFilePath);
@@ -204,10 +207,10 @@ class ImportDecisionRulesCommandTest extends TestCase
             'file' => $this->testFilePath
         ]);
 
-        // Should only have one record (the valid one)
+        // Should only have one record (the valid one) with corrected field name
         $this->assertEquals(1, DecisionRule::count());
         $this->assertDatabaseHas('decision_rules', [
-            'item_code' => 'AS_READING',
+            'item_code' => 'A_READ', // Corrected from AS_READING
             'frequency' => 'Almost Always'
         ]);
     }
@@ -241,15 +244,18 @@ class ImportDecisionRulesCommandTest extends TestCase
         
         // Set headers
         $sheet->setCellValue('A39', 'Question Column');
-        $sheet->setCellValue('B39', 'Almost Always');
+        $sheet->setCellValue('B39', 'Qualtrics Column');
+        $sheet->setCellValue('C39', 'Almost Always');
         
         // Set valid data
-        $sheet->setCellValue('A40', 'AS_READING');
-        $sheet->setCellValue('B40', 'Good reading skills');
+        $sheet->setCellValue('A40', 'Meets grade-level expectations for reading skills.');
+        $sheet->setCellValue('B40', 'AS_READING');
+        $sheet->setCellValue('C40', 'Good reading skills');
         
         // Set row with empty item code (should cause error)
-        $sheet->setCellValue('A41', '');
-        $sheet->setCellValue('B41', 'Should cause error');
+        $sheet->setCellValue('A41', 'Some question text');
+        $sheet->setCellValue('B41', ''); // Empty Qualtrics Column
+        $sheet->setCellValue('C41', 'Should cause error');
         
         $writer = new Xlsx($spreadsheet);
         $writer->save($this->testFilePath);
@@ -263,11 +269,11 @@ class ImportDecisionRulesCommandTest extends TestCase
         
         $output = Artisan::output();
         $this->assertStringContainsString('Errors:', $output);
-        $this->assertStringContainsString('Row 41: Item code is empty', $output);
+        $this->assertStringContainsString('Row 41: Item code is empty in Qualtrics Column', $output);
         
-        // Valid data should still be imported
+        // Valid data should still be imported with corrected field name
         $this->assertDatabaseHas('decision_rules', [
-            'item_code' => 'AS_READING',
+            'item_code' => 'A_READ', // Corrected from AS_READING
             'frequency' => 'Almost Always'
         ]);
     }
@@ -283,26 +289,30 @@ class ImportDecisionRulesCommandTest extends TestCase
         
         // Set headers in row 39
         $sheet->setCellValue('A39', 'Question Column');
-        $sheet->setCellValue('B39', 'Almost Always');
-        $sheet->setCellValue('C39', 'Frequently');
-        $sheet->setCellValue('D39', 'Sometimes');
-        $sheet->setCellValue('E39', 'Occasionally');
-        $sheet->setCellValue('F39', 'Almost Never');
+        $sheet->setCellValue('B39', 'Qualtrics Column');
+        $sheet->setCellValue('C39', 'Almost Always');
+        $sheet->setCellValue('D39', 'Frequently');
+        $sheet->setCellValue('E39', 'Sometimes');
+        $sheet->setCellValue('F39', 'Occasionally');
+        $sheet->setCellValue('G39', 'Almost Never');
         
         // Set sample data starting from row 40
-        $sheet->setCellValue('A40', 'AS_READING');
-        $sheet->setCellValue('B40', 'The student almost always demonstrates strong reading skills.');
-        $sheet->setCellValue('C40', 'The student frequently demonstrates good reading skills.');
-        $sheet->setCellValue('D40', 'The student sometimes shows reading difficulties.');
+        $sheet->setCellValue('A40', 'Meets grade-level expectations for reading skills.');
+        $sheet->setCellValue('B40', 'AS_READING');
+        $sheet->setCellValue('C40', 'The student almost always demonstrates strong reading skills.');
+        $sheet->setCellValue('D40', 'The student frequently demonstrates good reading skills.');
+        $sheet->setCellValue('E40', 'The student sometimes shows reading difficulties.');
         
-        $sheet->setCellValue('A41', 'BEH_IMPULSE');
-        $sheet->setCellValue('B41', 'The student almost always shows excellent impulse control.');
-        $sheet->setCellValue('D41', 'The student sometimes shows impulsive behavior.');
-        $sheet->setCellValue('F41', 'The student almost never shows impulse control.');
+        $sheet->setCellValue('A41', 'Exhibits impulsivity.');
+        $sheet->setCellValue('B41', 'BEH_IMPULSE');
+        $sheet->setCellValue('C41', 'The student almost always shows excellent impulse control.');
+        $sheet->setCellValue('E41', 'The student sometimes shows impulsive behavior.');
+        $sheet->setCellValue('G41', 'The student almost never shows impulse control.');
         
-        $sheet->setCellValue('A42', 'EWB_CONFIDENT');
-        $sheet->setCellValue('B42', 'The student almost always appears confident.');
-        $sheet->setCellValue('C42', 'The student frequently shows confidence.');
+        $sheet->setCellValue('A42', 'Displays confidence in self.');
+        $sheet->setCellValue('B42', 'EWB_CONFIDENT');
+        $sheet->setCellValue('C42', 'The student almost always appears confident.');
+        $sheet->setCellValue('D42', 'The student frequently shows confidence.');
         
         $writer = new Xlsx($spreadsheet);
         $writer->save($this->testFilePath);

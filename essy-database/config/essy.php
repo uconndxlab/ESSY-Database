@@ -29,4 +29,30 @@ return [
 
     'decision_rules_fallback' => env('ESSY_DECISION_RULES_FALLBACK', true),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Decision Rules Logging
+    |--------------------------------------------------------------------------
+    |
+    | Enable detailed logging for decision rule lookup attempts, matches,
+    | and fallback usage. This is useful for debugging field name mismatches
+    | and understanding why certain items appear as unanswered.
+    |
+    */
+
+    'log_decision_rule_lookups' => env('ESSY_LOG_DECISION_RULE_LOOKUPS', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Debug Item Processing
+    |--------------------------------------------------------------------------
+    |
+    | Enable detailed logging for item processing decisions, including
+    | field value extraction, cross-loaded logic, and categorization.
+    | This provides comprehensive debugging information for report generation.
+    |
+    */
+
+    'debug_item_processing' => env('ESSY_DEBUG_ITEM_PROCESSING', false),
+
 ];

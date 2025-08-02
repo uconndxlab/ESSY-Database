@@ -59,7 +59,7 @@ class CreateInitialReportDataTable extends Migration
             $table->string('A_READ')->nullable();
             $table->string('A_WRITE')->nullable();
             $table->string('A_MATH')->nullable();
-            $table->string('A_P_ARTICULATE_CL1')->nullable();
+            $table->string('A_P_S_ARTICULATE_CL1')->nullable();
             $table->string('A_S_ADULTCOMM_CL1')->nullable();
             $table->string('A_DIRECTIONS')->nullable();
             $table->string('A_INITIATE')->nullable();
@@ -73,7 +73,7 @@ class CreateInitialReportDataTable extends Migration
             $table->string('A_GROWTH')->nullable();
             $table->string('A_S_CONFIDENT_CL1')->nullable();
             $table->string('A_S_POSOUT_CL1')->nullable();
-            $table->string('A_S_O_ACTIVITY3_CL1')->nullable();
+            $table->string('A_S_O_ACTIVITY_CL1')->nullable();
             $table->string('COMMENTS_AS')->nullable();
             $table->string('TIMING_AS_FirstClick')->nullable();
             $table->string('TIMING_AS_LastClick')->nullable();
@@ -98,13 +98,13 @@ class CreateInitialReportDataTable extends Migration
             $table->string('TIMING_BEH_ClickCount')->nullable();
             $table->string('P_SIGHT')->nullable();
             $table->string('P_HEAR')->nullable();
-            $table->string('A_P_ARTICULATE_CL2')->nullable();
+            $table->string('A_P_S_ARTICULATE_CL2')->nullable();
             $table->string('A_ORAL')->nullable();
             $table->string('A_PHYS')->nullable();
             $table->string('P_PARTICIPATE')->nullable();
             $table->string('S_P_ACHES_CL1')->nullable();
             $table->string('O_P_HUNGER_CL1')->nullable();
-            $table->string('O_P_HYGIENE_CL1')->nullable();
+            $table->string('O_P_HYGEINE_CL1')->nullable();
             $table->string('O_P_CLOTHES_CL1')->nullable();
             $table->string('COMMENTS_PH')->nullable();
             $table->string('TIMING_PH_FirstClick')->nullable();

@@ -95,7 +95,7 @@ class DecisionRulesIntegrationTest extends TestCase
         
         // Create decision rules for cross-loaded items
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL1',
+            'item_code' => 'A_P_S_ARTICULATE_CL1',
             'frequency' => 'Sometimes',
             'domain' => 'Academic Skills',
             'decision_text' => 'The student sometimes articulates clearly enough to be understood'
@@ -122,7 +122,7 @@ class DecisionRulesIntegrationTest extends TestCase
             'P_DOMAIN' => 'an area of some concern', // This makes ARTICULATE cross-loaded
             'O_DOMAIN' => 'an area of substantial strength',
             'ATT_DOMAIN' => 'neither an area of concern or strength',
-            'A_P_ARTICULATE_CL1' => 'Sometimes',
+            'A_P_S_ARTICULATE_CL1' => 'Sometimes',
             'A_S_ADULTCOMM_CL1' => 'Frequently',
             'DEM_RACE' => 'White',
             'DEM_ETHNIC' => 'No',
@@ -162,7 +162,7 @@ class DecisionRulesIntegrationTest extends TestCase
         
         // Create decision rules for cross-loaded items
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL1',
+            'item_code' => 'A_P_S_ARTICULATE_CL1',
             'frequency' => 'Sometimes',
             'domain' => 'Academic Skills',
             'decision_text' => 'The student sometimes articulates clearly enough to be understood'
@@ -182,7 +182,7 @@ class DecisionRulesIntegrationTest extends TestCase
             'P_DOMAIN' => 'an area of some concern', // This makes articulate cross-loaded
             'O_DOMAIN' => 'an area of substantial strength',
             'ATT_DOMAIN' => 'neither an area of concern or strength',
-            'A_P_ARTICULATE_CL1' => 'Sometimes, Check here if you have less confidence in this response',
+            'A_P_S_ARTICULATE_CL1' => 'Sometimes, Check here if you have less confidence in this response',
             'DEM_RACE' => 'White',
             'DEM_ETHNIC' => 'No',
             'DEM_GRADE' => '3rd',
@@ -438,7 +438,7 @@ class DecisionRulesIntegrationTest extends TestCase
         
         // Create decision rule for cross-loaded item
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL1',
+            'item_code' => 'A_P_S_ARTICULATE_CL1',
             'frequency' => 'Sometimes',
             'domain' => 'Academic Skills',
             'decision_text' => 'The student sometimes articulates clearly enough to be understood'
@@ -458,8 +458,8 @@ class DecisionRulesIntegrationTest extends TestCase
             'P_DOMAIN' => 'an area of some concern', // This makes articulate cross-loaded
             'O_DOMAIN' => 'an area of substantial strength',
             'ATT_DOMAIN' => 'neither an area of concern or strength',
-            'A_P_ARTICULATE_CL1' => '', // Primary field empty
-            'A_P_ARTICULATE_CL2' => 'Sometimes', // Secondary field has value
+            'A_P_S_ARTICULATE_CL1' => '', // Primary field empty
+            'A_P_S_ARTICULATE_CL2' => 'Sometimes', // Secondary field has value
             'DEM_RACE' => 'White',
             'DEM_ETHNIC' => 'No',
             'DEM_GRADE' => '3rd',

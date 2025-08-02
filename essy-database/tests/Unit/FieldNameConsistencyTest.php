@@ -88,13 +88,13 @@ class FieldNameConsistencyTest extends TestCase
         $fieldMessages = $this->service->getFieldMessages();
 
         // Act & Assert - Verify correct spelling exists
-        $this->assertArrayHasKey('O_P_HYGIENE_CL1', $fieldToDomainMap, 'O_P_HYGIENE_CL1 should exist in field-to-domain mapping');
+        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $fieldToDomainMap, 'O_P_HYGEINE_CL1 should exist in field-to-domain mapping');
         $this->assertArrayHasKey('O_P_HYGIENE_CL2', $fieldToDomainMap, 'O_P_HYGIENE_CL2 should exist in field-to-domain mapping');
         
-        $this->assertArrayHasKey('O_P_HYGIENE_CL1', $fieldMessages, 'O_P_HYGIENE_CL1 should exist in field messages');
+        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $fieldMessages, 'O_P_HYGEINE_CL1 should exist in field messages');
         
         // Verify correct domain mappings
-        $this->assertEquals('Physical Health', $fieldToDomainMap['O_P_HYGIENE_CL1']);
+        $this->assertEquals('Physical Health', $fieldToDomainMap['O_P_HYGEINE_CL1']);
         $this->assertEquals('Supports Outside of School', $fieldToDomainMap['O_P_HYGIENE_CL2']);
     }
 
@@ -106,7 +106,7 @@ class FieldNameConsistencyTest extends TestCase
         // Find the hygiene group
         $hygieneGroup = null;
         foreach ($crossLoadedGroups as $group) {
-            if (in_array('O_P_HYGIENE_CL1', $group) && in_array('O_P_HYGIENE_CL2', $group)) {
+            if (in_array('O_P_HYGEINE_CL1', $group) && in_array('O_P_HYGIENE_CL2', $group)) {
                 $hygieneGroup = $group;
                 break;
             }
@@ -114,7 +114,7 @@ class FieldNameConsistencyTest extends TestCase
 
         // Assert hygiene group exists and has correct fields
         $this->assertNotNull($hygieneGroup, 'Hygiene cross-loaded group should exist');
-        $this->assertContains('O_P_HYGIENE_CL1', $hygieneGroup, 'Hygiene group should contain O_P_HYGIENE_CL1');
+        $this->assertContains('O_P_HYGEINE_CL1', $hygieneGroup, 'Hygiene group should contain O_P_HYGEINE_CL1');
         $this->assertContains('O_P_HYGIENE_CL2', $hygieneGroup, 'Hygiene group should contain O_P_HYGIENE_CL2');
         $this->assertCount(2, $hygieneGroup, 'Hygiene group should contain exactly 2 fields');
     }

@@ -94,10 +94,10 @@ class CrossLoadedDomainServiceTest extends TestCase
         
         $this->assertIsArray($daggerFields);
         
-        // Should include A_P_ARTICULATE_CL1 and A_P_ARTICULATE_CL2 since they're cross-loaded
+        // Should include A_P_S_ARTICULATE_CL1 and A_P_S_ARTICULATE_CL2 since they're cross-loaded
         // between Academic Skills and Physical Health
-        $this->assertArrayHasKey('A_P_ARTICULATE_CL1', $daggerFields);
-        $this->assertArrayHasKey('A_P_ARTICULATE_CL2', $daggerFields);
+        $this->assertArrayHasKey('A_P_S_ARTICULATE_CL1', $daggerFields);
+        $this->assertArrayHasKey('A_P_S_ARTICULATE_CL2', $daggerFields);
     }
 
     public function test_safe_get_field_value_with_valid_field(): void
@@ -211,15 +211,15 @@ class CrossLoadedDomainServiceTest extends TestCase
         // Test specific known cross-loaded groups
         $articulateGroup = null;
         foreach ($groups as $group) {
-            if (in_array('A_P_ARTICULATE_CL1', $group) && in_array('A_P_ARTICULATE_CL2', $group)) {
+            if (in_array('A_P_S_ARTICULATE_CL1', $group) && in_array('A_P_S_ARTICULATE_CL2', $group)) {
                 $articulateGroup = $group;
                 break;
             }
         }
         
         $this->assertNotNull($articulateGroup, 'Articulate clearly group should exist');
-        $this->assertContains('A_P_ARTICULATE_CL1', $articulateGroup);
-        $this->assertContains('A_P_ARTICULATE_CL2', $articulateGroup);
+        $this->assertContains('A_P_S_ARTICULATE_CL1', $articulateGroup);
+        $this->assertContains('A_P_S_ARTICULATE_CL2', $articulateGroup);
     }
 
     public function test_field_to_domain_mapping_consistency(): void
@@ -240,11 +240,11 @@ class CrossLoadedDomainServiceTest extends TestCase
         $mapping = $this->service->getFieldToDomainMap();
         
         // Test the hygiene fields with corrected spelling
-        $this->assertArrayHasKey('O_P_HYGIENE_CL1', $mapping); // Physical Health
+        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $mapping); // Physical Health
         $this->assertArrayHasKey('O_P_HYGIENE_CL2', $mapping); // Supports Outside of School
         
         // Both should map to their respective domains
-        $this->assertEquals('Physical Health', $mapping['O_P_HYGIENE_CL1']);
+        $this->assertEquals('Physical Health', $mapping['O_P_HYGEINE_CL1']);
         $this->assertEquals('Supports Outside of School', $mapping['O_P_HYGIENE_CL2']);
     }
 }

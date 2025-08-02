@@ -110,8 +110,8 @@
     <ul>
         <li>Student reads at grade level: {{ $report->safeGetAttribute('A_READ', 'Not assessed') }}</li>
         <li>Student writes at grade level: {{ $report->safeGetAttribute('A_WRITE', 'Not assessed') }}</li>
-        <li>Articulates clearly (Academic): {{ $crossLoadedService->safeGetFieldValue($report, 'A_P_ARTICULATE_CL1') ?? 'Not assessed' }}</li>
-        <li>Articulates clearly (Physical): {{ $crossLoadedService->safeGetFieldValue($report, 'A_P_ARTICULATE_CL2') ?? 'Not assessed' }}</li>
+        <li>Articulates clearly (Academic): {{ $crossLoadedService->safeGetFieldValue($report, 'A_P_S_ARTICULATE_CL1') ?? 'Not assessed' }}</li>
+        <li>Articulates clearly (Physical): {{ $crossLoadedService->safeGetFieldValue($report, 'A_P_S_ARTICULATE_CL2') ?? 'Not assessed' }}</li>
     </ul>
 </div>
 

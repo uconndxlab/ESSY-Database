@@ -151,22 +151,22 @@ class DecisionRulesServiceTest extends TestCase
     {
         // Arrange
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL1',
+            'item_code' => 'A_P_S_ARTICULATE_CL1',
             'frequency' => 'frequently',
             'domain' => 'Academic Skills',
             'decision_text' => 'The student frequently articulates clearly enough to be understood.'
         ]);
 
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL2',
+            'item_code' => 'A_P_S_ARTICULATE_CL2',
             'frequency' => 'frequently',
             'domain' => 'Physical Health',
             'decision_text' => 'The student frequently articulates clearly enough to be understood.'
         ]);
 
         $report = new ReportData([
-            'A_P_ARTICULATE_CL1' => 'frequently',
-            'A_P_ARTICULATE_CL2' => 'frequently',
+            'A_P_S_ARTICULATE_CL1' => 'frequently',
+            'A_P_S_ARTICULATE_CL2' => 'frequently',
             'A_DOMAIN' => 'an area of some concern',
             'P_DOMAIN' => 'an area of some concern'
         ]);
@@ -185,22 +185,22 @@ class DecisionRulesServiceTest extends TestCase
     {
         // Arrange
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL1',
+            'item_code' => 'A_P_S_ARTICULATE_CL1',
             'frequency' => 'sometimes',
             'domain' => 'Academic Skills',
             'decision_text' => 'The student sometimes articulates clearly enough to be understood.'
         ]);
 
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL2',
+            'item_code' => 'A_P_S_ARTICULATE_CL2',
             'frequency' => 'sometimes',
             'domain' => 'Physical Health',
             'decision_text' => 'The student sometimes articulates clearly enough to be understood.'
         ]);
 
         $report = new ReportData([
-            'A_P_ARTICULATE_CL1' => 'sometimes', // Primary field has value
-            'A_P_ARTICULATE_CL2' => null, // Secondary field is empty
+            'A_P_S_ARTICULATE_CL1' => 'sometimes', // Primary field has value
+            'A_P_S_ARTICULATE_CL2' => null, // Secondary field is empty
             'A_DOMAIN' => 'an area of some concern',
             'P_DOMAIN' => 'an area of some concern'
         ]);
@@ -219,22 +219,22 @@ class DecisionRulesServiceTest extends TestCase
     {
         // Arrange
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL1',
+            'item_code' => 'A_P_S_ARTICULATE_CL1',
             'frequency' => 'occasionally',
             'domain' => 'Academic Skills',
             'decision_text' => 'The student occasionally articulates clearly enough to be understood.'
         ]);
 
         DecisionRule::create([
-            'item_code' => 'A_P_ARTICULATE_CL2',
+            'item_code' => 'A_P_S_ARTICULATE_CL2',
             'frequency' => 'occasionally',
             'domain' => 'Physical Health',
             'decision_text' => 'The student occasionally articulates clearly enough to be understood.'
         ]);
 
         $report = new ReportData([
-            'A_P_ARTICULATE_CL1' => 'occasionally, Check here if you have low confidence in this rating',
-            'A_P_ARTICULATE_CL2' => 'occasionally, Check here if you have low confidence in this rating',
+            'A_P_S_ARTICULATE_CL1' => 'occasionally, Check here if you have low confidence in this rating',
+            'A_P_S_ARTICULATE_CL2' => 'occasionally, Check here if you have low confidence in this rating',
             'A_DOMAIN' => 'an area of some concern',
             'P_DOMAIN' => 'an area of some concern'
         ]);
@@ -363,8 +363,8 @@ class DecisionRulesServiceTest extends TestCase
     {
         // Arrange
         $report = new ReportData([
-            'A_P_ARTICULATE_CL1' => 'frequently',
-            'A_P_ARTICULATE_CL2' => null
+            'A_P_S_ARTICULATE_CL1' => 'frequently',
+            'A_P_S_ARTICULATE_CL2' => null
         ]);
 
         $this->logger->expects($this->atLeastOnce())
@@ -387,7 +387,7 @@ class DecisionRulesServiceTest extends TestCase
         $method->setAccessible(true);
 
         // Act
-        $result = $method->invoke($service, $report, 'A_P_ARTICULATE_CL2');
+        $result = $method->invoke($service, $report, 'A_P_S_ARTICULATE_CL2');
 
         // Assert
         $this->assertNull($result);
