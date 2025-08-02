@@ -214,7 +214,7 @@ class ReportTemplateHelper
                 'A_READ' => ['message' => 'Reads at grade level'],
                 'A_WRITE' => ['message' => 'Writes at grade level'],
                 'A_MATH' => ['message' => 'Performs math at grade level'],
-                'A_P_ARTICULATE_CL1' => ['message' => 'Articulates clearly'],
+                'A_P_S_ARTICULATE_CL1' => ['message' => 'Articulates clearly'],
                 'A_S_ADULTCOMM_CL1' => ['message' => 'Effectively communicates with adults'],
                 'A_DIRECTIONS' => ['message' => 'Follows directions'],
                 'A_INITIATE' => ['message' => 'Initiates tasks'],
@@ -228,7 +228,7 @@ class ReportTemplateHelper
                 'A_GROWTH' => ['message' => 'Shows academic growth'],
                 'A_S_CONFIDENT_CL1' => ['message' => 'Displays confidence in self'],
                 'A_S_POSOUT_CL1' => ['message' => 'Demonstrates positive outlook'],
-                'A_S_O_ACTIVITY3_CL1' => ['message' => 'Participates in extracurricular activities'],
+                'A_S_O_ACTIVITY_CL1' => ['message' => 'Participates in extracurricular activities'],
             ],
             'Behavior' => [
                 'A_B_CLASSEXPECT_CL2' => ['message' => 'Follows classroom expectations'],
@@ -247,13 +247,13 @@ class ReportTemplateHelper
             'Physical Health' => [
                 'P_SIGHT' => ['message' => 'Vision concerns'],
                 'P_HEAR' => ['message' => 'Hearing concerns'],
-                'A_P_ARTICULATE_CL2' => ['message' => 'Articulates clearly'],
+                'A_P_S_ARTICULATE_CL2' => ['message' => 'Articulates clearly'],
                 'A_ORAL' => ['message' => 'Oral motor skills'],
                 'A_PHYS' => ['message' => 'Physical motor skills'],
                 'P_PARTICIPATE' => ['message' => 'Participates in physical activities'],
                 'S_P_ACHES_CL1' => ['message' => 'Complains of aches and pains'],
                 'O_P_HUNGER_CL1' => ['message' => 'Reports being hungry'],
-                'O_P_HYGIENE_CL1' => ['message' => 'Has hygiene resources'],
+                'O_P_HYGEINE_CL1' => ['message' => 'Has hygiene resources'],
                 'O_P_CLOTHES_CL1' => ['message' => 'Has adequate clothing'],
             ],
             'Social & Emotional Well-Being' => [

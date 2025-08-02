@@ -108,6 +108,9 @@
         }
 
         $crossLoadedDomainService = new \App\Services\CrossLoadedDomainService();
+        $decisionRulesService = config('essy.use_decision_rules') 
+            ? new \App\Services\DecisionRulesService($crossLoadedDomainService)
+            : null;
 
         $notOfConcern = array_diff(
             array_keys($domainValues),
@@ -297,7 +300,7 @@
 
     // Define cross-loaded item relationships using actual database column IDs from ReportData.php model
     $crossLoadItemGroups = [
-        ['A_P_ARTICULATE_CL1', 'A_P_ARTICULATE_CL2'], // AV (Acad) / CI (Phys) - Articulates clearly
+        ['A_P_S_ARTICULATE_CL1', 'A_P_S_ARTICULATE_CL2'], // AV (Acad) / CI (Phys) - Articulates clearly
         ['A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2'],   // AW (Acad) / DF (SEWB) - Effectively communicates with adults
         ['A_B_CLASSEXPECT_CL1', 'A_B_CLASSEXPECT_CL2'],// BB (Acad) / BP (Beh) - Follows classroom expectations
         ['A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2'],       // BC (Acad) / BQ (Beh) - Exhibits impulsivity
@@ -308,9 +311,9 @@
         ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],   // BZ (Beh) / EA (SOS) - Family stressors
         ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'], // CA (Beh) / EB (SOS) - Neighborhood stressors
         ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],         // CN (Phys) / DV (SOS) - Reports being hungry
-        ['O_P_HYGIENE_CL1', 'O_P_HYGIENE_CL2'],       // CO (Phys) / DW (SOS) - Hygiene resources (Note: O_P_HYGIENE_CL1 from model)
+        ['O_P_HYGEINE_CL1', 'O_P_HYGIENE_CL2'],       // CO (Phys) / DW (SOS) - Hygiene resources (Note: O_P_HYGEINE_CL1 from model)
         ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],       // CP (Phys) / DX (SOS) - Adequate clothing
-        ['A_S_O_ACTIVITY3_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // BJ (Acad) / DJ (SEWB) / EC (SOS) - Extracurricular activity
+        ['A_S_O_ACTIVITY_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // BJ (Acad) / DJ (SEWB) / EC (SOS) - Extracurricular activity
     ];
 
 
@@ -362,14 +365,17 @@
     (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
 
 @php
-    // Process all domains using the service
+    // Process all domains using the appropriate service based on configuration
     $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]), array_merge($someConcern ?? [], $substantialConcern ?? []));
     
-    $academicResults = $crossLoadedDomainService->processDomainItems($report, 'Academic Skills', $concernDomains);
-    $behaviorResults = $crossLoadedDomainService->processDomainItems($report, 'Behavior', $concernDomains);
-    $physicalResults = $crossLoadedDomainService->processDomainItems($report, 'Physical Health', $concernDomains);
-    $sewbResults = $crossLoadedDomainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
-    $sosResults = $crossLoadedDomainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
+    // Use DecisionRulesService if enabled, otherwise fall back to CrossLoadedDomainService
+    $domainService = $decisionRulesService ?? $crossLoadedDomainService;
+    
+    $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);
+    $behaviorResults = $domainService->processDomainItems($report, 'Behavior', $concernDomains);
+    $physicalResults = $domainService->processDomainItems($report, 'Physical Health', $concernDomains);
+    $sewbResults = $domainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
+    $sosResults = $domainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
 
     // DEBUG: Uncomment below to debug frequency responses and categorization
     /*

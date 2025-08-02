@@ -35,8 +35,8 @@ class CrossLoadedDomainIntegrationTest extends TestCase
         
         // Get fields requiring dagger
         $daggerFields = $this->crossLoadedService->getFieldsRequiringDagger($concernDomains);
-        $this->assertArrayHasKey('A_P_ARTICULATE_CL1', $daggerFields);
-        $this->assertArrayHasKey('A_P_ARTICULATE_CL2', $daggerFields);
+        $this->assertArrayHasKey('A_P_S_ARTICULATE_CL1', $daggerFields);
+        $this->assertArrayHasKey('A_P_S_ARTICULATE_CL2', $daggerFields);
         
         // Process domain items
         $academicIndicators = $this->templateHelper->getDomainIndicators()['Academic Skills'];
@@ -54,7 +54,7 @@ class CrossLoadedDomainIntegrationTest extends TestCase
         
         // Test formatting with dagger
         $itemText = 'Student articulates clearly';
-        $formattedText = $this->templateHelper->formatItemWithDagger($itemText, 'A_P_ARTICULATE_CL1', $daggerFields);
+        $formattedText = $this->templateHelper->formatItemWithDagger($itemText, 'A_P_S_ARTICULATE_CL1', $daggerFields);
         
         $this->assertStringContainsString('†', $formattedText);
     }
@@ -70,7 +70,7 @@ class CrossLoadedDomainIntegrationTest extends TestCase
             'P_DOMAIN' => 'an area of some strength',
             'O_DOMAIN' => 'an area of substantial strength',
             'ATT_DOMAIN' => 'neither an area of concern or strength',
-            'A_P_ARTICULATE_CL1' => 'Sometimes',
+            'A_P_S_ARTICULATE_CL1' => 'Sometimes',
         ]);
         
         $concernDomains = $report->getConcernDomains();
@@ -86,7 +86,7 @@ class CrossLoadedDomainIntegrationTest extends TestCase
         $report = new ReportData();
         $report->fill([
             'A_DOMAIN' => null, // Invalid domain rating
-            'A_P_ARTICULATE_CL1' => '', // Empty field value
+            'A_P_S_ARTICULATE_CL1' => '', // Empty field value
         ]);
         
         $concernDomains = $report->getConcernDomains();
@@ -122,7 +122,7 @@ class CrossLoadedDomainIntegrationTest extends TestCase
         
         // Should have multiple cross-loaded fields marked for dagger
         $expectedDaggerFields = [
-            'A_P_ARTICULATE_CL1', 'A_P_ARTICULATE_CL2', // Articulate clearly
+            'A_P_S_ARTICULATE_CL1', 'A_P_S_ARTICULATE_CL2', // Articulate clearly
             'A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2',   // Communicate with adults
             'A_S_CONFIDENT_CL1', 'A_S_CONFIDENT_CL2',   // Confidence
         ];
@@ -138,7 +138,7 @@ class CrossLoadedDomainIntegrationTest extends TestCase
         $report->fill([
             'P_DOMAIN' => 'an area of some concern',
             'O_DOMAIN' => 'an area of substantial concern',
-            'O_P_HYGIENE_CL1' => 'Sometimes', // Corrected spelling
+            'O_P_HYGEINE_CL1' => 'Sometimes', // Corrected spelling
             'O_P_HYGIENE_CL2' => 'Occasionally', // Correct spelling
         ]);
         
@@ -146,7 +146,7 @@ class CrossLoadedDomainIntegrationTest extends TestCase
         $daggerFields = $this->crossLoadedService->getFieldsRequiringDagger($concernDomains);
         
         // Both hygiene fields should be handled
-        $this->assertArrayHasKey('O_P_HYGIENE_CL1', $daggerFields);
+        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $daggerFields);
         $this->assertArrayHasKey('O_P_HYGIENE_CL2', $daggerFields);
     }
 
@@ -165,8 +165,8 @@ class CrossLoadedDomainIntegrationTest extends TestCase
             'P_DOMAIN' => 'an area of some concern', // This makes articulate cross-loaded
             'O_DOMAIN' => 'an area of substantial strength',
             'ATT_DOMAIN' => 'neither an area of concern or strength',
-            'A_P_ARTICULATE_CL1' => 'Sometimes',
-            'A_P_ARTICULATE_CL2' => 'Occasionally',
+            'A_P_S_ARTICULATE_CL1' => 'Sometimes',
+            'A_P_S_ARTICULATE_CL2' => 'Occasionally',
             'A_READ' => 'Frequently',
             'A_WRITE' => 'Almost always',
         ]);
@@ -185,8 +185,8 @@ class CrossLoadedDomainIntegrationTest extends TestCase
             'O_DOMAIN' => 'an area of substantial strength',
             'ATT_DOMAIN' => 'neither an area of concern or strength',
             // Cross-loaded between Academic and Physical
-            'A_P_ARTICULATE_CL1' => 'Sometimes',
-            'A_P_ARTICULATE_CL2' => 'Occasionally',
+            'A_P_S_ARTICULATE_CL1' => 'Sometimes',
+            'A_P_S_ARTICULATE_CL2' => 'Occasionally',
             // Cross-loaded between Academic and Social/Emotional
             'A_S_ADULTCOMM_CL1' => 'Frequently',
             'A_S_ADULTCOMM_CL2' => 'Almost always',

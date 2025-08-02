@@ -18,7 +18,7 @@ class ReportDataFields
     public const A_READ = 'A_READ';
     public const A_WRITE = 'A_WRITE';
     public const A_MATH = 'A_MATH';
-    public const A_P_ARTICULATE_CL1 = 'A_P_ARTICULATE_CL1';
+    public const A_P_S_ARTICULATE_CL1 = 'A_P_S_ARTICULATE_CL1';
     public const A_S_ADULTCOMM_CL1 = 'A_S_ADULTCOMM_CL1';
     public const A_DIRECTIONS = 'A_DIRECTIONS';
     public const A_INITIATE = 'A_INITIATE';
@@ -32,7 +32,7 @@ class ReportDataFields
     public const A_GROWTH = 'A_GROWTH';
     public const A_S_CONFIDENT_CL1 = 'A_S_CONFIDENT_CL1';
     public const A_S_POSOUT_CL1 = 'A_S_POSOUT_CL1';
-    public const A_S_O_ACTIVITY3_CL1 = 'A_S_O_ACTIVITY3_CL1';
+    public const A_S_O_ACTIVITY_CL1 = 'A_S_O_ACTIVITY_CL1';
 
     // Behavior fields
     public const A_B_CLASSEXPECT_CL2 = 'A_B_CLASSEXPECT_CL2';
@@ -51,13 +51,13 @@ class ReportDataFields
     // Physical Health fields
     public const P_SIGHT = 'P_SIGHT';
     public const P_HEAR = 'P_HEAR';
-    public const A_P_ARTICULATE_CL2 = 'A_P_ARTICULATE_CL2';
+    public const A_P_S_ARTICULATE_CL2 = 'A_P_S_ARTICULATE_CL2';
     public const A_ORAL = 'A_ORAL';
     public const A_PHYS = 'A_PHYS';
     public const P_PARTICIPATE = 'P_PARTICIPATE';
     public const S_P_ACHES_CL1 = 'S_P_ACHES_CL1';
     public const O_P_HUNGER_CL1 = 'O_P_HUNGER_CL1';
-    public const O_P_HYGIENE_CL1 = 'O_P_HYGIENE_CL1';
+    public const O_P_HYGEINE_CL1 = 'O_P_HYGEINE_CL1';
     public const O_P_CLOTHES_CL1 = 'O_P_CLOTHES_CL1';
 
     // Social & Emotional Well-Being fields
@@ -151,7 +151,7 @@ class ReportDataFields
     public static function getCrossLoadedGroups(): array
     {
         return [
-            'articulate_clearly' => [self::A_P_ARTICULATE_CL1, self::A_P_ARTICULATE_CL2],
+            'articulate_clearly' => [self::A_P_S_ARTICULATE_CL1, self::A_P_S_ARTICULATE_CL2],
             'communicate_adults' => [self::A_S_ADULTCOMM_CL1, self::A_S_ADULTCOMM_CL2],
             'classroom_expectations' => [self::A_B_CLASSEXPECT_CL1, self::A_B_CLASSEXPECT_CL2],
             'impulsivity' => [self::A_B_IMPULSE_CL1, self::A_B_IMPULSE_CL2],
@@ -162,9 +162,9 @@ class ReportDataFields
             'family_stress' => [self::B_O_FAMSTRESS_CL1, self::B_O_FAMSTRESS_CL2],
             'neighborhood_stress' => [self::B_O_NBHDSTRESS_CL1, self::B_O_NBHDSTRESS_CL2],
             'hunger' => [self::O_P_HUNGER_CL1, self::O_P_HUNGER_CL2],
-            'hygiene' => [self::O_P_HYGIENE_CL1, self::O_P_HYGIENE_CL2],
+            'hygiene' => [self::O_P_HYGEINE_CL1, self::O_P_HYGIENE_CL2],
             'clothing' => [self::O_P_CLOTHES_CL1, self::O_P_CLOTHES_CL2],
-            'extracurricular' => [self::A_S_O_ACTIVITY3_CL1, self::A_S_O_ACTIVITY_CL2, self::A_S_O_ACTIVITY_CL3]
+            'extracurricular' => [self::A_S_O_ACTIVITY_CL1, self::A_S_O_ACTIVITY_CL2, self::A_S_O_ACTIVITY_CL3]
         ];
     }
 
@@ -178,7 +178,7 @@ class ReportDataFields
             self::A_READ => 'Academic Skills',
             self::A_WRITE => 'Academic Skills',
             self::A_MATH => 'Academic Skills',
-            self::A_P_ARTICULATE_CL1 => 'Academic Skills',
+            self::A_P_S_ARTICULATE_CL1 => 'Academic Skills',
             self::A_S_ADULTCOMM_CL1 => 'Academic Skills',
             self::A_DIRECTIONS => 'Academic Skills',
             self::A_INITIATE => 'Academic Skills',
@@ -192,7 +192,7 @@ class ReportDataFields
             self::A_GROWTH => 'Academic Skills',
             self::A_S_CONFIDENT_CL1 => 'Academic Skills',
             self::A_S_POSOUT_CL1 => 'Academic Skills',
-            self::A_S_O_ACTIVITY3_CL1 => 'Academic Skills',
+            self::A_S_O_ACTIVITY_CL1 => 'Academic Skills',
 
             // Behavior
             self::A_B_CLASSEXPECT_CL2 => 'Behavior',
@@ -211,13 +211,13 @@ class ReportDataFields
             // Physical Health
             self::P_SIGHT => 'Physical Health',
             self::P_HEAR => 'Physical Health',
-            self::A_P_ARTICULATE_CL2 => 'Physical Health',
+            self::A_P_S_ARTICULATE_CL2 => 'Physical Health',
             self::A_ORAL => 'Physical Health',
             self::A_PHYS => 'Physical Health',
             self::P_PARTICIPATE => 'Physical Health',
             self::S_P_ACHES_CL1 => 'Physical Health',
             self::O_P_HUNGER_CL1 => 'Physical Health',
-            self::O_P_HYGIENE_CL1 => 'Physical Health',
+            self::O_P_HYGEINE_CL1 => 'Physical Health',
             self::O_P_CLOTHES_CL1 => 'Physical Health',
 
             // Social & Emotional Well-Being
