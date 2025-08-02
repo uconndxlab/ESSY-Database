@@ -96,9 +96,13 @@ output-sample.csv
 /storage/app/uploads/*
 !/storage/app/uploads/.gitkeep
 
-# Kiro IDE files
-.kiro/
-../.kiro/
+../.DS_Store
+.editorconfig
+.gitattributes
+.gitignore
+postcss.config.json
+tailwind.config.json
+vite.config.json
 
 # Composer
 composer.phar
