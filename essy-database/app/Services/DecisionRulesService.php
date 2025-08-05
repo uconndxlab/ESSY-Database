@@ -42,6 +42,13 @@ class DecisionRulesService
     public function getDecisionText(string $itemCode, string $frequency): ?string
     {
         try {
+            // First check if this is an Essential Item
+            $essentialItemText = $this->getEssentialItemText($itemCode, $frequency);
+            if ($essentialItemText) {
+                return $essentialItemText;
+            }
+            
+            // Otherwise, check the database for decision rules
             $decisionText = DecisionRule::getDecisionText($itemCode, $frequency);
             
             if (!$decisionText) {
@@ -82,10 +89,27 @@ class DecisionRulesService
             $fieldToDomainMap = $this->crossLoadedService->getFieldToDomainMap();
             
             $results = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+            $processedCrossLoadedGroups = []; // Track which cross-loaded groups we've already processed
             
             foreach ($fieldToDomainMap as $field => $fieldDomain) {
                 if ($fieldDomain !== $domain) continue;
                 if (!isset($fieldMessages[$field])) continue;
+                
+                // Check if this field is part of a cross-loaded group that we've already processed
+                $crossLoadedGroups = $this->crossLoadedService->getCrossLoadedItemGroups();
+                $skipField = false;
+                foreach ($crossLoadedGroups as $groupIndex => $group) {
+                    if (in_array($field, $group)) {
+                        if (isset($processedCrossLoadedGroups[$groupIndex])) {
+                            $skipField = true;
+                            break;
+                        }
+                        $processedCrossLoadedGroups[$groupIndex] = $field;
+                        break;
+                    }
+                }
+                
+                if ($skipField) continue;
                 
                 $valueRaw = $this->crossLoadedService->safeGetFieldValue($report, $field);
                 
@@ -143,24 +167,15 @@ class DecisionRulesService
                     // Log successful decision rule usage
                     $this->logDecisionRuleSuccess($field, $value, $matchedVariation, $decisionText);
                 } else {
-                    // Check if fallback is enabled
-                    if (config('essy.decision_rules_fallback', true)) {
-                        // Fallback to concatenation approach
-                        $prefix = ucfirst(strtolower($value));
-                        $sentence = "{$prefix} {$fieldMessages[$field]}";
-                        
-                        $this->logFallbackUsage($field, $value, $itemCodeVariations, $report->id ?? 'unknown');
-                    } else {
-                        // Fail hard - throw exception when decision rule not found
-                        $this->logDecisionRuleError('Decision rule not found and fallback disabled', [
-                            'field' => $field,
-                            'frequency' => $value,
-                            'variations_tried' => $itemCodeVariations,
-                            'report_id' => $report->id ?? 'unknown'
-                        ]);
-                        
-                        throw new \Exception("Decision rule not found for field '{$field}' with frequency '{$value}' and fallback is disabled");
-                    }
+                    // Decision rule not found - this indicates missing data
+                    $this->logDecisionRuleError('Decision rule not found', [
+                        'field' => $field,
+                        'frequency' => $value,
+                        'variations_tried' => $itemCodeVariations,
+                        'report_id' => $report->id ?? 'unknown'
+                    ]);
+                    
+                    throw new \Exception("Decision rule not found for field '{$field}' with frequency '{$value}'. Please ensure all decision rules are properly imported.");
                 }
                 
                 // Apply confidence and dagger symbols
@@ -191,14 +206,8 @@ class DecisionRulesService
                 'error' => $e->getMessage()
             ]);
             
-            // Check if fallback is enabled
-            if (config('essy.decision_rules_fallback', true)) {
-                // Fallback to original CrossLoadedDomainService implementation
-                return $this->crossLoadedService->processDomainItems($report, $domain, $concernDomains);
-            } else {
-                // Re-throw the exception when fallback is disabled
-                throw $e;
-            }
+            // Re-throw the exception - no fallback to concatenation
+            throw $e;
         }
     }
 
@@ -643,6 +652,61 @@ class DecisionRulesService
         }
     }
     
+    /**
+     * Get Essential Item text for Proceed/Caution table items
+     * These items have different text patterns than regular decision rules
+     */
+    private function getEssentialItemText(string $field, string $frequency): ?string
+    {
+        // Essential Items mapping based on Excel Essential Items table (rows 31-37)
+        $essentialItems = [
+            'E_SHARM' => [
+                'Almost Always' => 'Almost always engages in self-harming behaviors.',
+                'Frequently' => 'Frequently engages in self-harming behaviors.',
+                'Sometimes' => 'Sometimes engages in self-harming behaviors.',
+                'Occasionally' => 'Occasionally engages in self-harming behaviors.',
+                'Almost Never' => 'Almost never engages in self-harming behaviors.'
+            ],
+            'E_BULLIED' => [
+                'Almost Always' => 'Has almost always been bullied by other students.',
+                'Frequently' => 'Has frequently been bullied by other students.',
+                'Sometimes' => 'Has sometimes been bullied by other students.',
+                'Occasionally' => 'Has occasionally been bullied by other students.',
+                'Almost Never' => 'Has almost never been bullied by other students.'
+            ],
+            'E_EXCLUDE' => [
+                'Almost Always' => 'Almost always experiences social exclusion in school.',
+                'Frequently' => 'Frequently experiences social exclusion in school.',
+                'Sometimes' => 'Sometimes experiences social exclusion in school.',
+                'Occasionally' => 'Occasionally experiences social exclusion in school.',
+                'Almost Never' => 'Almost never experiences social exclusion in school.'
+            ],
+            'E_WITHDRAW' => [
+                'Almost Always' => 'Almost always avoids or withdraws from peers.',
+                'Frequently' => 'Frequently avoids or withdraws from peers.',
+                'Sometimes' => 'Sometimes avoids or withdraws from peers.',
+                'Occasionally' => 'Occasionally avoids or withdraws from peers.',
+                'Almost Never' => 'Almost never avoids or withdraws from peers.'
+            ],
+            'E_REGULATE' => [
+                'Almost Always' => 'Almost always regulates emotions.',
+                'Frequently' => 'Frequently regulates emotions.',
+                'Sometimes' => 'Sometimes regulates emotions.',
+                'Occasionally' => 'Occasionally regulates emotions.',
+                'Almost Never' => 'Almost never regulates emotions.'
+            ],
+            'E_RESTED' => [
+                'Almost Always' => 'Almost always appears well-rested.',
+                'Frequently' => 'Frequently appears well-rested.',
+                'Sometimes' => 'Sometimes appears well-rested.',
+                'Occasionally' => 'Occasionally appears well-rested.',
+                'Almost Never' => 'Almost never appears well-rested.'
+            ]
+        ];
+        
+        return $essentialItems[$field][$frequency] ?? null;
+    }
+
     /**
      * Log decision rule errors with context
      *

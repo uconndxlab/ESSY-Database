@@ -260,7 +260,7 @@ class CrossLoadedDomainService
             'A_P_S_ARTICULATE_CL3' => 'Academic Skills',
             'A_S_ADULTCOMM_CL1' => 'Academic Skills',
             'A_B_DIRECTIONS_CL1' => 'Academic Skills',
-            'A_B_DIRECTIONS_CL2' => 'Academic Skills',
+            'A_B_DIRECTIONS_CL2' => 'Behavior', // Cross-loaded between Academic (A) and Behavior (B)
             'A_INITIATE' => 'Academic Skills',
             'A_PLANORG' => 'Academic Skills',
             'A_TURNIN' => 'Academic Skills',
@@ -315,8 +315,8 @@ class CrossLoadedDomainService
             'S_POSADULT' => 'Social & Emotional Well-Being',
             'S_SCHOOLCONN' => 'Social & Emotional Well-Being',
             'S_O_COMMCONN_CL1' => 'Social & Emotional Well-Being',
-            'S_O_COMMCONN_CL2' => 'Social & Emotional Well-Being',
             'A_S_O_ACTIVITY_CL2' => 'Social & Emotional Well-Being',
+            'A_P_S_ARTICULATE_CL3' => 'Social & Emotional Well-Being',
 
             // Supports Outside of School - Updated field names to match Excel
             'O_RECIPROCAL' => 'Supports Outside of School',
@@ -333,6 +333,7 @@ class CrossLoadedDomainService
             'B_O_FAMSTRESS_CL2' => 'Supports Outside of School',
             'B_O_NBHDSTRESS_CL2' => 'Supports Outside of School',
             'A_S_O_ACTIVITY_CL3' => 'Supports Outside of School',
+            'S_O_COMMCONN_CL2' => 'Supports Outside of School',
         ];
     }
 
@@ -492,45 +493,20 @@ class CrossLoadedDomainService
      */
     public function processDomainItems(ReportData $report, string $domain, array $concernDomains): array
     {
-        $fieldMessages = $this->getFieldMessages();
-        $fieldsThatNeedDagger = $this->getFieldsRequiringDagger($concernDomains);
-        
-        $results = ['strengths' => [], 'monitor' => [], 'concerns' => []];
-        
-        foreach ($this->fieldToDomainMap as $field => $fieldDomain) {
-            if ($fieldDomain !== $domain) continue;
-            if (!isset($fieldMessages[$field])) continue;
-            
-            $valueRaw = $this->safeGetFieldValue($report, $field);
-            
-            // For cross-loaded items, if this field is empty, try to get value from primary field
-            if (!$valueRaw && isset($fieldsThatNeedDagger[$field])) {
-                $valueRaw = $this->getCrossLoadedValue($report, $field);
-            }
-            
-            // If still no value, skip this item (don't show items without frequency responses)
-            if (!$valueRaw) continue;
-            
-            $hasConfidence = str_contains($valueRaw, ',');
-            $value = trim(explode(',', $valueRaw)[0]);
-            
-            // Ensure we have a valid frequency response
-            if (empty($value) || $value === '-99') continue;
-            
-            $prefix = ucfirst(strtolower($value));
-            
-            $itemSuffix = $hasConfidence ? ' *' : '';
-            if (isset($fieldsThatNeedDagger[$field])) {
-                $itemSuffix .= ' †';
-            }
-            
-            $sentence = "{$prefix} {$fieldMessages[$field]}{$itemSuffix}";
-            $category = $this->categorizeFieldValue($field, $value);
-            
-            $results[$category][] = $sentence;
+        // If decision rules are enabled, delegate to DecisionRulesService
+        if (config('essy.use_decision_rules', true)) {
+            $decisionRulesService = app(\App\Services\DecisionRulesService::class);
+            return $decisionRulesService->processDomainItems($report, $domain, $concernDomains);
         }
         
-        return $results;
+        // Decision rules are disabled - this should not happen in production
+        $this->logCrossLoadedError('Decision rules are disabled but CrossLoadedDomainService fallback called', [
+            'domain' => $domain,
+            'concern_domains' => $concernDomains,
+            'config_use_decision_rules' => config('essy.use_decision_rules', true)
+        ]);
+        
+        throw new \Exception('Decision rules are required but disabled. Please enable decision rules or ensure all decision rules are properly imported.');
     }
 
     /**

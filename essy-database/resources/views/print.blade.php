@@ -246,52 +246,61 @@
     $proceedItems = [];
     $cautionItems = [];
 
-    $items = [
+    // Essential Items configuration - using DecisionRulesService for proper text
+    $essentialItemsConfig = [
         'E_SHARM' => [
-            'value' => trim($report->E_SHARM ?? ''),
-            'text' => 'engages in <strong>self-harming behaviors</strong>',
-            'proceed' => ['Almost never'],
+            'field' => 'E_SHARM',
+            'proceed' => ['Almost Never'],
         ],
         'E_BULLIED' => [
-            'value' => trim($report->E_BULLIED ?? ''),
-            'text' => 'has been <strong>bullied</strong> by other students',
-            'proceed' => ['Almost never'],
+            'field' => 'E_BULLIED', 
+            'proceed' => ['Almost Never'],
         ],
         'E_EXCLUDE' => [
-            'value' => trim($report->E_EXCLUDE ?? ''),
-            'text' => 'experiences <strong>social exclusion</strong> in school',
-            'proceed' => ['Almost never'],
+            'field' => 'E_EXCLUDE',
+            'proceed' => ['Almost Never'],
         ],
         'E_WITHDRAW' => [
-            'value' => trim($report->E_WITHDRAW ?? ''),
-            'text' => '<strong>avoids or withdraws</strong> from peers',
-            'proceed' => ['Almost never', 'Occasionally'],
+            'field' => 'E_WITHDRAW',
+            'proceed' => ['Almost Never', 'Occasionally'],
         ],
         'E_REGULATE' => [
-            'value' => trim($report->E_REGULATE ?? ''),
-            'text' => '<strong>regulates emotions</strong>',
-            'proceed' => ['Almost always', 'Frequently'],
+            'field' => 'E_REGULATE',
+            'proceed' => ['Almost Always', 'Frequently'],
         ],
         'E_RESTED' => [
-            'value' => trim($report->E_RESTED ?? ''),
-            'text' => 'appears <strong>well-rested</strong>',
-            'proceed' => ['Almost always', 'Frequently'],
+            'field' => 'E_RESTED',
+            'proceed' => ['Almost Always', 'Frequently'],
         ],
     ];
 
-    foreach ($items as $item) {
-        // Handle confidence flags properly
-        $hasConfidence = str_contains($item['value'], ',');
-        $cleanValue = trim(explode(',', $item['value'])[0]);
-        $prefix = ucfirst($cleanValue);
-        
-        $confidenceFlag = $hasConfidence ? ' *' : '';
-        $line = $prefix . ' ' . $item['text'] . '.' . $confidenceFlag;
+    // Use DecisionRulesService to get proper Essential Items text
+    $decisionService = app(\App\Services\DecisionRulesService::class);
 
-        if (in_array($cleanValue, $item['proceed'])) {
-            $proceedItems[] = $line;
-        } else {
-            $cautionItems[] = $line;
+    foreach ($essentialItemsConfig as $config) {
+        $fieldName = $config['field'];
+        $rawValue = trim($report->{$fieldName} ?? '');
+        
+        if (empty($rawValue) || $rawValue === '-99') {
+            continue; // Skip items without responses
+        }
+
+        // Handle confidence flags properly
+        $hasConfidence = str_contains($rawValue, ',');
+        $cleanValue = trim(explode(',', $rawValue)[0]);
+        
+        // Get the proper Essential Items text from DecisionRulesService
+        $essentialText = $decisionService->getDecisionText($fieldName, $cleanValue);
+        
+        if ($essentialText) {
+            $confidenceFlag = $hasConfidence ? ' *' : '';
+            $line = $essentialText . $confidenceFlag;
+
+            if (in_array($cleanValue, $config['proceed'])) {
+                $proceedItems[] = $line;
+            } else {
+                $cautionItems[] = $line;
+            }
         }
     }
 @endphp

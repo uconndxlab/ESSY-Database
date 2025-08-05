@@ -137,7 +137,7 @@ class ImportDecisionRules extends Command
         'DV' => 'O_ROUTINE',
         'DW' => 'O_FAMILY',
         'DX' => 'O_P_HUNGER_CL2',
-        'DY' => 'O_P_HYGIENE_CL2',
+        'DY' => 'O_P_HYGEINE_CL2', // Updated to match Excel spelling (HYGEINE)
         'DZ' => 'O_P_CLOTHES_CL2',
         'EA' => 'O_RESOURCE',
         'EB' => 'B_O_HOUSING_CL2',
