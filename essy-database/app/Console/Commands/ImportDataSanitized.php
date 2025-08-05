@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\ReportData;
+use App\Models\DecisionRule;
 use App\Services\DecisionRulesService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Str;
@@ -27,12 +28,10 @@ class ImportDataSanitized extends Command
                 return 1;
             }
 
-            // Set the uploaded Excel file path in DecisionRulesService
-            $decisionRulesService = app(DecisionRulesService::class);
-            $decisionRulesService->setUploadedExcelPath($filePath);
-            $this->info("Set uploaded Excel path for decision rules: $filePath");
-
             $spreadsheet = IOFactory::load($filePath);
+            
+            // Extract and store decision rules from the uploaded Excel file
+            $this->extractAndStoreDecisionRules($spreadsheet, $filePath);
             $this->info("Spreadsheet loaded successfully.");
 
             $sheet = $spreadsheet->getSheetByName('Qualtrics Output');
@@ -77,7 +76,6 @@ class ImportDataSanitized extends Command
                 $data['created_at'] = now();
                 $data['updated_at'] = now();
                 $data['batch_id'] = $batchId;
-                $data['excel_file_path'] = $filePath;
 
                 ReportData::create($data);
             }
@@ -88,6 +86,105 @@ class ImportDataSanitized extends Command
             $this->error('Error Importing Spreadsheet: ' . $e->getMessage());
             $this->error($e->getTraceAsString());
             return 1;
+        }
+    }
+
+    /**
+     * Extract decision rules from Excel file and store them in database
+     */
+    private function extractAndStoreDecisionRules($spreadsheet, $filePath): void
+    {
+        try {
+            $this->info("Extracting decision rules from Excel file...");
+            
+            // Try to find the Decision Rules sheet
+            $decisionRulesSheet = null;
+            $sheetNames = ['Decision Rules', 'decision_rules', 'DecisionRules', 'Decision_Rules'];
+            
+            foreach ($sheetNames as $sheetName) {
+                try {
+                    $decisionRulesSheet = $spreadsheet->getSheetByName($sheetName);
+                    $this->info("Found decision rules sheet: $sheetName");
+                    break;
+                } catch (Exception $e) {
+                    // Continue trying other sheet names
+                }
+            }
+            
+            if (!$decisionRulesSheet) {
+                $this->warn("No 'Decision Rules' sheet found. Available sheets: " . implode(', ', $spreadsheet->getSheetNames()));
+                $this->warn("Decision rules will not be imported. PDFs will use Essential Items and database fallback.");
+                return;
+            }
+            
+            $rulesImported = 0;
+            $rulesUpdated = 0;
+            $row = 2; // Start from row 2 (assuming row 1 is headers)
+            
+            while (true) {
+                $itemCode = trim($decisionRulesSheet->getCell('A' . $row)->getCalculatedValue() ?? '');
+                $frequency = trim($decisionRulesSheet->getCell('B' . $row)->getCalculatedValue() ?? '');
+                $decisionText = trim($decisionRulesSheet->getCell('C' . $row)->getCalculatedValue() ?? '');
+                
+                // Stop if we hit an empty row
+                if (empty($itemCode) && empty($frequency) && empty($decisionText)) {
+                    break;
+                }
+                
+                // Skip incomplete rows
+                if (empty($itemCode) || empty($frequency) || empty($decisionText)) {
+                    $this->warn("Skipping incomplete row $row: itemCode='$itemCode', frequency='$frequency', decisionText='" . substr($decisionText, 0, 50) . "'");
+                    $row++;
+                    continue;
+                }
+                
+                // Create or update decision rule
+                $decisionRule = DecisionRule::updateOrCreate(
+                    [
+                        'item_code' => $itemCode,
+                        'frequency' => $frequency
+                    ],
+                    [
+                        'decision_text' => $decisionText,
+                        'domain' => $this->getDomainFromItemCode($itemCode)
+                    ]
+                );
+                
+                if ($decisionRule->wasRecentlyCreated) {
+                    $rulesImported++;
+                } else {
+                    $rulesUpdated++;
+                }
+                
+                $row++;
+            }
+            
+            $this->info("Decision rules extraction complete:");
+            $this->info("- Rules imported: $rulesImported");
+            $this->info("- Rules updated: $rulesUpdated");
+            $this->info("- Total rows processed: " . ($row - 2));
+            
+        } catch (Exception $e) {
+            $this->error("Failed to extract decision rules: " . $e->getMessage());
+            $this->warn("Continuing with student data import. PDFs will use Essential Items and database fallback.");
+        }
+    }
+
+    /**
+     * Determine domain from item code
+     */
+    private function getDomainFromItemCode(string $itemCode): string
+    {
+        $prefix = substr($itemCode, 0, 1);
+        
+        switch ($prefix) {
+            case 'A': return 'Academic Skills';
+            case 'B': return 'Behavior';
+            case 'P': return 'Physical Health';
+            case 'S': return 'Social & Emotional Well-Being';
+            case 'O': return 'Supports Outside of School';
+            case 'E': return 'Essential Items';
+            default: return 'Unknown';
         }
     }
 }
