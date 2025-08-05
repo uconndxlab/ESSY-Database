@@ -16,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
  * 
  * Configuration:
  * - config('essy.use_decision_rules'): Enable/disable decision rules lookup
- * - config('essy.decision_rules_fallback'): Enable/disable fallback to concatenation
+
  * 
  * @see config/essy.php for configuration options
  * @see docs/CONFIGURATION.md for detailed configuration guide
@@ -209,7 +209,7 @@ class DecisionRulesService
                 'error' => $e->getMessage()
             ]);
             
-            // Re-throw the exception - no fallback to concatenation
+            // Re-throw the exception - no fallback
             throw $e;
         }
     }
@@ -451,28 +451,9 @@ class DecisionRulesService
         }
     }
     
-    /**
-     * Log fallback usage with detailed context
-     *
-     * @param string $field
-     * @param string $frequency
-     * @param array $variationsTried
-     * @param string $reportId
-     * @return void
-     */
-    private function logFallbackUsage(string $field, string $frequency, array $variationsTried, string $reportId): void
-    {
-        $this->logger->warning('[DecisionRules] Falling back to concatenation', [
-            'field' => $field,
-            'frequency' => $frequency,
-            'variations_tried' => $variationsTried,
-            'total_variations_tried' => count($variationsTried),
-            'report_id' => $reportId,
-            'fallback_enabled' => config('essy.decision_rules_fallback', true),
-            'timestamp' => now()->toISOString(),
-            'service' => 'DecisionRulesService'
-        ]);
-    }
+
+    
+
     
     /**
      * Log when cross-loaded value is found
@@ -534,7 +515,7 @@ class DecisionRulesService
                 'domain' => $domain,
                 'concern_domains' => $concernDomains,
                 'decision_rules_enabled' => config('essy.use_decision_rules', false),
-                'fallback_enabled' => config('essy.decision_rules_fallback', true),
+
                 'timestamp' => now()->toISOString(),
                 'service' => 'DecisionRulesService'
             ]);

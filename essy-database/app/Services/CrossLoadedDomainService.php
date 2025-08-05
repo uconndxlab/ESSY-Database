@@ -493,20 +493,45 @@ class CrossLoadedDomainService
      */
     public function processDomainItems(ReportData $report, string $domain, array $concernDomains): array
     {
-        // If decision rules are enabled, delegate to DecisionRulesService
-        if (config('essy.use_decision_rules', true)) {
-            $decisionRulesService = app(\App\Services\DecisionRulesService::class);
-            return $decisionRulesService->processDomainItems($report, $domain, $concernDomains);
+        $fieldMessages = $this->getFieldMessages();
+        $fieldsThatNeedDagger = $this->getFieldsRequiringDagger($concernDomains);
+        
+        $results = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+        
+        foreach ($this->fieldToDomainMap as $field => $fieldDomain) {
+            if ($fieldDomain !== $domain) continue;
+            if (!isset($fieldMessages[$field])) continue;
+            
+            $valueRaw = $this->safeGetFieldValue($report, $field);
+            
+            // For cross-loaded items, if this field is empty, try to get value from primary field
+            if (!$valueRaw) {
+                $valueRaw = $this->getCrossLoadedValue($report, $field);
+            }
+            
+            // If still no value, skip this item (don't show items without frequency responses)
+            if (!$valueRaw) continue;
+            
+            $hasConfidence = str_contains($valueRaw, ',');
+            $value = trim(explode(',', $valueRaw)[0]);
+            
+            // Ensure we have a valid frequency response
+            if (empty($value) || $value === '-99') continue;
+            
+            $prefix = ucfirst(strtolower($value));
+            
+            $itemSuffix = $hasConfidence ? ' *' : '';
+            if (isset($fieldsThatNeedDagger[$field])) {
+                $itemSuffix .= ' †';
+            }
+            
+            $sentence = "{$prefix} {$fieldMessages[$field]}{$itemSuffix}";
+            $category = $this->categorizeFieldValue($field, $value);
+            
+            $results[$category][] = $sentence;
         }
         
-        // Decision rules are disabled - this should not happen in production
-        $this->logCrossLoadedError('Decision rules are disabled but CrossLoadedDomainService fallback called', [
-            'domain' => $domain,
-            'concern_domains' => $concernDomains,
-            'config_use_decision_rules' => config('essy.use_decision_rules', true)
-        ]);
-        
-        throw new \Exception('Decision rules are required but disabled. Please enable decision rules or ensure all decision rules are properly imported.');
+        return $results;
     }
 
     /**

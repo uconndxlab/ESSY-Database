@@ -13,11 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Import decision rules from CSV
+        $this->call(DecisionRulesSeeder::class);
     }
 }

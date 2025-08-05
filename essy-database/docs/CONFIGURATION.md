@@ -2,7 +2,7 @@
 
 ## Decision Rules Configuration
 
-The ESSY system supports configurable decision rules lookup functionality that can be toggled between the new database-driven approach and the traditional concatenation method.
+The ESSY system supports configurable decision rules lookup functionality that uses a database-driven approach for contextually appropriate text.
 
 ### Environment Variables
 
@@ -13,26 +13,14 @@ The ESSY system supports configurable decision rules lookup functionality that c
 **Description:** Controls whether the system uses the decision rules lookup functionality.
 
 - `true`: Use database-driven decision rules lookup for contextually appropriate text
-- `false`: Use traditional concatenation approach (frequency prefix + item message)
+- `false`: Skip items when decision rules are disabled
 
 **Example:**
 ```env
 ESSY_USE_DECISION_RULES=true
 ```
 
-#### ESSY_DECISION_RULES_FALLBACK
 
-**Default:** `true`  
-**Type:** Boolean  
-**Description:** When decision rules lookup is enabled but a specific rule is not found, this controls the fallback behavior.
-
-- `true`: Fall back to concatenation approach when decision rule not found
-- `false`: Skip items when decision rule not found (not recommended for production)
-
-**Example:**
-```env
-ESSY_DECISION_RULES_FALLBACK=true
-```
 
 ### Configuration File
 
@@ -41,7 +29,7 @@ The configuration is defined in `config/essy.php`:
 ```php
 return [
     'use_decision_rules' => env('ESSY_USE_DECISION_RULES', true),
-    'decision_rules_fallback' => env('ESSY_DECISION_RULES_FALLBACK', true),
+
 ];
 ```
 
@@ -55,13 +43,14 @@ if (config('essy.use_decision_rules')) {
     // Use DecisionRulesService
     $decisionText = $this->decisionRulesService->getDecisionText($itemCode, $frequency);
 } else {
-    // Use traditional concatenation
-    $decisionText = "{$prefix} {$message}";
+    // Skip items when decision rules are disabled
+    continue;
 }
 
-// Check fallback setting
-if (!$decisionText && config('essy.decision_rules_fallback')) {
-    $decisionText = "{$prefix} {$message}";
+// Use decision rule or skip item
+if (!$decisionText) {
+    // Skip item when no decision rule found
+    continue;
 }
 ```
 
@@ -69,11 +58,11 @@ if (!$decisionText && config('essy.decision_rules_fallback')) {
 
 #### Development Environment
 - Set `ESSY_USE_DECISION_RULES=true` to test new functionality
-- Set `ESSY_DECISION_RULES_FALLBACK=true` for graceful degradation
+- Ensure all decision rules are imported from Excel file
 
 #### Production Environment
 - Set `ESSY_USE_DECISION_RULES=true` (decision rules are extracted from uploaded Excel files automatically)
-- Always keep `ESSY_DECISION_RULES_FALLBACK=true` in production
+- Ensure all required decision rules are available
 - No separate import commands needed - decision rules are extracted during normal file upload
 
 #### Testing Environment
@@ -87,10 +76,10 @@ if (!$decisionText && config('essy.decision_rules_fallback')) {
 2. Verify that uploaded Excel files contain a "Decision Rules" sheet with proper format
 3. Check application logs for decision rules lookup errors
 
-#### Falling Back to Concatenation
-1. Check that `ESSY_DECISION_RULES_FALLBACK=true` in your `.env` file
-2. Review logs to see which decision rules are missing
-3. Ensure uploaded Excel files contain all required decision rules in the "Decision Rules" sheet
+#### Missing Decision Rules
+1. Review logs to see which decision rules are missing
+2. Ensure uploaded Excel files contain all required decision rules in the "Decision Rules" sheet
+3. Re-import decision rules if necessary
 
 #### Performance Issues
 1. Consider setting `ESSY_USE_DECISION_RULES=false` temporarily

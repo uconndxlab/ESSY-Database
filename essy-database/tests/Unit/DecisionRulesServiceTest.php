@@ -23,6 +23,8 @@ class DecisionRulesServiceTest extends TestCase
     {
         parent::setUp();
         
+
+        
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->crossLoadedService = new CrossLoadedDomainService($this->logger);
         $this->service = new DecisionRulesService($this->crossLoadedService, $this->logger);
@@ -108,7 +110,7 @@ class DecisionRulesServiceTest extends TestCase
         $this->assertContains('The student almost always meets grade-level expectations for reading skills.', $result['strengths']);
     }
 
-    public function test_processDomainItems_falls_back_to_concatenation_when_no_decision_rule()
+    public function test_processDomainItems_throws_exception_when_no_decision_rule()
     {
         // Arrange
         $report = new ReportData([
@@ -116,12 +118,11 @@ class DecisionRulesServiceTest extends TestCase
             'A_DOMAIN' => 'an area of strength'
         ]);
 
-        // Act
-        $result = $this->service->processDomainItems($report, 'Academic Skills', []);
-
-        // Assert
-        $this->assertArrayHasKey('strengths', $result);
-        $this->assertContains('Almost always meets grade-level expectations for reading skills.', $result['strengths']);
+        // Act & Assert
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Decision rule not found for field 'A_READ' with frequency 'almost always'");
+        
+        $this->service->processDomainItems($report, 'Academic Skills', []);
     }
 
     public function test_processDomainItems_preserves_confidence_indicators()
@@ -181,7 +182,7 @@ class DecisionRulesServiceTest extends TestCase
         $this->assertContains('The student frequently articulates clearly enough to be understood. †', $result['strengths']);
     }
 
-    public function test_processDomainItems_handles_cross_loaded_fallback_values()
+    public function test_processDomainItems_handles_cross_loaded_values()
     {
         // Arrange
         DecisionRule::create([
@@ -312,7 +313,7 @@ class DecisionRulesServiceTest extends TestCase
         $this->assertContains('The student almost never meets expectations for grade-level math skills.', $result['concerns']);
     }
 
-    public function test_processDomainItems_falls_back_to_cross_loaded_service_on_exception()
+    public function test_processDomainItems_throws_exception_on_error()
     {
         // Arrange
         $report = new ReportData([
@@ -320,31 +321,21 @@ class DecisionRulesServiceTest extends TestCase
             'A_DOMAIN' => 'an area of strength'
         ]);
 
-        // Mock the cross-loaded service to return expected result
-        $expectedResult = ['strengths' => ['Fallback result'], 'monitor' => [], 'concerns' => []];
-        $mockCrossLoadedService = $this->createMock(CrossLoadedDomainService::class);
-        $mockCrossLoadedService->expects($this->once())
-            ->method('processDomainItems')
-            ->with($report, 'Academic Skills', [])
-            ->willReturn($expectedResult);
-
         // Create service with mocked dependencies that will throw exception
+        $mockCrossLoadedService = $this->createMock(CrossLoadedDomainService::class);
         $mockCrossLoadedService->method('getFieldMessages')->willThrowException(new \Exception('Test exception'));
         
         $service = new DecisionRulesService($mockCrossLoadedService, $this->logger);
 
         $this->logger->expects($this->atLeastOnce())
             ->method('warning')
-            ->with(
-                $this->stringContains('[DecisionRules] Error processing domain items'),
-                $this->arrayHasKey('error')
-            );
+            ->with($this->stringContains('Error processing domain items'), $this->arrayHasKey('error'));
 
-        // Act
-        $result = $service->processDomainItems($report, 'Academic Skills', []);
-
-        // Assert
-        $this->assertEquals($expectedResult, $result);
+        // Act & Assert
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Test exception');
+        
+        $service->processDomainItems($report, 'Academic Skills', []);
     }
 
     public function test_safeGetFieldValue_delegates_to_cross_loaded_service()

@@ -93,14 +93,14 @@ class UnansweredItemsAccuracyTest extends TestCase
     /** @test */
     public function it_correctly_handles_cross_loaded_items_with_partial_data()
     {
-        // Create a report to test cross-loaded fallback behavior
+        // Create a report to test cross-loaded behavior
         $report = ReportData::create([
             'FN_STUDENT' => 'TestStudent',
             'LN_STUDENT' => 'TestLastName',
             
             // Cross-loaded group: articulate (appears in both Academic Skills and Physical Health)
             'A_P_S_ARTICULATE_CL1' => 'Sometimes', // Primary field has data
-            'A_P_S_ARTICULATE_CL2' => '', // Secondary field empty - should fallback to CL1 when processing Physical Health
+            'A_P_S_ARTICULATE_CL2' => '', // Secondary field empty - should use CL1 when processing Physical Health
             'A_P_S_ARTICULATE_CL3' => '', // Tertiary field empty
             
             // Cross-loaded group: directions (only in Academic Skills - won't get dagger)
@@ -109,11 +109,11 @@ class UnansweredItemsAccuracyTest extends TestCase
             
             // Cross-loaded group: class expectations (appears in both Academic Skills and Behavior)
             'A_B_CLASSEXPECT_CL1' => 'Occasionally', // Primary field has data
-            'A_B_CLASSEXPECT_CL2' => '', // Secondary field empty - should fallback to CL1 when processing Behavior
+            'A_B_CLASSEXPECT_CL2' => '', // Secondary field empty - should use CL1 when processing Behavior
         ]);
 
         // Set concern domains to include Academic Skills, Physical Health, and Behavior
-        // This will make articulate and class expectations fields require dagger and enable cross-loaded fallback
+        // This will make articulate and class expectations fields require dagger and enable cross-loaded behavior
         $concernDomains = ['Academic Skills', 'Physical Health', 'Behavior'];
         
         // Process Academic Skills domain
@@ -133,23 +133,23 @@ class UnansweredItemsAccuracyTest extends TestCase
         $this->assertStringContainsString('follows classroom expectations. †', $academicText,
             'Class expectations should appear with dagger when in multiple concern domains');
         
-        // Process Physical Health domain to test cross-loaded fallback
+        // Process Physical Health domain to test cross-loaded behavior
         $physicalResult = $this->crossLoadedService->processDomainItems($report, 'Physical Health', $concernDomains);
         $physicalItems = array_merge($physicalResult['strengths'], $physicalResult['monitor'], $physicalResult['concerns']);
         $physicalText = implode(' ', $physicalItems);
         
-        // Articulate CL2 is empty, but should fallback to CL1 value since it needs dagger
+        // Articulate CL2 is empty, but should use CL1 value since it needs dagger
         $this->assertStringContainsString('articulates clearly enough to be understood. †', $physicalText,
-            'Articulate should appear in Physical Health domain via cross-loaded fallback');
+            'Articulate should appear in Physical Health domain via cross-loaded behavior');
         
-        // Process Behavior domain to test cross-loaded fallback for class expectations
+        // Process Behavior domain to test cross-loaded behavior for class expectations
         $behaviorResult = $this->crossLoadedService->processDomainItems($report, 'Behavior', $concernDomains);
         $behaviorItems = array_merge($behaviorResult['strengths'], $behaviorResult['monitor'], $behaviorResult['concerns']);
         $behaviorText = implode(' ', $behaviorItems);
         
-        // Class expectations CL2 is empty, but should fallback to CL1 value since it needs dagger
+        // Class expectations CL2 is empty, but should use CL1 value since it needs dagger
         $this->assertStringContainsString('follows classroom expectations. †', $behaviorText,
-            'Class expectations should appear in Behavior domain via cross-loaded fallback');
+            'Class expectations should appear in Behavior domain via cross-loaded behavior');
     }
 
     /** @test */

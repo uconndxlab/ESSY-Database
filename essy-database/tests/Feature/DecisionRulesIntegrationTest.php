@@ -213,7 +213,7 @@ class DecisionRulesIntegrationTest extends TestCase
         $response->assertSee('The student sometimes articulates clearly enough to be understood * †');
     }
 
-    public function test_fallback_scenarios_when_decision_rules_are_missing(): void
+    public function test_scenarios_when_decision_rules_are_missing(): void
     {
         // Enable decision rules
         config(['essy.use_decision_rules' => true]);
@@ -271,9 +271,9 @@ class DecisionRulesIntegrationTest extends TestCase
         $response->assertStatus(200);
         // Should use decision rule for A_READ
         $response->assertSee('The student sometimes meets grade-level expectations for reading skills');
-        // Should fall back to concatenation for items without decision rules
-        $response->assertSee('Frequently'); // Should see the frequency prefix for fallback items
-        $response->assertSee('Occasionally'); // Should see the frequency prefix for fallback items
+        // Should skip items without decision rules
+        $response->assertSee('Frequently'); // Should see the frequency prefix for items
+        $response->assertSee('Occasionally'); // Should see the frequency prefix for items
     }
 
     public function test_feature_toggle_functionality(): void
@@ -431,7 +431,7 @@ class DecisionRulesIntegrationTest extends TestCase
         $response->assertSee('Family-school communication is almost never reciprocal');
     }
 
-    public function test_cross_loaded_fallback_functionality(): void
+    public function test_cross_loaded_functionality(): void
     {
         // Enable decision rules
         config(['essy.use_decision_rules' => true]);
