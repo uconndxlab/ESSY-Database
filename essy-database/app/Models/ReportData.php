@@ -13,6 +13,7 @@ class ReportData extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'batch_id', 'excel_file_path',
         'StartDate', 'EndDate', 'Status', 'IPAddress', 'Progress', 'Duration', 'Finished', 'RecordedDate',
         'ResponseId', 'RecipientLastName', 'RecipientFirstName', 'RecipientEmail', 'ExternalReference',
         'LocationLatitude', 'LocationLongitude', 'DistributionChannel', 'UserLanguage',

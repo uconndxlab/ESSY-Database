@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ReportData;
+use App\Services\DecisionRulesService;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -22,6 +23,13 @@ class ReportController extends Controller
     public function print_all($id)
     {
         $report = ReportData::findOrFail($id);
+
+        // Set the Excel file path in DecisionRulesService for this report
+        if ($report->excel_file_path && file_exists($report->excel_file_path)) {
+            $decisionRulesService = app(DecisionRulesService::class);
+            $decisionRulesService->setUploadedExcelPath($report->excel_file_path);
+        }
+
         return view('print', compact('report'));
     }
 
@@ -29,6 +37,12 @@ class ReportController extends Controller
     public function downloadPdf($id)
     {
         $report = ReportData::findOrFail($id);
+
+        // Set the Excel file path in DecisionRulesService for this report
+        if ($report->excel_file_path && file_exists($report->excel_file_path)) {
+            $decisionRulesService = app(DecisionRulesService::class);
+            $decisionRulesService->setUploadedExcelPath($report->excel_file_path);
+        }
 
         $pdf = Pdf::loadView('print', compact('report'))
                 ->setPaper('letter', 'portrait');

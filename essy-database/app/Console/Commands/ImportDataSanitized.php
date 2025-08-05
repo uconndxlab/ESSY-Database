@@ -77,6 +77,7 @@ class ImportDataSanitized extends Command
                 $data['created_at'] = now();
                 $data['updated_at'] = now();
                 $data['batch_id'] = $batchId;
+                $data['excel_file_path'] = $filePath;
 
                 ReportData::create($data);
             }
