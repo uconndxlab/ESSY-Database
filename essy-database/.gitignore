@@ -92,14 +92,6 @@ phpunit.xml
 *.backup
 *.old
 
-# ESSY Project Specific
-# Uploaded Excel files (these contain sensitive student data)
-*.xlsx
-*.xls
-*.csv
-storage/sample.csv
-output-sample.csv
-
 # Generated PDFs (these contain sensitive student data)
 /storage/app/reports/*
 !/storage/app/reports/.gitkeep
