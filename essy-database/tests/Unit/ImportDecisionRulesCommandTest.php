@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * DEPRECATED: These tests are for the old ImportDecisionRules command
+ * which is no longer needed. Decision rules are now extracted automatically
+ * from uploaded Excel files during the normal upload process.
+ * 
+ * @deprecated
+ */
+
 namespace Tests\Unit;
 
 use App\Console\Commands\ImportDecisionRules;

@@ -10,10 +10,18 @@ use Illuminate\Console\Command;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+/**
+ * DEPRECATED: This command is no longer needed.
+ * 
+ * Decision rules are now automatically extracted from uploaded Excel files
+ * during the normal upload process. No separate import command is required.
+ * 
+ * @deprecated Use uploaded Excel files instead
+ */
 class ImportDecisionRules extends Command
 {
     protected $signature = 'essy:import-decision-rules {file : Path to Excel file} {--show-mapping : Show detailed field name mapping}';
-    protected $description = 'Import decision rules from Excel file with corrected field name mapping';
+    protected $description = '[DEPRECATED] Import decision rules from Excel file - No longer needed, decision rules are extracted from uploaded files automatically';
 
     private const SHEET_NAME = 'Decision Rules';
     private const HEADER_ROW = 39;
@@ -149,6 +157,15 @@ class ImportDecisionRules extends Command
 
     public function handle(): int
     {
+        $this->warn('⚠️  DEPRECATED COMMAND ⚠️');
+        $this->warn('This command is no longer needed.');
+        $this->warn('Decision rules are now automatically extracted from uploaded Excel files.');
+        $this->warn('Simply upload your Excel file through the web interface.');
+        $this->warn('');
+        $this->warn('If you still want to run this command, uncomment the return statement below.');
+        
+        return 0; // Exit early - command is deprecated
+        
         $filePath = $this->argument('file');
 
         try {

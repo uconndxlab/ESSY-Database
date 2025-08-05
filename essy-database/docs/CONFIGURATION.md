@@ -72,9 +72,9 @@ if (!$decisionText && config('essy.decision_rules_fallback')) {
 - Set `ESSY_DECISION_RULES_FALLBACK=true` for graceful degradation
 
 #### Production Environment
-- Start with `ESSY_USE_DECISION_RULES=false` for initial deployment
-- Switch to `ESSY_USE_DECISION_RULES=true` after importing decision rules data
+- Set `ESSY_USE_DECISION_RULES=true` (decision rules are extracted from uploaded Excel files automatically)
 - Always keep `ESSY_DECISION_RULES_FALLBACK=true` in production
+- No separate import commands needed - decision rules are extracted during normal file upload
 
 #### Testing Environment
 - Use `ESSY_USE_DECISION_RULES=true` to test decision rules functionality
@@ -84,13 +84,13 @@ if (!$decisionText && config('essy.decision_rules_fallback')) {
 
 #### Decision Rules Not Working
 1. Check that `ESSY_USE_DECISION_RULES=true` in your `.env` file
-2. Verify decision rules have been imported using `php artisan essy:import-decision-rules`
+2. Verify that uploaded Excel files contain a "Decision Rules" sheet with proper format
 3. Check application logs for decision rules lookup errors
 
 #### Falling Back to Concatenation
 1. Check that `ESSY_DECISION_RULES_FALLBACK=true` in your `.env` file
 2. Review logs to see which decision rules are missing
-3. Re-import decision rules if necessary
+3. Ensure uploaded Excel files contain all required decision rules in the "Decision Rules" sheet
 
 #### Performance Issues
 1. Consider setting `ESSY_USE_DECISION_RULES=false` temporarily

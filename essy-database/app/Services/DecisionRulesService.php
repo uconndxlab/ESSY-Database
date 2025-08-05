@@ -6,6 +6,7 @@ use App\Models\DecisionRule;
 use App\Models\ReportData;
 use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * Service for handling decision rules lookup functionality.
@@ -24,12 +25,26 @@ class DecisionRulesService
 {
     private CrossLoadedDomainService $crossLoadedService;
     private LoggerInterface $logger;
+    private ?string $uploadedExcelPath = null;
+    private array $cachedDecisionRules = [];
     protected array $decisionRules = [];
 
     public function __construct(CrossLoadedDomainService $crossLoadedService, ?LoggerInterface $logger = null)
     {
         $this->crossLoadedService = $crossLoadedService;
         $this->logger = $logger ?? Log::channel('default');
+    }
+
+    /**
+     * Set the path to the uploaded Excel file
+     *
+     * @param string $filePath
+     * @return void
+     */
+    public function setUploadedExcelPath(string $filePath): void
+    {
+        $this->uploadedExcelPath = $filePath;
+        $this->cachedDecisionRules = []; // Clear cache when file changes
     }
 
     /**
@@ -48,7 +63,15 @@ class DecisionRulesService
                 return $essentialItemText;
             }
             
-            // Otherwise, check the database for decision rules
+            // Try to get from uploaded Excel file
+            if ($this->uploadedExcelPath) {
+                $uploadedText = $this->getFromUploadedExcel($itemCode, $frequency);
+                if ($uploadedText) {
+                    return $uploadedText;
+                }
+            }
+            
+            // Fall back to database for decision rules
             $decisionText = DecisionRule::getDecisionText($itemCode, $frequency);
             
             if (!$decisionText) {
@@ -706,6 +729,88 @@ class DecisionRulesService
         ];
         
         return $essentialItems[$field][$frequency] ?? null;
+    }
+
+    /**
+     * Get decision text from uploaded Excel file
+     *
+     * @param string $itemCode
+     * @param string $frequency
+     * @return string|null
+     */
+    private function getFromUploadedExcel(string $itemCode, string $frequency): ?string
+    {
+        try {
+            // Load decision rules from uploaded Excel file (with caching)
+            if (empty($this->cachedDecisionRules)) {
+                $this->loadDecisionRulesFromExcel();
+            }
+
+            return $this->cachedDecisionRules[$itemCode][$frequency] ?? null;
+        } catch (\Exception $e) {
+            $this->logDecisionRuleError('Error retrieving from uploaded Excel', [
+                'item_code' => $itemCode,
+                'frequency' => $frequency,
+                'file_path' => $this->uploadedExcelPath,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Load decision rules from the uploaded Excel file
+     *
+     * @return void
+     */
+    private function loadDecisionRulesFromExcel(): void
+    {
+        if (!$this->uploadedExcelPath || !file_exists($this->uploadedExcelPath)) {
+            return;
+        }
+
+        try {
+            $spreadsheet = IOFactory::load($this->uploadedExcelPath);
+            $sheet = $spreadsheet->getSheetByName('Decision Rules');
+            
+            $row = 2; // Start from row 2 (assuming row 1 is headers)
+            while (true) {
+                $itemCode = trim($sheet->getCell('A' . $row)->getCalculatedValue() ?? '');
+                $frequency = trim($sheet->getCell('B' . $row)->getCalculatedValue() ?? '');
+                $decisionText = trim($sheet->getCell('C' . $row)->getCalculatedValue() ?? '');
+                
+                // Stop if we hit an empty row
+                if (empty($itemCode) && empty($frequency) && empty($decisionText)) {
+                    break;
+                }
+                
+                // Skip incomplete rows
+                if (empty($itemCode) || empty($frequency) || empty($decisionText)) {
+                    $row++;
+                    continue;
+                }
+                
+                // Store the rule
+                if (!isset($this->cachedDecisionRules[$itemCode])) {
+                    $this->cachedDecisionRules[$itemCode] = [];
+                }
+                
+                $this->cachedDecisionRules[$itemCode][$frequency] = $decisionText;
+                $row++;
+            }
+            
+            $this->logger->info('[DecisionRules] Loaded decision rules from uploaded Excel', [
+                'file_path' => $this->uploadedExcelPath,
+                'rule_count' => array_sum(array_map('count', $this->cachedDecisionRules)),
+                'item_codes' => array_keys($this->cachedDecisionRules)
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->logDecisionRuleError('Failed to load decision rules from Excel', [
+                'file_path' => $this->uploadedExcelPath,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     /**

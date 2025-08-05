@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\ReportData;
+use App\Services\DecisionRulesService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Str;
 use Exception;
@@ -25,6 +26,11 @@ class ImportDataSanitized extends Command
                 $this->error("File not found: $filePath");
                 return 1;
             }
+
+            // Set the uploaded Excel file path in DecisionRulesService
+            $decisionRulesService = app(DecisionRulesService::class);
+            $decisionRulesService->setUploadedExcelPath($filePath);
+            $this->info("Set uploaded Excel path for decision rules: $filePath");
 
             $spreadsheet = IOFactory::load($filePath);
             $this->info("Spreadsheet loaded successfully.");
