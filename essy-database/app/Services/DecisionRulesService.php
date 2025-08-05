@@ -659,48 +659,49 @@ class DecisionRulesService
     private function getEssentialItemText(string $field, string $frequency): ?string
     {
         // Essential Items mapping based on Excel Essential Items table (rows 31-37)
+        // Bold formatting added to match the original design
         $essentialItems = [
             'E_SHARM' => [
-                'Almost Always' => 'Almost always engages in self-harming behaviors.',
-                'Frequently' => 'Frequently engages in self-harming behaviors.',
-                'Sometimes' => 'Sometimes engages in self-harming behaviors.',
-                'Occasionally' => 'Occasionally engages in self-harming behaviors.',
-                'Almost Never' => 'Almost never engages in self-harming behaviors.'
+                'Almost Always' => 'Almost always engages in <strong>self-harming behaviors</strong>.',
+                'Frequently' => 'Frequently engages in <strong>self-harming behaviors</strong>.',
+                'Sometimes' => 'Sometimes engages in <strong>self-harming behaviors</strong>.',
+                'Occasionally' => 'Occasionally engages in <strong>self-harming behaviors</strong>.',
+                'Almost Never' => 'Almost never engages in <strong>self-harming behaviors</strong>.'
             ],
             'E_BULLIED' => [
-                'Almost Always' => 'Has almost always been bullied by other students.',
-                'Frequently' => 'Has frequently been bullied by other students.',
-                'Sometimes' => 'Has sometimes been bullied by other students.',
-                'Occasionally' => 'Has occasionally been bullied by other students.',
-                'Almost Never' => 'Has almost never been bullied by other students.'
+                'Almost Always' => 'Has almost always been <strong>bullied</strong> by other students.',
+                'Frequently' => 'Has frequently been <strong>bullied</strong> by other students.',
+                'Sometimes' => 'Has sometimes been <strong>bullied</strong> by other students.',
+                'Occasionally' => 'Has occasionally been <strong>bullied</strong> by other students.',
+                'Almost Never' => 'Has almost never been <strong>bullied</strong> by other students.'
             ],
             'E_EXCLUDE' => [
-                'Almost Always' => 'Almost always experiences social exclusion in school.',
-                'Frequently' => 'Frequently experiences social exclusion in school.',
-                'Sometimes' => 'Sometimes experiences social exclusion in school.',
-                'Occasionally' => 'Occasionally experiences social exclusion in school.',
-                'Almost Never' => 'Almost never experiences social exclusion in school.'
+                'Almost Always' => 'Almost always experiences <strong>social exclusion</strong> in school.',
+                'Frequently' => 'Frequently experiences <strong>social exclusion</strong> in school.',
+                'Sometimes' => 'Sometimes experiences <strong>social exclusion</strong> in school.',
+                'Occasionally' => 'Occasionally experiences <strong>social exclusion</strong> in school.',
+                'Almost Never' => 'Almost never experiences <strong>social exclusion</strong> in school.'
             ],
             'E_WITHDRAW' => [
-                'Almost Always' => 'Almost always avoids or withdraws from peers.',
-                'Frequently' => 'Frequently avoids or withdraws from peers.',
-                'Sometimes' => 'Sometimes avoids or withdraws from peers.',
-                'Occasionally' => 'Occasionally avoids or withdraws from peers.',
-                'Almost Never' => 'Almost never avoids or withdraws from peers.'
+                'Almost Always' => 'Almost always <strong>avoids or withdraws</strong> from peers.',
+                'Frequently' => 'Frequently <strong>avoids or withdraws</strong> from peers.',
+                'Sometimes' => 'Sometimes <strong>avoids or withdraws</strong> from peers.',
+                'Occasionally' => 'Occasionally <strong>avoids or withdraws</strong> from peers.',
+                'Almost Never' => 'Almost never <strong>avoids or withdraws</strong> from peers.'
             ],
             'E_REGULATE' => [
-                'Almost Always' => 'Almost always regulates emotions.',
-                'Frequently' => 'Frequently regulates emotions.',
-                'Sometimes' => 'Sometimes regulates emotions.',
-                'Occasionally' => 'Occasionally regulates emotions.',
-                'Almost Never' => 'Almost never regulates emotions.'
+                'Almost Always' => 'Almost always <strong>regulates emotions</strong>.',
+                'Frequently' => 'Frequently <strong>regulates emotions</strong>.',
+                'Sometimes' => 'Sometimes <strong>regulates emotions</strong>.',
+                'Occasionally' => 'Occasionally <strong>regulates emotions</strong>.',
+                'Almost Never' => 'Almost never <strong>regulates emotions</strong>.'
             ],
             'E_RESTED' => [
-                'Almost Always' => 'Almost always appears well-rested.',
-                'Frequently' => 'Frequently appears well-rested.',
-                'Sometimes' => 'Sometimes appears well-rested.',
-                'Occasionally' => 'Occasionally appears well-rested.',
-                'Almost Never' => 'Almost never appears well-rested.'
+                'Almost Always' => 'Almost always appears <strong>well-rested</strong>.',
+                'Frequently' => 'Frequently appears <strong>well-rested</strong>.',
+                'Sometimes' => 'Sometimes appears <strong>well-rested</strong>.',
+                'Occasionally' => 'Occasionally appears <strong>well-rested</strong>.',
+                'Almost Never' => 'Almost never appears <strong>well-rested</strong>.'
             ]
         ];
         
