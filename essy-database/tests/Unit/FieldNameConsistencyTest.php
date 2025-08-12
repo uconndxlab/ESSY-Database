@@ -54,31 +54,31 @@ class FieldNameConsistencyTest extends TestCase
 
         $misspelledFields = [];
 
-        // Check for misspelled HYGEINE in cross-loaded groups
+        // Check for misspelled hygiene in cross-loaded groups
         foreach ($crossLoadedGroups as $groupIndex => $group) {
             foreach ($group as $field) {
-                if (str_contains($field, 'HYGEINE')) {
+                if (str_contains($field, 'hygiene')) {
                     $misspelledFields[] = "Misspelled field '{$field}' found in cross-loaded group '{$groupIndex}'";
                 }
             }
         }
 
-        // Check for misspelled HYGEINE in field-to-domain mapping
+        // Check for misspelled hygiene in field-to-domain mapping
         foreach ($fieldToDomainMap as $field => $domain) {
-            if (str_contains($field, 'HYGEINE')) {
+            if (str_contains($field, 'hygiene')) {
                 $misspelledFields[] = "Misspelled field '{$field}' found in field-to-domain mapping";
             }
         }
 
-        // Check for misspelled HYGEINE in field messages
+        // Check for misspelled hygiene in field messages
         foreach ($fieldMessages as $field => $message) {
-            if (str_contains($field, 'HYGEINE')) {
+            if (str_contains($field, 'hygiene')) {
                 $misspelledFields[] = "Misspelled field '{$field}' found in field messages";
             }
         }
 
         // Assert no misspelled fields
-        $this->assertEmpty($misspelledFields, "Misspelled HYGEINE fields found:\n" . implode("\n", $misspelledFields));
+        $this->assertEmpty($misspelledFields, "Misspelled hygiene fields found:\n" . implode("\n", $misspelledFields));
     }
 
     public function test_hygiene_fields_use_correct_spelling()
@@ -88,13 +88,13 @@ class FieldNameConsistencyTest extends TestCase
         $fieldMessages = $this->service->getFieldMessages();
 
         // Act & Assert - Verify correct spelling exists
-        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $fieldToDomainMap, 'O_P_HYGEINE_CL1 should exist in field-to-domain mapping');
+        $this->assertArrayHasKey('O_P_hygiene_CL1', $fieldToDomainMap, 'O_P_hygiene_CL1 should exist in field-to-domain mapping');
         $this->assertArrayHasKey('O_P_HYGIENE_CL2', $fieldToDomainMap, 'O_P_HYGIENE_CL2 should exist in field-to-domain mapping');
         
-        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $fieldMessages, 'O_P_HYGEINE_CL1 should exist in field messages');
+        $this->assertArrayHasKey('O_P_hygiene_CL1', $fieldMessages, 'O_P_hygiene_CL1 should exist in field messages');
         
         // Verify correct domain mappings
-        $this->assertEquals('Physical Health', $fieldToDomainMap['O_P_HYGEINE_CL1']);
+        $this->assertEquals('Physical Health', $fieldToDomainMap['O_P_hygiene_CL1']);
         $this->assertEquals('Supports Outside of School', $fieldToDomainMap['O_P_HYGIENE_CL2']);
     }
 
@@ -106,7 +106,7 @@ class FieldNameConsistencyTest extends TestCase
         // Find the hygiene group
         $hygieneGroup = null;
         foreach ($crossLoadedGroups as $group) {
-            if (in_array('O_P_HYGEINE_CL1', $group) && in_array('O_P_HYGIENE_CL2', $group)) {
+            if (in_array('O_P_hygiene_CL1', $group) && in_array('O_P_HYGIENE_CL2', $group)) {
                 $hygieneGroup = $group;
                 break;
             }
@@ -114,7 +114,7 @@ class FieldNameConsistencyTest extends TestCase
 
         // Assert hygiene group exists and has correct fields
         $this->assertNotNull($hygieneGroup, 'Hygiene cross-loaded group should exist');
-        $this->assertContains('O_P_HYGEINE_CL1', $hygieneGroup, 'Hygiene group should contain O_P_HYGEINE_CL1');
+        $this->assertContains('O_P_hygiene_CL1', $hygieneGroup, 'Hygiene group should contain O_P_hygiene_CL1');
         $this->assertContains('O_P_HYGIENE_CL2', $hygieneGroup, 'Hygiene group should contain O_P_HYGIENE_CL2');
         $this->assertCount(2, $hygieneGroup, 'Hygiene group should contain exactly 2 fields');
     }

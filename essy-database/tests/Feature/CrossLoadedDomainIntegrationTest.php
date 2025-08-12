@@ -138,7 +138,7 @@ class CrossLoadedDomainIntegrationTest extends TestCase
         $report->fill([
             'P_DOMAIN' => 'an area of some concern',
             'O_DOMAIN' => 'an area of substantial concern',
-            'O_P_HYGEINE_CL1' => 'Sometimes', // Corrected spelling
+            'O_P_hygiene_CL1' => 'Sometimes', // Corrected spelling
             'O_P_HYGIENE_CL2' => 'Occasionally', // Correct spelling
         ]);
         
@@ -146,7 +146,7 @@ class CrossLoadedDomainIntegrationTest extends TestCase
         $daggerFields = $this->crossLoadedService->getFieldsRequiringDagger($concernDomains);
         
         // Both hygiene fields should be handled
-        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $daggerFields);
+        $this->assertArrayHasKey('O_P_hygiene_CL1', $daggerFields);
         $this->assertArrayHasKey('O_P_HYGIENE_CL2', $daggerFields);
     }
 

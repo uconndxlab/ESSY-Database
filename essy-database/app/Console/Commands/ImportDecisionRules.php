@@ -106,7 +106,7 @@ class ImportDecisionRules extends Command
         'CM' => 'P_PARTICIPATE',
         'CN' => 'S_P_ACHES_CL1',
         'CO' => 'O_P_HUNGER_CL1',
-        'CP' => 'O_P_HYGEINE_CL1',
+        'CP' => 'O_P_hygiene_CL1',
         'CQ' => 'O_P_CLOTHES_CL1',
         'CR' => 'COMMENTS_PH',
         'CS' => 'TIMING_PH_First Click',
@@ -145,7 +145,7 @@ class ImportDecisionRules extends Command
         'DV' => 'O_ROUTINE',
         'DW' => 'O_FAMILY',
         'DX' => 'O_P_HUNGER_CL2',
-        'DY' => 'O_P_HYGEINE_CL2', // Updated to match Excel spelling (HYGEINE)
+        'DY' => 'O_P_hygiene_CL2', // Updated to match Excel spelling (hygiene)
         'DZ' => 'O_P_CLOTHES_CL2',
         'EA' => 'O_RESOURCE',
         'EB' => 'B_O_HOUSING_CL2',
@@ -526,6 +526,6 @@ class ImportDecisionRules extends Command
         $this->info("- BZ → P_ORAL (domain prefix correction from A_ORAL)");
         $this->info("- CA → P_PHYS (domain prefix correction from A_PHYS)");
         $this->info("- CT → S_O_COMMCONN_CL1 (cross-loaded variant from S_COMMCONN)");
-        $this->info("- CE/DC → *_HYGEINE (spelling preserved from Excel)");
+        $this->info("- CE/DC → *_hygiene (spelling preserved from Excel)");
     }
 }

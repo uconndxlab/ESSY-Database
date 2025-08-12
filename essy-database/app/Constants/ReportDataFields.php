@@ -57,7 +57,7 @@ class ReportDataFields
     public const P_PARTICIPATE = 'P_PARTICIPATE';
     public const S_P_ACHES_CL1 = 'S_P_ACHES_CL1';
     public const O_P_HUNGER_CL1 = 'O_P_HUNGER_CL1';
-    public const O_P_HYGEINE_CL1 = 'O_P_HYGEINE_CL1';
+    public const O_P_hygiene_CL1 = 'O_P_hygiene_CL1';
     public const O_P_CLOTHES_CL1 = 'O_P_CLOTHES_CL1';
 
     // Social & Emotional Well-Being fields
@@ -162,7 +162,7 @@ class ReportDataFields
             'family_stress' => [self::B_O_FAMSTRESS_CL1, self::B_O_FAMSTRESS_CL2],
             'neighborhood_stress' => [self::B_O_NBHDSTRESS_CL1, self::B_O_NBHDSTRESS_CL2],
             'hunger' => [self::O_P_HUNGER_CL1, self::O_P_HUNGER_CL2],
-            'hygiene' => [self::O_P_HYGEINE_CL1, self::O_P_HYGIENE_CL2],
+            'hygiene' => [self::O_P_hygiene_CL1, self::O_P_HYGIENE_CL2],
             'clothing' => [self::O_P_CLOTHES_CL1, self::O_P_CLOTHES_CL2],
             'extracurricular' => [self::A_S_O_ACTIVITY_CL1, self::A_S_O_ACTIVITY_CL2, self::A_S_O_ACTIVITY_CL3]
         ];
@@ -217,7 +217,7 @@ class ReportDataFields
             self::P_PARTICIPATE => 'Physical Health',
             self::S_P_ACHES_CL1 => 'Physical Health',
             self::O_P_HUNGER_CL1 => 'Physical Health',
-            self::O_P_HYGEINE_CL1 => 'Physical Health',
+            self::O_P_hygiene_CL1 => 'Physical Health',
             self::O_P_CLOTHES_CL1 => 'Physical Health',
 
             // Social & Emotional Well-Being

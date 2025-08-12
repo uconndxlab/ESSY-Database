@@ -253,7 +253,7 @@ class ReportTemplateHelper
                 'P_PARTICIPATE' => ['message' => 'Participates in physical activities'],
                 'S_P_ACHES_CL1' => ['message' => 'Complains of aches and pains'],
                 'O_P_HUNGER_CL1' => ['message' => 'Reports being hungry'],
-                'O_P_HYGEINE_CL1' => ['message' => 'Has hygiene resources'],
+                'O_P_hygiene_CL1' => ['message' => 'Has hygiene resources'],
                 'O_P_CLOTHES_CL1' => ['message' => 'Has adequate clothing'],
             ],
             'Social & Emotional Well-Being' => [

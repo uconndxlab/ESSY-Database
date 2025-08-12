@@ -60,8 +60,8 @@ class FieldNameMappingValidator
             'P_PHYS' => 'physical health appears to be addressed.',
             
             // Hygiene - Excel has spelling difference
-            'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs.',
-            'O_P_HYGEINE_CL2' => 'appears to have the resources to address basic hygiene needs.',
+            'O_P_hygiene_CL1' => 'appears to have the resources to address basic hygiene needs.',
+            'O_P_hygiene_CL2' => 'appears to have the resources to address basic hygiene needs.',
             
             // Articulate - Excel has CL3 variant missing in code
             'A_P_S_ARTICULATE_CL1' => 'articulates clearly enough to be understood.',
@@ -145,7 +145,7 @@ class FieldNameMappingValidator
             'BEH_PHYSAGGRESS' => ['B_PHYSAGGRESS'],
             'A_ORAL' => ['P_ORAL'],
             'A_PHYS' => ['P_PHYS'],
-            'O_P_HYGEINE_CL1' => ['O_P_HYGEINE_CL1'],
+            'O_P_hygiene_CL1' => ['O_P_hygiene_CL1'],
             'S_COMMCONN' => ['S_O_COMMCONN_CL1', 'S_O_COMMCONN_CL2'],
         ];
 
@@ -208,8 +208,8 @@ class FieldNameMappingValidator
         echo "Checking for spelling errors...\n";
 
         $knownSpellingIssues = [
-            'O_P_HYGEINE_CL1' => 'O_P_HYGEINE_CL1', // Code has HYGIENE, Excel has HYGEINE
-            'O_P_HYGIENE_CL2' => 'O_P_HYGEINE_CL2',
+            'O_P_hygiene_CL1' => 'O_P_hygiene_CL1', // Code has HYGIENE, Excel has hygiene
+            'O_P_HYGIENE_CL2' => 'O_P_hygiene_CL2',
         ];
 
         foreach ($knownSpellingIssues as $codeField => $excelField) {

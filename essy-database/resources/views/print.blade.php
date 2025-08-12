@@ -107,10 +107,10 @@
             }
         }
 
-        $crossLoadedDomainService = new \App\Services\CrossLoadedDomainService();
-        $decisionRulesService = config('essy.use_decision_rules') 
+        $crossLoadedDomainService = $crossLoadedDomainService ?? new \App\Services\CrossLoadedDomainService();
+        $decisionRulesService = $decisionRulesService ?? (config('essy.use_decision_rules') 
             ? new \App\Services\DecisionRulesService($crossLoadedDomainService)
-            : null;
+            : null);
 
         $notOfConcern = array_diff(
             array_keys($domainValues),
@@ -309,8 +309,9 @@
 
     // Define cross-loaded item relationships using actual database column IDs from ReportData.php model
     $crossLoadItemGroups = [
-        ['A_P_S_ARTICULATE_CL1', 'A_P_S_ARTICULATE_CL2'], // AV (Acad) / CI (Phys) - Articulates clearly
+        ['A_P_S_ARTICULATE_CL1', 'A_P_S_ARTICULATE_CL2', 'A_P_S_ARTICULATE_CL3'], // Articulates clearly - 3 domains
         ['A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2'],   // AW (Acad) / DF (SEWB) - Effectively communicates with adults
+        ['A_B_DIRECTIONS_CL1', 'A_B_DIRECTIONS_CL2'], // Understands directions - Academic / Behavior
         ['A_B_CLASSEXPECT_CL1', 'A_B_CLASSEXPECT_CL2'],// BB (Acad) / BP (Beh) - Follows classroom expectations
         ['A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2'],       // BC (Acad) / BQ (Beh) - Exhibits impulsivity
         ['A_S_CONFIDENT_CL1', 'A_S_CONFIDENT_CL2'],   // BH (Acad) / CW (SEWB) - Displays confidence in self
@@ -320,8 +321,9 @@
         ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],   // BZ (Beh) / EA (SOS) - Family stressors
         ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'], // CA (Beh) / EB (SOS) - Neighborhood stressors
         ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],         // CN (Phys) / DV (SOS) - Reports being hungry
-        ['O_P_HYGEINE_CL1', 'O_P_HYGIENE_CL2'],       // CO (Phys) / DW (SOS) - Hygiene resources (Note: O_P_HYGEINE_CL1 from model)
+        ['O_P_HYGIENE_CL1', 'O_P_HYGIENE_CL2'],       // CO (Phys) / DW (SOS) - Hygiene resources (Note: corrected spelling)
         ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],       // CP (Phys) / DX (SOS) - Adequate clothing
+        ['S_O_COMMCONN_CL1', 'S_O_COMMCONN_CL2'],     // Community connection - SEWB / SOS
         ['A_S_O_ACTIVITY_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // BJ (Acad) / DJ (SEWB) / EC (SOS) - Extracurricular activity
     ];
 
@@ -373,50 +375,29 @@
     <p>The table below is organized using three categories: strengths to maintain, areas to monitor 
     (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
 
+    <!-- DEBUG: After table description text -->
+
 @php
     // Process all domains using the appropriate service based on configuration
-    $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]), array_merge($someConcern ?? [], $substantialConcern ?? []));
+    $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]), array_merge($someConcern, $substantialConcern));
     
     // Use DecisionRulesService if enabled, otherwise fall back to CrossLoadedDomainService
     $domainService = $decisionRulesService ?? $crossLoadedDomainService;
     
-    $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);
-    $behaviorResults = $domainService->processDomainItems($report, 'Behavior', $concernDomains);
-    $physicalResults = $domainService->processDomainItems($report, 'Physical Health', $concernDomains);
-    $sewbResults = $domainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
-    $sosResults = $domainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
-
-    // DEBUG: Uncomment below to debug frequency responses and categorization
-    /*
-    $fieldToDomainMap = $crossLoadedDomainService->getFieldToDomainMap();
-    $fieldMessages = $crossLoadedDomainService->getFieldMessages();
-    $fieldsThatNeedDagger = $crossLoadedDomainService->getFieldsRequiringDagger($concernDomains);
-    
-    $debugInfo = [
-        'concernDomains' => $concernDomains,
-        'sampleFieldValues' => [
-            'A_READ' => [
-                'rawValue' => $report->A_READ ?? 'NULL',
-                'safeValue' => $crossLoadedDomainService->safeGetFieldValue($report, 'A_READ'),
-                'category' => $crossLoadedDomainService->categorizeFieldValue('A_READ', $crossLoadedDomainService->safeGetFieldValue($report, 'A_READ') ?? ''),
-                'domain' => $fieldToDomainMap['A_READ'] ?? 'NOT FOUND'
-            ],
-            'A_B_IMPULSE_CL1' => [
-                'rawValue' => $report->A_B_IMPULSE_CL1 ?? 'NULL',
-                'safeValue' => $crossLoadedDomainService->safeGetFieldValue($report, 'A_B_IMPULSE_CL1'),
-                'category' => $crossLoadedDomainService->categorizeFieldValue('A_B_IMPULSE_CL1', $crossLoadedDomainService->safeGetFieldValue($report, 'A_B_IMPULSE_CL1') ?? ''),
-                'domain' => $fieldToDomainMap['A_B_IMPULSE_CL1'] ?? 'NOT FOUND'
-            ],
-            'B_CLINGY' => [
-                'rawValue' => $report->B_CLINGY ?? 'NULL',
-                'safeValue' => $crossLoadedDomainService->safeGetFieldValue($report, 'B_CLINGY'),
-                'category' => $crossLoadedDomainService->categorizeFieldValue('B_CLINGY', $crossLoadedDomainService->safeGetFieldValue($report, 'B_CLINGY') ?? ''),
-                'domain' => $fieldToDomainMap['B_CLINGY'] ?? 'NOT FOUND'
-            ]
-        ]
-    ];
-    */
-    
+    try {
+        $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);
+        $behaviorResults = $domainService->processDomainItems($report, 'Behavior', $concernDomains);
+        $physicalResults = $domainService->processDomainItems($report, 'Physical Health', $concernDomains);
+        $sewbResults = $domainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
+        $sosResults = $domainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
+    } catch (Exception $e) {
+        // Fallback to empty arrays if there's an error
+        $academicResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+        $behaviorResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+        $physicalResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+        $sewbResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+        $sosResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+    }
 @endphp
 
 {{-- DEBUG INFORMATION - Uncomment to debug frequency responses and categorization
@@ -562,7 +543,7 @@
             # of unanswered items:
             @php
                 $missingItems = [];
-                $crossLoadedGroups = $crossLoadedDomainService->getCrossLoadedItemGroups();
+                $crossLoadedGroups = $crossLoadItemGroups;
                 $fieldMessages = $crossLoadedDomainService->getFieldMessages();
                 $fieldToDomainMap = $crossLoadedDomainService->getFieldToDomainMap();
                 
@@ -572,6 +553,12 @@
                 foreach ($fieldMessages as $field => $message) {
                     // Skip comment fields
                     if (str_starts_with($field, 'COMMENTS_')) {
+                        continue;
+                    }
+                    
+                    // Skip Gate 2 essential items - they should not be counted as unanswered
+                    // Gate 2 items should only appear if they are concerns, not because they're unanswered
+                    if (in_array($field, ['E_SHARM', 'E_BULLIED', 'E_EXCLUDE', 'E_WITHDRAW', 'E_REGULATE', 'E_RESTED'])) {
                         continue;
                     }
                     
@@ -609,8 +596,23 @@
                         }
                         
                         // If no field in the group has a value, count it as missing
+                        // But only if we have fields from concern domains in this group
                         if (!$groupHasValue) {
-                            $missingItems[] = $message;
+                            // Find a field from a concern domain to use as representative
+                            $representativeField = null;
+                            foreach ($group as $groupField) {
+                                $groupFieldDomain = $fieldToDomainMap[$groupField] ?? null;
+                                if ($groupFieldDomain && in_array($groupFieldDomain, $concernDomains)) {
+                                    $representativeField = $groupField;
+                                    break;
+                                }
+                            }
+                            
+                            // Only count as missing if we found a representative field from a concern domain
+                            if ($representativeField) {
+                                $representativeMessage = $fieldMessages[$representativeField] ?? $message;
+                                $missingItems[] = $representativeMessage;
+                            }
                         }
                         
                         // Mark this group as processed
