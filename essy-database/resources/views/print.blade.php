@@ -564,23 +564,63 @@
                 $missingItems = [];
                 $crossLoadedGroups = $crossLoadedDomainService->getCrossLoadedItemGroups();
                 $fieldMessages = $crossLoadedDomainService->getFieldMessages();
+                $fieldToDomainMap = $crossLoadedDomainService->getFieldToDomainMap();
                 
-                // Get secondary/tertiary fields from cross-loaded groups
-                $secondaryOrTertiaryCrossloadFields = [];
-                foreach ($crossLoadedGroups as $group) {
-                    // Skip the first field (primary), add the rest as secondary/tertiary
-                    for ($i = 1; $i < count($group); $i++) {
-                        $secondaryOrTertiaryCrossloadFields[] = $group[$i];
-                    }
-                }
-
+                // Track which cross-loaded groups have been processed to avoid duplicates
+                $processedCrossLoadedGroups = [];
+                
                 foreach ($fieldMessages as $field => $message) {
-                    $value = $crossLoadedDomainService->safeGetFieldValue($report, $field);
-                    $isComment = str_starts_with($field, 'COMMENTS_');
-                    $isSecondaryOrTertiary = in_array($field, $secondaryOrTertiaryCrossloadFields);
-
-                    if (!$isSecondaryOrTertiary && !$isComment && $value === null) {
-                        $missingItems[] = $message;
+                    // Skip comment fields
+                    if (str_starts_with($field, 'COMMENTS_')) {
+                        continue;
+                    }
+                    
+                    // Only count fields from concern domains
+                    $fieldDomain = $fieldToDomainMap[$field] ?? null;
+                    if (!$fieldDomain || !in_array($fieldDomain, $concernDomains)) {
+                        continue;
+                    }
+                    
+                    // Check if this field is part of a cross-loaded group
+                    $crossLoadedGroupIndex = null;
+                    foreach ($crossLoadedGroups as $groupIndex => $group) {
+                        if (in_array($field, $group)) {
+                            $crossLoadedGroupIndex = $groupIndex;
+                            break;
+                        }
+                    }
+                    
+                    // If this field is part of a cross-loaded group
+                    if ($crossLoadedGroupIndex !== null) {
+                        // Skip if we've already processed this cross-loaded group
+                        if (isset($processedCrossLoadedGroups[$crossLoadedGroupIndex])) {
+                            continue;
+                        }
+                        
+                        // Check if ANY field in the cross-loaded group has a value
+                        $groupHasValue = false;
+                        $group = $crossLoadedGroups[$crossLoadedGroupIndex];
+                        foreach ($group as $groupField) {
+                            $value = $crossLoadedDomainService->safeGetFieldValue($report, $groupField);
+                            if ($value !== null) {
+                                $groupHasValue = true;
+                                break;
+                            }
+                        }
+                        
+                        // If no field in the group has a value, count it as missing
+                        if (!$groupHasValue) {
+                            $missingItems[] = $message;
+                        }
+                        
+                        // Mark this group as processed
+                        $processedCrossLoadedGroups[$crossLoadedGroupIndex] = true;
+                    } else {
+                        // For non-cross-loaded fields, check the field directly
+                        $value = $crossLoadedDomainService->safeGetFieldValue($report, $field);
+                        if ($value === null) {
+                            $missingItems[] = $message;
+                        }
                     }
                 }
             @endphp
