@@ -119,9 +119,24 @@ class DecisionRulesService
                 // Log field value extraction
                 $this->logFieldValueExtraction($field, $valueRaw, 'initial');
                 
-                // For cross-loaded items, if this field is empty, try to get value from primary field
-                if (!$valueRaw && isset($fieldsThatNeedDagger[$field])) {
-                    $valueRaw = $this->getCrossLoadedValue($report, $field);
+                // For cross-loaded items, if this field is empty, try to get value from other fields in the group
+                if (!$valueRaw) {
+                    // Use the CrossLoadedDomainService method to get cross-loaded values
+                    $crossLoadedValue = null;
+                    $crossLoadedGroups = $this->crossLoadedService->getCrossLoadedItemGroups();
+                    foreach ($crossLoadedGroups as $group) {
+                        if (in_array($field, $group)) {
+                            foreach ($group as $groupField) {
+                                if ($groupField !== $field) {
+                                    $crossLoadedValue = $this->crossLoadedService->safeGetFieldValue($report, $groupField);
+                                    if ($crossLoadedValue !== null) {
+                                        break 2; // Break out of both loops
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $valueRaw = $crossLoadedValue;
                     $this->logFieldValueExtraction($field, $valueRaw, 'cross_loaded');
                 }
                 
@@ -214,66 +229,9 @@ class DecisionRulesService
         }
     }
 
-    /**
-     * Get value for cross-loaded item from other fields in the same group
-     *
-     * @param ReportData $report
-     * @param string $field
-     * @return string|null
-     */
-    private function getCrossLoadedValue(ReportData $report, string $field): ?string
-    {
-        try {
-            $crossLoadedItemGroups = $this->crossLoadedService->getCrossLoadedItemGroups();
-            
-            foreach ($crossLoadedItemGroups as $group) {
-                if (in_array($field, $group)) {
-                    $checkedFields = [];
-                    $foundValues = [];
-                    
-                    // Try to get value from other fields in the same group
-                    foreach ($group as $groupField) {
-                        if ($groupField !== $field) {
-                            $value = $this->crossLoadedService->safeGetFieldValue($report, $groupField);
-                            $checkedFields[] = $groupField;
-                            
-                            if ($value) {
-                                $foundValues[$groupField] = $value;
-                                
-                                // Log successful cross-loaded value retrieval
-                                $this->logCrossLoadedValueFound($field, $groupField, $value, $group);
-                                
-                                return $value;
-                            }
-                        }
-                    }
-                    
-                    // Log when no cross-loaded value is found
-                    $this->logCrossLoadedValueNotFound($field, $group, $checkedFields);
-                }
-            }
-            return null;
-        } catch (\Exception $e) {
-            $this->logDecisionRuleError('Error getting cross-loaded value', [
-                'field' => $field,
-                'report_id' => $report->id ?? 'unknown',
-                'error' => $e->getMessage()
-            ]);
-            return null;
-        }
-    }
 
-    /**
-     * Safely get field value from report with error handling
-     *
-     * @param ReportData $report
-     * @param string $field
-     * @return string|null
-     */
-    public function safeGetFieldValue(ReportData $report, string $field): ?string
-    {
-        return $this->crossLoadedService->safeGetFieldValue($report, $field);
-    }
+
+
 
     /**
      * Generate comprehensive item code variations to handle new field name patterns
@@ -455,49 +413,7 @@ class DecisionRulesService
     
 
     
-    /**
-     * Log when cross-loaded value is found
-     *
-     * @param string $targetField
-     * @param string $sourceField
-     * @param string $value
-     * @param array $group
-     * @return void
-     */
-    private function logCrossLoadedValueFound(string $targetField, string $sourceField, string $value, array $group): void
-    {
-        if (config('essy.log_decision_rule_lookups', false)) {
-            $this->logger->info('[DecisionRules] Cross-loaded value found', [
-                'target_field' => $targetField,
-                'source_field' => $sourceField,
-                'value' => $value,
-                'cross_loaded_group' => $group,
-                'timestamp' => now()->toISOString(),
-                'service' => 'DecisionRulesService'
-            ]);
-        }
-    }
-    
-    /**
-     * Log when no cross-loaded value is found
-     *
-     * @param string $targetField
-     * @param array $group
-     * @param array $checkedFields
-     * @return void
-     */
-    private function logCrossLoadedValueNotFound(string $targetField, array $group, array $checkedFields): void
-    {
-        if (config('essy.log_decision_rule_lookups', false)) {
-            $this->logger->info('[DecisionRules] No cross-loaded value found', [
-                'target_field' => $targetField,
-                'cross_loaded_group' => $group,
-                'checked_fields' => $checkedFields,
-                'timestamp' => now()->toISOString(),
-                'service' => 'DecisionRulesService'
-            ]);
-        }
-    }
+
     
     /**
      * Log the start of domain processing

@@ -537,18 +537,33 @@ class CrossLoadedDomainService
     /**
      * Get value for cross-loaded item from its primary field if secondary is empty
      */
+    /**
+     * Get value for cross-loaded item from other fields in the same group
+     */
     private function getCrossLoadedValue(ReportData $report, string $field): ?string
     {
-        foreach ($this->crossLoadedItemGroups as $group) {
-            if (in_array($field, $group)) {
-                // Try to get value from the first (primary) field in the group
-                $primaryField = $group[0];
-                if ($primaryField !== $field) {
-                    return $this->safeGetFieldValue($report, $primaryField);
+        try {
+            foreach ($this->crossLoadedItemGroups as $group) {
+                if (in_array($field, $group)) {
+                    // Try to get value from ANY other field in the group
+                    foreach ($group as $groupField) {
+                        if ($groupField !== $field) {
+                            $value = $this->safeGetFieldValue($report, $groupField);
+                            if ($value !== null) {
+                                return $value;
+                            }
+                        }
+                    }
                 }
             }
+            return null;
+        } catch (\Exception $e) {
+            $this->logCrossLoadedError('Error getting cross-loaded value', [
+                'field' => $field,
+                'error' => $e->getMessage()
+            ]);
+            return null;
         }
-        return null;
     }
 
     /**
