@@ -469,9 +469,9 @@ class CrossLoadedDomainService
         // Handle reversed interpretation fields (negative items)
         if (in_array($field, $reversedFields)) {
             // For negative items, lower frequency is better
-            if (in_array($value, ['almost never', 'occasionally'])) {
+            if ($value === 'almost never') {
                 return 'strengths';
-            } elseif ($value === 'sometimes') {
+            } elseif (in_array($value, ['occasionally', 'sometimes'])) {
                 return 'monitor';
             } else {
                 return 'concerns';

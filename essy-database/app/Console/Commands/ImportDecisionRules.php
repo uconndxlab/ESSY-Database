@@ -162,9 +162,9 @@ class ImportDecisionRules extends Command
         $this->warn('Decision rules are now automatically extracted from uploaded Excel files.');
         $this->warn('Simply upload your Excel file through the web interface.');
         $this->warn('');
-        $this->warn('If you still want to run this command, uncomment the return statement below.');
+        $this->warn('Running command anyway...');
         
-        return 0; // Exit early - command is deprecated
+        // return 0; // Exit early - command is deprecated (commented out to allow manual execution)
         
         $filePath = $this->argument('file');
 
