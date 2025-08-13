@@ -584,20 +584,23 @@
                             continue;
                         }
                         
-                        // Check if ANY field in the cross-loaded group has a value
+                        // Check if ANY field in the cross-loaded group has a value OR is specifically unanswered (-99)
                         $groupHasValue = false;
+                        $groupHasUnanswered = false;
                         $group = $crossLoadedGroups[$crossLoadedGroupIndex];
                         foreach ($group as $groupField) {
-                            $value = $crossLoadedDomainService->safeGetFieldValue($report, $groupField);
-                            if ($value !== null) {
+                            $rawValue = trim($report->getAttribute($groupField) ?? '');
+                            if (!empty($rawValue) && $rawValue !== '-99') {
                                 $groupHasValue = true;
                                 break;
+                            } elseif ($rawValue === '-99') {
+                                $groupHasUnanswered = true;
                             }
                         }
                         
-                        // If no field in the group has a value, count it as missing
-                        // But only if we have fields from concern domains in this group
-                        if (!$groupHasValue) {
+                        // Only count as missing if the group has -99 values (specifically unanswered)
+                        // Don't count empty fields as missing - they weren't presented
+                        if (!$groupHasValue && $groupHasUnanswered) {
                             // Find a field from a concern domain to use as representative
                             $representativeField = null;
                             $fieldsFromConcernDomains = [];
@@ -611,58 +614,22 @@
                             
                             // Only count as missing if we have fields from concern domains in this group
                             if (!empty($fieldsFromConcernDomains)) {
-                                // Check if this cross-loaded group should be counted as missing
-                                // For older datasets, some cross-loaded items might not have been presented
-                                $shouldCountAsMissing = true;
-                                
-                                // Special handling for cross-loaded items that might not exist in older datasets
-                                // Check for specific problematic cross-loaded groups
-                                $isProblematicCrossLoadedGroup = false;
-                                
-                                // S_O_COMMCONN group: Community connection cross-loaded between SEWB and SOS
-                                if (count($group) == 2 && 
-                                    in_array('S_O_COMMCONN_CL1', $group) && 
-                                    in_array('S_O_COMMCONN_CL2', $group)) {
-                                    
-                                    $cl1Value = $crossLoadedDomainService->safeGetFieldValue($report, 'S_O_COMMCONN_CL1');
-                                    $cl2Value = $crossLoadedDomainService->safeGetFieldValue($report, 'S_O_COMMCONN_CL2');
-                                    
-                                    // If both fields are null, this might be from an older dataset
-                                    // where this item wasn't cross-loaded yet (was just S_COMMCONN)
-                                    if ($cl1Value === null && $cl2Value === null) {
-                                        $isProblematicCrossLoadedGroup = true;
-                                    }
-                                }
-                                
-                                // Don't count problematic cross-loaded groups as missing
-                                // These are likely from older dataset versions where the item structure was different
-                                if ($isProblematicCrossLoadedGroup) {
-                                    $shouldCountAsMissing = false;
-                                }
-                                
-                                if ($shouldCountAsMissing) {
-                                    // Choose the best representative field
-                                    if (count($fieldsFromConcernDomains) > 1) {
-                                        // If multiple fields from concern domains, prefer CL2 over CL1 for newer format
-                                        $representativeField = end($fieldsFromConcernDomains);
-                                    } else {
-                                        $representativeField = $fieldsFromConcernDomains[0];
-                                    }
-                                    
-                                    $representativeMessage = $fieldMessages[$representativeField] ?? $message;
-                                    $missingItems[] = $representativeMessage;
-                                }
+                                // Use the first field from a concern domain as representative
+                                $representativeField = $fieldsFromConcernDomains[0];
+                                $representativeMessage = $fieldMessages[$representativeField] ?? $message;
+                                $missingItems[] = $representativeMessage;
                             }
                         }
                         
                         // Mark this group as processed
                         $processedCrossLoadedGroups[$crossLoadedGroupIndex] = true;
                     } else {
-                        // For non-cross-loaded fields, check the field directly
-                        $value = $crossLoadedDomainService->safeGetFieldValue($report, $field);
-                        if ($value === null) {
+                        // For non-cross-loaded fields, check if specifically unanswered (-99)
+                        $rawValue = trim($report->getAttribute($field) ?? '');
+                        if ($rawValue === '-99') {
                             $missingItems[] = $message;
                         }
+                        // Don't count empty fields - they weren't presented
                     }
                 }
             @endphp
