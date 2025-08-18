@@ -39,7 +39,7 @@ class UnansweredItemsAccuracyTest extends TestCase
             'B_PHYSAGGRESS' => 'Almost Never', // Was BEH_PHYSAGGRESS
             'P_ORAL' => 'Sometimes', // Was A_ORAL
             'P_PHYS' => 'Sometimes', // Was A_PHYS
-            'O_P_HYGEINE_CL1' => 'Sometimes', // Was O_P_HYGIENE_CL1 (spelling)
+            'O_P_hygiene_CL1' => 'Sometimes', // Was O_P_HYGIENE_CL1 (spelling)
             'S_O_COMMCONN_CL1' => 'Sometimes', // Was S_COMMCONN
             
             // Some fields with no data (should be unanswered)
@@ -163,7 +163,7 @@ class UnansweredItemsAccuracyTest extends TestCase
             // Items with confidence indicators
             'P_HEAR' => 'Almost Always,Check box if NOT confident in rating',
             'P_PARTICIPATE' => 'Sometimes,Check box if NOT confident in rating',
-            'O_P_HYGEINE_CL1' => 'Sometimes,Check box if NOT confident in rating',
+            'O_P_hygiene_CL1' => 'Sometimes,Check box if NOT confident in rating',
             'S_SCHOOLCONN' => 'Occasionally,Check box if NOT confident in rating',
             
             // Items without confidence indicators
@@ -286,7 +286,7 @@ class UnansweredItemsAccuracyTest extends TestCase
             'P_PARTICIPATE' => 'Sometimes,Check box if NOT confident in rating',
             'S_P_ACHES_CL1' => 'Occasionally',
             'O_P_HUNGER_CL1' => 'Sometimes',
-            'O_P_HYGEINE_CL1' => 'Sometimes,Check box if NOT confident in rating', // This was previously unanswered due to spelling
+            'O_P_hygiene_CL1' => 'Sometimes,Check box if NOT confident in rating', // This was previously unanswered due to spelling
             'O_P_CLOTHES_CL1' => 'Almost Never',
             
             // Social & Emotional Well-Being - using corrected field names from actual import

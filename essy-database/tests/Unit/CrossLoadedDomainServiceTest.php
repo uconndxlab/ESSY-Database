@@ -240,11 +240,11 @@ class CrossLoadedDomainServiceTest extends TestCase
         $mapping = $this->service->getFieldToDomainMap();
         
         // Test the hygiene fields with corrected spelling
-        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $mapping); // Physical Health
+        $this->assertArrayHasKey('O_P_hygiene_CL1', $mapping); // Physical Health
         $this->assertArrayHasKey('O_P_HYGIENE_CL2', $mapping); // Supports Outside of School
         
         // Both should map to their respective domains
-        $this->assertEquals('Physical Health', $mapping['O_P_HYGEINE_CL1']);
+        $this->assertEquals('Physical Health', $mapping['O_P_hygiene_CL1']);
         $this->assertEquals('Supports Outside of School', $mapping['O_P_HYGIENE_CL2']);
     }
 }

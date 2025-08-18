@@ -34,7 +34,7 @@ class ReportData extends Model
         'COMMENTS_BEH', 'TIMING_BEH_FirstClick', 'TIMING_BEH_LastClick', 'TIMING_BEH_PageSubmit', 'TIMING_BEH_ClickCount',
         // Physical Health - Updated field names to match Excel
         'P_SIGHT', 'P_HEAR', 'P_ORAL', 'P_PHYS', 'P_PARTICIPATE', 'S_P_ACHES_CL1',
-        'O_P_HUNGER_CL1', 'O_P_HYGEINE_CL1', 'O_P_CLOTHES_CL1', 'COMMENTS_PH', 'TIMING_PH_FirstClick',
+        'O_P_HUNGER_CL1', 'O_P_HYGIENE_CL1', 'O_P_CLOTHES_CL1', 'COMMENTS_PH', 'TIMING_PH_FirstClick',
         'TIMING_PH_LastClick', 'TIMING_PH_PageSubmit', 'TIMING_PH_ClickCount',
         // Social & Emotional Well-Being - Updated field names to match Excel
         'S_CONTENT', 'A_S_CONFIDENT_CL2', 'A_S_POSOUT_CL2', 'S_P_ACHES_CL2', 'S_NERVOUS', 'S_SAD',
@@ -43,7 +43,7 @@ class ReportData extends Model
         'COMMENTS_SEW', 'TIMING_SEW_FirstClick', 'TIMING_SEW_LastClick', 'TIMING_SEW_PageSubmit', 'TIMING_SEW_ClickCount',
         // Supports Outside of School - Updated field names to match Excel
         'O_RECIPROCAL', 'O_POSADULT', 'O_ADULTBEST', 'O_TALK', 'O_ROUTINE', 'O_FAMILY',
-        'O_P_HUNGER_CL2', 'O_P_HYGEINE_CL2', 'O_P_CLOTHES_CL2', 'O_RESOURCE',
+        'O_P_HUNGER_CL2', 'O_P_HYGIENE_CL2', 'O_P_CLOTHES_CL2', 'O_RESOURCE',
         'B_O_HOUSING_CL2', 'B_O_FAMSTRESS_CL2', 'B_O_NBHDSTRESS_CL2', 'A_S_O_ACTIVITY_CL3',
         'COMMENTS_SOS', 'TIMING_SOS_FirstClick', 'TIMING_SOS_LastClick', 'TIMING_SOS_PageSubmit', 'TIMING_SOS_ClickCount',
         'RELATION_CLOSE', 'RELATION_CONFLICT', 'COMMENTS_STR',

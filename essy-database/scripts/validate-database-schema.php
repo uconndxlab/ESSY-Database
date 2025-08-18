@@ -85,8 +85,8 @@ if (!empty($oldFieldsStillInDatabase)) {
         'BEH_PHYSAGGRESS' => 'B_PHYSAGGRESS',
         'A_ORAL' => 'P_ORAL',
         'A_PHYS' => 'P_PHYS',
-        'O_P_HYGIENE_CL1' => 'O_P_HYGEINE_CL1',
-        'O_P_HYGIENE_CL2' => 'O_P_HYGEINE_CL2',
+        'O_P_HYGIENE_CL1' => 'O_P_hygiene_CL1',
+        'O_P_HYGIENE_CL2' => 'O_P_hygiene_CL2',
         'S_COMMCONN' => ['S_O_COMMCONN_CL1', 'S_O_COMMCONN_CL2']
     ];
     

@@ -81,7 +81,7 @@ class FieldNameCorrectionTest extends TestCase
             'P_PARTICIPATE' => 'Sometimes',
             'S_P_ACHES_CL1' => 'Occasionally',
             'O_P_HUNGER_CL1' => 'Sometimes',
-            'O_P_HYGEINE_CL1' => 'Sometimes', // Using Excel spelling (HYGEINE)
+            'O_P_hygiene_CL1' => 'Sometimes', // Using Excel spelling (hygiene)
             'O_P_CLOTHES_CL1' => 'Almost Never',
             
             // Social & Emotional Well-Being - using corrected field names
@@ -110,7 +110,7 @@ class FieldNameCorrectionTest extends TestCase
             'O_ROUTINE' => 'Frequently',
             'O_FAMILY' => 'Sometimes',
             'O_P_HUNGER_CL2' => '',
-            'O_P_HYGEINE_CL2' => '', // Using Excel spelling
+            'O_P_hygiene_CL2' => '', // Using Excel spelling
             'O_P_CLOTHES_CL2' => '',
             'O_RESOURCE' => 'Sometimes',
             'B_O_HOUSING_CL2' => '',
@@ -131,7 +131,7 @@ class FieldNameCorrectionTest extends TestCase
         $this->assertEquals('Sometimes', $this->testReport->P_ORAL);
         $this->assertEquals('Sometimes', $this->testReport->P_PHYS);
         $this->assertEquals('Sometimes', $this->testReport->S_O_COMMCONN_CL1);
-        $this->assertEquals('Sometimes', $this->testReport->O_P_HYGEINE_CL1);
+        $this->assertEquals('Sometimes', $this->testReport->O_P_hygiene_CL1);
     }
 
     /** @test */
@@ -319,7 +319,7 @@ class FieldNameCorrectionTest extends TestCase
     /** @test */
     public function it_handles_excel_spelling_variations_correctly()
     {
-        // Test that the Excel spelling of HYGEINE is handled correctly
+        // Test that the Excel spelling of hygiene is handled correctly
         $result = $this->crossLoadedService->processDomainItems($this->testReport, 'Physical Health', []);
         
         $allItems = array_merge($result['strengths'], $result['monitor'], $result['concerns']);
@@ -342,8 +342,8 @@ class FieldNameCorrectionTest extends TestCase
         $this->assertArrayHasKey('P_PHYS', $fieldToDomainMap);
         $this->assertArrayHasKey('S_O_COMMCONN_CL1', $fieldToDomainMap);
         $this->assertArrayHasKey('S_O_COMMCONN_CL2', $fieldToDomainMap);
-        $this->assertArrayHasKey('O_P_HYGEINE_CL1', $fieldToDomainMap);
-        $this->assertArrayHasKey('O_P_HYGEINE_CL2', $fieldToDomainMap);
+        $this->assertArrayHasKey('O_P_hygiene_CL1', $fieldToDomainMap);
+        $this->assertArrayHasKey('O_P_hygiene_CL2', $fieldToDomainMap);
         
         // Verify correct domain assignments
         $this->assertEquals('Academic Skills', $fieldToDomainMap['A_B_DIRECTIONS_CL1']);
@@ -354,8 +354,8 @@ class FieldNameCorrectionTest extends TestCase
         $this->assertEquals('Physical Health', $fieldToDomainMap['P_PHYS']);
         $this->assertEquals('Social & Emotional Well-Being', $fieldToDomainMap['S_O_COMMCONN_CL1']);
         $this->assertEquals('Social & Emotional Well-Being', $fieldToDomainMap['S_O_COMMCONN_CL2']);
-        $this->assertEquals('Physical Health', $fieldToDomainMap['O_P_HYGEINE_CL1']);
-        $this->assertEquals('Supports Outside of School', $fieldToDomainMap['O_P_HYGEINE_CL2']);
+        $this->assertEquals('Physical Health', $fieldToDomainMap['O_P_hygiene_CL1']);
+        $this->assertEquals('Supports Outside of School', $fieldToDomainMap['O_P_hygiene_CL2']);
     }
 
     /** @test */

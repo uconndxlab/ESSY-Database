@@ -239,7 +239,7 @@ class CrossLoadedDomainService
             ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],   // Family stressors
             ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'], // Neighborhood stressors
             ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],         // Reports being hungry
-            ['O_P_HYGEINE_CL1', 'O_P_HYGEINE_CL2'],       // Hygiene resources - fixed spelling to match Excel
+            ['O_P_HYGIENE_CL1', 'O_P_HYGIENE_CL2'],       // Hygiene resources - correct spelling to match Excel
             ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],       // Adequate clothing
             ['S_O_COMMCONN_CL1', 'S_O_COMMCONN_CL2'],     // Community connection - new group
             ['A_S_O_ACTIVITY_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // Extracurricular activity
@@ -297,7 +297,7 @@ class CrossLoadedDomainService
             'P_PARTICIPATE' => 'Physical Health',
             'S_P_ACHES_CL1' => 'Physical Health',
             'O_P_HUNGER_CL1' => 'Physical Health',
-            'O_P_HYGEINE_CL1' => 'Physical Health',
+            'O_P_HYGIENE_CL1' => 'Physical Health',
             'O_P_CLOTHES_CL1' => 'Physical Health',
 
             // Social & Emotional Well-Being - Updated field names to match Excel
@@ -326,7 +326,7 @@ class CrossLoadedDomainService
             'O_ROUTINE' => 'Supports Outside of School',
             'O_FAMILY' => 'Supports Outside of School',
             'O_P_HUNGER_CL2' => 'Supports Outside of School',
-            'O_P_HYGEINE_CL2' => 'Supports Outside of School',
+            'O_P_HYGIENE_CL2' => 'Supports Outside of School',
             'O_P_CLOTHES_CL2' => 'Supports Outside of School',
             'O_RESOURCE' => 'Supports Outside of School',
             'B_O_HOUSING_CL2' => 'Supports Outside of School',
@@ -334,6 +334,14 @@ class CrossLoadedDomainService
             'B_O_NBHDSTRESS_CL2' => 'Supports Outside of School',
             'A_S_O_ACTIVITY_CL3' => 'Supports Outside of School',
             'S_O_COMMCONN_CL2' => 'Supports Outside of School',
+
+            // Gate 2 Essential Items
+            'E_SHARM' => 'Gate 2 Essential Items',
+            'E_BULLIED' => 'Gate 2 Essential Items', 
+            'E_EXCLUDE' => 'Gate 2 Essential Items',
+            'E_WITHDRAW' => 'Gate 2 Essential Items',
+            'E_REGULATE' => 'Gate 2 Essential Items',
+            'E_RESTED' => 'Gate 2 Essential Items',
         ];
     }
 
@@ -397,7 +405,7 @@ class CrossLoadedDomainService
             'P_PARTICIPATE' => 'physical health allows for participation in school activities.',
             'S_P_ACHES_CL1' => 'complains of headaches, stomachaches, or body aches.',
             'O_P_HUNGER_CL1' => 'reports being hungry.',
-            'O_P_HYGEINE_CL1' => 'appears to have the resources to address basic hygiene needs.',
+            'O_P_HYGIENE_CL1' => 'appears to have the resources to address basic hygiene needs.',
             'O_P_CLOTHES_CL1' => 'shows up to school with adequate clothing.',
             
             // Social & Emotional Well-Being - Updated field names to match Excel
@@ -426,66 +434,110 @@ class CrossLoadedDomainService
             'O_ROUTINE' => 'shares having a caregiver who helps them with daily routines.',
             'O_FAMILY' => 'reports getting along with family members.',
             'O_P_HUNGER_CL2' => 'reports being hungry.',
-            'O_P_HYGEINE_CL2' => 'appears to have the resources to address basic hygiene needs.',
+            'O_P_HYGIENE_CL2' => 'appears to have the resources to address basic hygiene needs.',
             'O_P_CLOTHES_CL2' => 'shows up to school with adequate clothing.',
             'O_RESOURCE' => 'reports having access to resources (materials, internet) to complete schoolwork.',
             'B_O_HOUSING_CL2' => 'reports not having a stable living situation.',
             'B_O_FAMSTRESS_CL2' => 'family is experiencing significant stressors.',
             'B_O_NBHDSTRESS_CL2' => 'neighborhood is experiencing significant stressors.',
-            'A_S_O_ACTIVITY_CL3' => 'engaged in at least one extracurricular activity.'
+            'A_S_O_ACTIVITY_CL3' => 'engaged in at least one extracurricular activity.',
+            
+            // Gate 2 Essential Items
+            'E_SHARM' => 'engages in self-harming behaviors.',
+            'E_BULLIED' => 'has been bullied by other students.',
+            'E_EXCLUDE' => 'experiences social exclusion in school.',
+            'E_WITHDRAW' => 'avoids or withdraws from peers.',
+            'E_REGULATE' => 'regulates emotions.',
+            'E_RESTED' => 'appears well-rested.'
         ];
     }
 
     /**
-     * Categorize field value into strengths, monitor, or concerns
+     * Categorize field value into strengths, monitor, or concerns using pattern-based approach
      */
     public function categorizeFieldValue(string $field, string $value): string
     {
         $value = strtolower(trim($value));
         
-        // Zero-tolerance fields (any occurrence is concern)
-        $zeroToleranceFields = ['B_PHYSAGGRESS', 'B_BULLY', 'B_PUNITIVE'];
-        
-        // Special cases with reversed interpretation (negative items - lower frequency is better)
-        $reversedFields = [
-            // Impulsivity items (negative behavior)
-            'A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2', 
-            // Behavioral problems (negative behaviors)
-            'B_CLINGY', 'B_SNEAK', 'B_VERBAGGRESS', 'B_DESTRUCT', 
-            // Housing and family stressors (negative situations)
-            'B_O_HOUSING_CL1', 'B_O_HOUSING_CL2', 'B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2', 
-            'B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2',
-            // Physical and emotional complaints (negative symptoms)
-            'S_P_ACHES_CL1', 'S_P_ACHES_CL2', 'S_NERVOUS', 'S_SAD', 
-            // Hunger (negative condition)
-            'O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'
+        // Define categorization patterns (almost always, frequently, sometimes, occasionally, almost never)
+        $patterns = [
+            'GGBRR' => ['strengths', 'strengths', 'monitor', 'concerns', 'concerns'],     // Most common pattern
+            'RRBGG' => ['concerns', 'concerns', 'monitor', 'strengths', 'strengths'],    // Negative items 
+            'GGBBR' => ['strengths', 'strengths', 'monitor', 'monitor', 'concerns'],     // Resource-type items
+            'RRBBG' => ['concerns', 'concerns', 'monitor', 'monitor', 'strengths'],      // Housing/hunger items
+            'GBRRR' => ['strengths', 'monitor', 'concerns', 'concerns', 'concerns'],     // Vision items
+            'RRRRG' => ['concerns', 'concerns', 'concerns', 'concerns', 'strengths'],    // Zero-tolerance items
+            'GGRRR' => ['strengths', 'strengths', 'concerns', 'concerns', 'concerns'],   // Regulation/rest items
+            'RRRGG' => ['concerns', 'concerns', 'concerns', 'strengths', 'strengths']    // Withdrawal items
         ];
         
-        // Handle zero-tolerance fields first
-        if (in_array($field, $zeroToleranceFields)) {
-            return $value === 'almost never' ? 'strengths' : 'concerns';
+        // Define field groups by pattern
+        $fieldPatterns = [
+            'RRBGG' => [
+                'A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2', 'B_CLINGY', 
+                'B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2', 
+                'B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2',
+                'S_P_ACHES_CL1', 'S_P_ACHES_CL2', 'S_NERVOUS', 'S_SAD'
+            ],
+            'RRBBG' => [
+                'B_SNEAK', 'B_VERBAGGRESS', 'B_DESTRUCT',
+                'B_O_HOUSING_CL1', 'B_O_HOUSING_CL2',
+                'O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'
+            ],
+            'RRRRG' => [
+                'B_PHYSAGGRESS', 'B_BULLY', 'B_PUNITIVE',
+                'E_SHARM', 'E_BULLIED', 'E_EXCLUDE'
+            ],
+            'GBRRR' => [
+                'P_SIGHT', 'P_HEAR'
+            ],
+            'GGBBR' => [
+                'O_RESOURCE'
+            ],
+            'GGRRR' => [
+                'E_REGULATE', 'E_RESTED'
+            ],
+            'GGBRR' => [
+                // Default pattern - all fields not explicitly listed above fall into this category
+                // This includes: A_READ, A_WRITE, A_MATH, A_P_S_ARTICULATE_CL1, A_P_S_ARTICULATE_CL2, A_P_S_ARTICULATE_CL3,
+                // A_S_ADULTCOMM_CL1, A_S_ADULTCOMM_CL2, A_B_DIRECTIONS_CL1, A_B_DIRECTIONS_CL2, A_INITIATE, A_PLANORG,
+                // A_TURNIN, A_B_CLASSEXPECT_CL1, A_B_CLASSEXPECT_CL2, A_ENGAGE, A_INTEREST, A_PERSIST, A_GROWTH,
+                // A_S_CONFIDENT_CL1, A_S_CONFIDENT_CL2, A_S_POSOUT_CL1, A_S_POSOUT_CL2, A_S_O_ACTIVITY_CL1, 
+                // A_S_O_ACTIVITY_CL2, A_S_O_ACTIVITY_CL3, P_HEAR, P_ORAL, P_PHYS, P_PARTICIPATE, S_CONTENT,
+                // S_SOCIALCONN, S_FRIEND, S_PROSOCIAL, S_PEERCOMM, S_POSADULT, S_SCHOOLCONN, S_O_COMMCONN_CL1,
+                // S_O_COMMCONN_CL2, O_RECIPROCAL, O_POSADULT, O_ADULTBEST, O_TALK, O_ROUTINE, O_FAMILY,
+                // O_P_HYGIENE_CL1, O_P_HYGIENE_CL2, O_P_CLOTHES_CL1, O_P_CLOTHES_CL2
+            ]
+        ];
+        
+        // Map frequency values to array indices
+        $frequencyMap = [
+            'almost always' => 0,
+            'frequently' => 1,
+            'sometimes' => 2,
+            'occasionally' => 3,
+            'almost never' => 4
+        ];
+        
+        // Get frequency index
+        if (!isset($frequencyMap[$value])) {
+            // Invalid frequency value, default to concerns
+            return 'concerns';
         }
         
-        // Handle reversed interpretation fields (negative items)
-        if (in_array($field, $reversedFields)) {
-            // For negative items, lower frequency is better
-            if (in_array($value, ['almost never', 'occasionally'])) {
-                return 'strengths';
-            } elseif ($value === 'sometimes') {
-                return 'monitor';
-            } else {
-                return 'concerns';
-            }
-        } else {
-            // Handle positive items (higher frequency is better)
-            if (in_array($value, ['almost always', 'frequently'])) {
-                return 'strengths';
-            } elseif ($value === 'sometimes') {
-                return 'monitor';
-            } else {
-                return 'concerns';
+        $frequencyIndex = $frequencyMap[$value];
+        
+        // Determine which pattern this field uses
+        $patternKey = 'GGBRR'; // Default pattern
+        foreach ($fieldPatterns as $pattern => $fields) {
+            if (in_array($field, $fields)) {
+                $patternKey = $pattern;
+                break;
             }
         }
+        
+        // Return the category based on pattern and frequency
+        return $patterns[$patternKey][$frequencyIndex];
     }
 
     /**
@@ -537,18 +589,33 @@ class CrossLoadedDomainService
     /**
      * Get value for cross-loaded item from its primary field if secondary is empty
      */
+    /**
+     * Get value for cross-loaded item from other fields in the same group
+     */
     private function getCrossLoadedValue(ReportData $report, string $field): ?string
     {
-        foreach ($this->crossLoadedItemGroups as $group) {
-            if (in_array($field, $group)) {
-                // Try to get value from the first (primary) field in the group
-                $primaryField = $group[0];
-                if ($primaryField !== $field) {
-                    return $this->safeGetFieldValue($report, $primaryField);
+        try {
+            foreach ($this->crossLoadedItemGroups as $group) {
+                if (in_array($field, $group)) {
+                    // Try to get value from ANY other field in the group
+                    foreach ($group as $groupField) {
+                        if ($groupField !== $field) {
+                            $value = $this->safeGetFieldValue($report, $groupField);
+                            if ($value !== null) {
+                                return $value;
+                            }
+                        }
+                    }
                 }
             }
+            return null;
+        } catch (\Exception $e) {
+            $this->logCrossLoadedError('Error getting cross-loaded value', [
+                'field' => $field,
+                'error' => $e->getMessage()
+            ]);
+            return null;
         }
-        return null;
     }
 
     /**

@@ -156,8 +156,8 @@ class ActualFieldMappingValidator
             'B_PHYSAGGRESS' => 'BEH_PHYSAGGRESS',
             'P_ORAL' => 'A_ORAL',
             'P_PHYS' => 'A_PHYS',
-            'O_P_HYGEINE_CL1' => 'O_P_HYGEINE_CL1',
-            'O_P_HYGEINE_CL2' => 'O_P_HYGIENE_CL2',
+            'O_P_hygiene_CL1' => 'O_P_hygiene_CL1',
+            'O_P_hygiene_CL2' => 'O_P_HYGIENE_CL2',
             'S_O_COMMCONN_CL1' => 'S_COMMCONN',
             'S_O_COMMCONN_CL2' => 'S_COMMCONN',
             'A_P_S_ARTICULATE_CL3' => null, // Missing entirely
