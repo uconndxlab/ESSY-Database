@@ -63,11 +63,11 @@
     @php
         $domainValues = [
             'Academic Skills' => $report->A_DOMAIN,
-            'Behavior' => $report->B_DOMAIN,
-            'Social & Emotional Well-Being' => $report->S_DOMAIN,
-            'Physical Health' => $report->P_DOMAIN,
-            'Supports Outside of School' => $report->O_DOMAIN,
             'Attendance' => $report->ATT_DOMAIN,
+            'Behavior' => $report->B_DOMAIN,
+            'Physical Health' => $report->P_DOMAIN,
+            'Social & Emotional Well-Being' => $report->S_DOMAIN,
+            'Supports Outside of School' => $report->O_DOMAIN,
         ];
 
         $substantialStrength = [];
