@@ -35,11 +35,38 @@
             <td class="label-cell"><strong>School:</strong> {{ $report->SCHOOL ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <td class="label-cell"><strong>Race / Ethnicity:</strong> {{ $report->DEM_RACE }} {{ $report->DEM_ETHNIC == 'No' ? '' : '/ Hispanic' }}</td>
+            <td class="label-cell"><strong>Race / Ethnicity:</strong> 
+                @php
+                    $raceDisplay = $report->DEM_RACE;
+                    
+                    // Handle unanswered race (-99 or empty)
+                    if (empty($raceDisplay) || $raceDisplay === '-99') {
+                        $raceDisplay = 'Not specified';
+                    } else {
+                        // If race contains "Other" and there's text in DEM_RACE_14_TEXT, use that instead
+                        if (str_contains($raceDisplay, 'Other') && !empty($report->DEM_RACE_14_TEXT)) {
+                            // Replace "Other (please specify)" with the actual text
+                            $raceDisplay = str_replace(['Other (please specify)', 'Other'], trim($report->DEM_RACE_14_TEXT), $raceDisplay);
+                        }
+                    }
+                    
+                    // Add Hispanic if ethnicity is not "No" and not empty/unanswered
+                    $ethnicityDisplay = '';
+                    if ($report->DEM_ETHNIC && $report->DEM_ETHNIC !== 'No' && $report->DEM_ETHNIC !== '-99') {
+                        $ethnicityDisplay = ' / Hispanic';
+                    }
+                @endphp
+                {{ $raceDisplay }}{{ $ethnicityDisplay }}
+            </td>
             <td class="label-cell"><strong>Grade:</strong> {{ $report->DEM_GRADE }}</td>
         </tr>
         <tr>
-            <td class="label-cell"><strong>Gender:</strong> {{ $report->DEM_GENDER }}</td>
+            <td class="label-cell"><strong>Gender:</strong> 
+                @php
+                    $crossLoadedDomainService = app(\App\Services\CrossLoadedDomainService::class);
+                    echo $crossLoadedDomainService->processGenderDisplay($report->DEM_GENDER, $report->DEM_GENDER_8_TEXT ?? null);
+                @endphp
+            </td>
             <td class="label-cell"><strong>Classroom Teacher:</strong> {{ $report->DEM_CLASSTEACH }}</td>
         </tr>
         <tr>
@@ -88,7 +115,10 @@
                 $raterConfidenceFlag = true;
             }
 
-            switch (trim(strtolower($cleanRating))) {
+            // Normalize spaces to handle data inconsistencies (single vs double spaces)
+            $normalizedRating = preg_replace('/\s+/', ' ', trim(strtolower($cleanRating)));
+            
+            switch ($normalizedRating) {
                 case 'an area of substantial strength':
                     $substantialStrength[] = $domainLabel;
                     break;
@@ -101,16 +131,13 @@
                 case 'an area of some concern':
                     $someConcern[] = $domainLabel;
                     break;
-                case 'an area of substantial  concern':
+                case 'an area of substantial concern':
                     $substantialConcern[] = $domainLabel;
                     break;
             }
         }
 
-        $crossLoadedDomainService = $crossLoadedDomainService ?? new \App\Services\CrossLoadedDomainService();
-        $decisionRulesService = $decisionRulesService ?? (config('essy.use_decision_rules') 
-            ? new \App\Services\DecisionRulesService($crossLoadedDomainService)
-            : null);
+        $crossLoadedDomainService = app(\App\Services\CrossLoadedDomainService::class);
 
         $notOfConcern = array_diff(
             array_keys($domainValues),
@@ -306,28 +333,8 @@
 @endphp
 
 @php
-
-    // Define cross-loaded item relationships using actual database column IDs from ReportData.php model
-    $crossLoadItemGroups = [
-        ['A_P_S_ARTICULATE_CL1', 'A_P_S_ARTICULATE_CL2', 'A_P_S_ARTICULATE_CL3'], // Articulates clearly - 3 domains
-        ['A_S_ADULTCOMM_CL1', 'A_S_ADULTCOMM_CL2'],   // AW (Acad) / DF (SEWB) - Effectively communicates with adults
-        ['A_B_DIRECTIONS_CL1', 'A_B_DIRECTIONS_CL2'], // Understands directions - Academic / Behavior
-        ['A_B_CLASSEXPECT_CL1', 'A_B_CLASSEXPECT_CL2'],// BB (Acad) / BP (Beh) - Follows classroom expectations
-        ['A_B_IMPULSE_CL1', 'A_B_IMPULSE_CL2'],       // BC (Acad) / BQ (Beh) - Exhibits impulsivity
-        ['A_S_CONFIDENT_CL1', 'A_S_CONFIDENT_CL2'],   // BH (Acad) / CW (SEWB) - Displays confidence in self
-        ['A_S_POSOUT_CL1', 'A_S_POSOUT_CL2'],         // BI (Acad) / CX (SEWB) - Demonstrates positive outlook
-        ['S_P_ACHES_CL1', 'S_P_ACHES_CL2'],           // CM (Phys) / CY (SEWB) - Complains of aches
-        ['B_O_HOUSING_CL1', 'B_O_HOUSING_CL2'],       // BY (Beh) / DZ (SOS) - Unstable living situation
-        ['B_O_FAMSTRESS_CL1', 'B_O_FAMSTRESS_CL2'],   // BZ (Beh) / EA (SOS) - Family stressors
-        ['B_O_NBHDSTRESS_CL1', 'B_O_NBHDSTRESS_CL2'], // CA (Beh) / EB (SOS) - Neighborhood stressors
-        ['O_P_HUNGER_CL1', 'O_P_HUNGER_CL2'],         // CN (Phys) / DV (SOS) - Reports being hungry
-        ['O_P_HYGIENE_CL1', 'O_P_HYGIENE_CL2'],       // CO (Phys) / DW (SOS) - Hygiene resources (Note: corrected spelling)
-        ['O_P_CLOTHES_CL1', 'O_P_CLOTHES_CL2'],       // CP (Phys) / DX (SOS) - Adequate clothing
-        ['S_O_COMMCONN_CL1', 'S_O_COMMCONN_CL2'],     // Community connection - SEWB / SOS
-        ['A_S_O_ACTIVITY_CL1', 'A_S_O_ACTIVITY_CL2', 'A_S_O_ACTIVITY_CL3'] // BJ (Acad) / DJ (SEWB) / EC (SOS) - Extracurricular activity
-    ];
-
-
+    // Cross-loaded item groups are now managed by the CrossLoadedDomainService
+    // This ensures consistency and eliminates duplication
 @endphp
 
 
@@ -381,8 +388,12 @@
     // Process all domains using the appropriate service based on configuration
     $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]), array_merge($someConcern, $substantialConcern));
     
-    // Use DecisionRulesService if enabled, otherwise fall back to CrossLoadedDomainService
-    $domainService = $decisionRulesService ?? $crossLoadedDomainService;
+    // Sort concern domains alphabetically for proper display order
+    sort($concernDomains);
+    
+    // Always use CrossLoadedDomainService for domain processing
+    $crossLoadedDomainService = app(\App\Services\CrossLoadedDomainService::class);
+    $domainService = $crossLoadedDomainService;
     
     try {
         $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);
@@ -543,7 +554,8 @@
             # of unanswered items:
             @php
                 $missingItems = [];
-                $crossLoadedGroups = $crossLoadItemGroups;
+                $crossLoadedDomainService = app(\App\Services\CrossLoadedDomainService::class);
+                $crossLoadedGroups = $crossLoadedDomainService->getCrossLoadedItemGroups();
                 $fieldMessages = $crossLoadedDomainService->getFieldMessages();
                 $fieldToDomainMap = $crossLoadedDomainService->getFieldToDomainMap();
                 
@@ -577,71 +589,31 @@
                         }
                     }
                     
-                    // If this field is part of a cross-loaded group
-                    if ($crossLoadedGroupIndex !== null) {
-                        // Skip if we've already processed this cross-loaded group
-                        if (isset($processedCrossLoadedGroups[$crossLoadedGroupIndex])) {
-                            continue;
-                        }
-                        
-                        // Check if ANY field in the cross-loaded group has a value OR is specifically unanswered (-99)
-                        $groupHasValue = false;
-                        $groupHasUnanswered = false;
-                        $group = $crossLoadedGroups[$crossLoadedGroupIndex];
-                        foreach ($group as $groupField) {
-                            $rawValue = trim($report->getAttribute($groupField) ?? '');
-                            if (!empty($rawValue) && $rawValue !== '-99') {
-                                $groupHasValue = true;
-                                break;
-                            } elseif ($rawValue === '-99') {
-                                $groupHasUnanswered = true;
-                            }
-                        }
-                        
-                        // Only count as missing if the group has -99 values (specifically unanswered)
-                        // Don't count empty fields as missing - they weren't presented
-                        if (!$groupHasValue && $groupHasUnanswered) {
-                            // Find a field from a concern domain to use as representative
-                            $representativeField = null;
-                            $fieldsFromConcernDomains = [];
-                            
-                            foreach ($group as $groupField) {
-                                $groupFieldDomain = $fieldToDomainMap[$groupField] ?? null;
-                                if ($groupFieldDomain && in_array($groupFieldDomain, $concernDomains)) {
-                                    $fieldsFromConcernDomains[] = $groupField;
-                                }
-                            }
-                            
-                            // Only count as missing if we have fields from concern domains in this group
-                            if (!empty($fieldsFromConcernDomains)) {
-                                // Use the first field from a concern domain as representative
-                                $representativeField = $fieldsFromConcernDomains[0];
-                                $representativeMessage = $fieldMessages[$representativeField] ?? $message;
-                                $missingItems[] = $representativeMessage;
-                            }
-                        }
-                        
-                        // Mark this group as processed
-                        $processedCrossLoadedGroups[$crossLoadedGroupIndex] = true;
-                    } else {
-                        // For non-cross-loaded fields, check if specifically unanswered (-99)
-                        $rawValue = trim($report->getAttribute($field) ?? '');
-                        if ($rawValue === '-99') {
-                            $missingItems[] = $message;
-                        }
-                        // Don't count empty fields - they weren't presented
+                    // Check if this specific field is unanswered (-99)
+                    $rawValue = trim($report->getAttribute($field) ?? '');
+                    if ($rawValue === '-99') {
+                        // This field is specifically unanswered, count it as missing
+                        $missingItems[] = $message;
                     }
+                    // Note: We no longer use complex cross-loaded group logic for unanswered items
+                    // Each -99 field in a concern domain counts as missing, regardless of cross-loading
                 }
             @endphp
 
-            {{ count($missingItems) }}
-            @if (!empty($missingItems))
+            @php
+                // Remove duplicates from missing items
+                $uniqueMissingItems = array_unique($missingItems);
+            @endphp
+            {{ count($uniqueMissingItems) }}
+            @if (!empty($uniqueMissingItems))
                 <ul>
-                    @foreach ($missingItems as $msg)
+                    @foreach ($uniqueMissingItems as $msg)
                         <li>{{ $msg }}</li>
                     @endforeach
                 </ul>
             @endif
+            
+
         </td>
     </tr>
     <tr>

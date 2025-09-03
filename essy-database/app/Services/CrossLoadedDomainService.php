@@ -637,4 +637,39 @@ class CrossLoadedDomainService
             return implode(', ', $domains) . ', and ' . $last;
         }
     }
+
+    /**
+     * Process gender display according to business rules
+     * 
+     * Rules:
+     * - Report "Male" or "Female" as selected
+     * - Report "Other" if "Additional Gender Category" is selected  
+     * - Leave blank if "Not Sure" is selected
+     */
+    public function processGenderDisplay(?string $gender, ?string $genderText = null): string
+    {
+        if (empty($gender) || $gender === '-99') {
+            return '';
+        }
+
+        $gender = trim($gender);
+        
+        // Handle standard gender selections
+        if (in_array($gender, ['Male', 'Female'])) {
+            return $gender;
+        }
+        
+        // Handle "Additional Gender Category" or similar "Other" selections
+        if (str_contains($gender, 'Additional') || str_contains($gender, 'Other')) {
+            return 'Other';
+        }
+        
+        // Handle "Not Sure" selections
+        if (str_contains($gender, 'Not Sure') || str_contains($gender, 'Unsure')) {
+            return '';
+        }
+        
+        // For any other values, return as-is (fallback)
+        return $gender;
+    }
 }
