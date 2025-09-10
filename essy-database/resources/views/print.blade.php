@@ -38,25 +38,35 @@
             <td class="label-cell"><strong>Race / Ethnicity:</strong> 
                 @php
                     $raceDisplay = $report->DEM_RACE;
+                    $ethnicityDisplay = '';
                     
-                    // Handle unanswered race (-99 or empty)
+                    // Handle unanswered race (-99 or empty) - should be completely blank per decision rules C7
                     if (empty($raceDisplay) || $raceDisplay === '-99') {
-                        $raceDisplay = 'Not specified';
+                        $raceDisplay = '';
+                        $ethnicityDisplay = ''; // Don't show ethnicity if race is unanswered
                     } else {
-                        // If race contains "Other" and there's text in DEM_RACE_14_TEXT, use that instead
+                        // If race contains "Other" and there's text in DEM_RACE_14_TEXT, check if that text is valid
                         if (str_contains($raceDisplay, 'Other') && !empty($report->DEM_RACE_14_TEXT)) {
-                            // Replace "Other (please specify)" with the actual text
-                            $raceDisplay = str_replace(['Other (please specify)', 'Other'], trim($report->DEM_RACE_14_TEXT), $raceDisplay);
+                            $raceTextValue = trim($report->DEM_RACE_14_TEXT);
+                            // If the race text is -99 (unanswered), treat the whole thing as blank per decision rules C7
+                            if ($raceTextValue === '-99') {
+                                $raceDisplay = '';
+                                $ethnicityDisplay = '';
+                            } else {
+                                // Replace "Other (please specify)" with the actual text
+                                $raceDisplay = str_replace(['Other (please specify)', 'Other'], $raceTextValue, $raceDisplay);
+                            }
+                        }
+                        
+                        // Only add ethnicity if race is not blank and ethnicity is valid
+                        if (!empty($raceDisplay) && $report->DEM_ETHNIC && $report->DEM_ETHNIC !== 'No' && $report->DEM_ETHNIC !== '-99') {
+                            $ethnicityDisplay = ' / Hispanic';
                         }
                     }
                     
-                    // Add Hispanic if ethnicity is not "No" and not empty/unanswered
-                    $ethnicityDisplay = '';
-                    if ($report->DEM_ETHNIC && $report->DEM_ETHNIC !== 'No' && $report->DEM_ETHNIC !== '-99') {
-                        $ethnicityDisplay = ' / Hispanic';
-                    }
+                    $fullRaceEthnicityDisplay = $raceDisplay . $ethnicityDisplay;
                 @endphp
-                {{ $raceDisplay }}{{ $ethnicityDisplay }}
+                {{ $fullRaceEthnicityDisplay }}
             </td>
             <td class="label-cell"><strong>Grade:</strong> {{ $report->DEM_GRADE }}</td>
         </tr>
@@ -147,6 +157,9 @@
 
         $ofConcern = array_unique(array_map(fn($v) => str_replace('*', '', $v), array_merge($someConcern, $substantialConcern)));
         $ofConcernText = $crossLoadedDomainService->formatDomainsToText($ofConcern);
+        
+        // Check if there are no concerns at Gate 1 (special case)
+        $hasNoConcernsAtGate1 = empty($ofConcern);
     @endphp
 
 
@@ -202,14 +215,7 @@
                         (str_contains($report->RELATION_CONFLICT, 'No conflict') ||
                         str_contains($report->RELATION_CONFLICT, 'Low conflict'))
                     )
-                        <p>Student-rater relationship</p>
-                    @endif
-                    @if (
-                        $report->SPEEDING_GATE1 != 1 &&
-                        $report->SPEEDING_ESS != 1 &&
-                        $report->SPEEDING_GATE2 != 1
-                    )
-                    <li> Potentially fast completion time - </li>
+                        <li>Student-rater relationship</li>
                     @endif
 
 
@@ -255,7 +261,8 @@
         </tbody>
     </table>
 
-    <!-- Page #2 ---------------------->
+    @if (!$hasNoConcernsAtGate1)
+    <!-- Page #2 - Only show when there are concerns at Gate 1 ---------------------->
     <br/><br/><br/>
     <hr/>
     <br/>
@@ -646,6 +653,59 @@
         </td>
     </tr>
 </table>
+
+@else
+    {{-- Special case: No concerns at Gate 1 --}}
+    <br/><br/><br/>
+    <hr/>
+    <br/>
+    
+    <table>
+        <tr>
+            <td class="label-cell"><strong>Student Name:</strong> {{ $report->FN_STUDENT }} {{ $report->LN_STUDENT }}</td>
+            <td class="label-cell"><strong>Rater:</strong> {{ $report->FN_TEACHER }} {{ $report->LN_TEACHER }}</td>
+        </tr>
+    </table>
+
+    <br/>
+    
+    <p><strong>ESSY Gate 2 Summary of Specific Concerns</strong></p>
+    <p>This was a unique case in which there were no concerns reported at Gate 1, and so the rater did not receive Essential items or Gate 2 Items to rate.</p>
+    
+    <br/>
+    <h4>Additional Information</h4>
+    <table>
+        <tr>
+            <td>
+                <strong># of unanswered items:</strong> 0
+                <p><em>No Gate 2 items were presented due to no concerns at Gate 1.</em></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Rater comments:</strong>
+                <ul>
+                    @php
+                        $comments = [
+                            'COMMENTS_GATE1' => 'Gate 1',
+                            'COMMENTS_STR'   => 'Student-rater relationship',
+                        ];
+                    @endphp
+
+                    @foreach ($comments as $field => $label)
+                        @php
+                            $commentValue = $report->$field ?? '';
+                            $cleanValue = trim($commentValue);
+                        @endphp
+                        @if (!empty($cleanValue) && $cleanValue !== '-99')
+                            <li><strong>{{ $label }}:</strong> {{ $cleanValue }}</li>
+                        @endif
+                    @endforeach
+                </ul>
+            </td>
+        </tr>
+    </table>
+@endif
 
 
 
