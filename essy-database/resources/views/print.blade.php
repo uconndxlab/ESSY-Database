@@ -670,7 +670,7 @@
     <br/>
     
     <p><strong>ESSY Gate 2 Summary of Specific Concerns</strong></p>
-    <p>This was a unique case in which there were no concerns reported at Gate 1, and so the rater did not receive Essential items or Gate 2 Items to rate.</p>
+    <p>There were no concerns reported at Gate 1, and so the rater did not receive Essential items or Gate 2 Items to rate.</p>
     
     <br/>
     <h4>Additional Information</h4>
