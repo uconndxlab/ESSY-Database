@@ -142,10 +142,10 @@ class DebugReportProcessing extends Command
 
         $this->newLine();
 
-        // Process the field through CrossLoadedDomainService
+        // Process the field through DecisionRulesService
         if (in_array($domain, $concernDomains)) {
-            $domainResults = $this->crossLoadedService->processDomainItems($report, $domain, $concernDomains);
-            $this->info("🎯 CrossLoadedDomainService processing results for {$domain}:");
+            $domainResults = $this->decisionRulesService->processDomainItems($report, $domain, $concernDomains);
+            $this->info("🎯 DecisionRulesService processing results for {$domain}:");
             
             $fieldFound = false;
             foreach (['strengths', 'monitor', 'concerns'] as $category) {
@@ -203,7 +203,7 @@ class DebugReportProcessing extends Command
 
         // Process domain if it's a concern
         if (in_array($domain, $concernDomains)) {
-            $domainResults = $this->crossLoadedService->processDomainItems($report, $domain, $concernDomains);
+            $domainResults = $this->decisionRulesService->processDomainItems($report, $domain, $concernDomains);
             
             $this->info("🎯 Domain processing results:");
             foreach (['strengths', 'monitor', 'concerns'] as $category) {
@@ -267,8 +267,14 @@ class DebugReportProcessing extends Command
                 $this->line("    {$category}: " . count($crossLoadedResults[$category]));
             }
             
-            // TODO: Add DecisionRulesService comparison when available
-            $this->line("  DecisionRulesService: [Not implemented in this debug command]");
+            // DecisionRulesService results
+            $decisionRulesResults = $this->decisionRulesService->processDomainItems($report, $domain, $concernDomains);
+            $decisionRulesTotal = array_sum(array_map('count', $decisionRulesResults));
+            
+            $this->line("  DecisionRulesService: {$decisionRulesTotal} items");
+            foreach (['strengths', 'monitor', 'concerns'] as $category) {
+                $this->line("    {$category}: " . count($decisionRulesResults[$category]));
+            }
             
             $this->newLine();
         }
@@ -355,7 +361,7 @@ class DebugReportProcessing extends Command
             $this->line("  {$domain}: " . ($isConcern ? '🔴 Concern' : '🟢 Not a concern'));
             
             if ($isConcern) {
-                $results = $this->crossLoadedService->processDomainItems($report, $domain, $concernDomains);
+                $results = $this->decisionRulesService->processDomainItems($report, $domain, $concernDomains);
                 $total = array_sum(array_map('count', $results));
                 $this->line("    Processed items: {$total}");
             }
