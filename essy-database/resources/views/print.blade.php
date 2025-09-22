@@ -398,8 +398,9 @@
     // Sort concern domains alphabetically for proper display order
     sort($concernDomains);
     
-    // Always use DecisionRulesService for domain processing
-    $domainService = app(\App\Services\DecisionRulesService::class);
+    // Always use CrossLoadedDomainService for domain processing
+    $crossLoadedDomainService = app(\App\Services\CrossLoadedDomainService::class);
+    $domainService = $crossLoadedDomainService;
     
     try {
         $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);

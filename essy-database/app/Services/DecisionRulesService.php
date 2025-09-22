@@ -11,10 +11,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 /**
  * Service for handling decision rules lookup functionality.
  * 
- * This service provides contextually appropriate text based on decision rules.
+ * This service can be toggled on/off using the ESSY_USE_DECISION_RULES environment variable.
+ * When disabled, the system falls back to the traditional concatenation approach.
  * 
  * Configuration:
  * - config('essy.use_decision_rules'): Enable/disable decision rules lookup
+
  * 
  * @see config/essy.php for configuration options
  * @see docs/CONFIGURATION.md for detailed configuration guide
