@@ -541,52 +541,6 @@ class CrossLoadedDomainService
     }
 
     /**
-     * Process domain items and categorize them into strengths, monitor, and concerns
-     */
-    public function processDomainItems(ReportData $report, string $domain, array $concernDomains): array
-    {
-        $fieldMessages = $this->getFieldMessages();
-        $fieldsThatNeedDagger = $this->getFieldsRequiringDagger($concernDomains);
-        
-        $results = ['strengths' => [], 'monitor' => [], 'concerns' => []];
-        
-        foreach ($this->fieldToDomainMap as $field => $fieldDomain) {
-            if ($fieldDomain !== $domain) continue;
-            if (!isset($fieldMessages[$field])) continue;
-            
-            $valueRaw = $this->safeGetFieldValue($report, $field);
-            
-            // For cross-loaded items, if this field is empty, try to get value from primary field
-            if (!$valueRaw) {
-                $valueRaw = $this->getCrossLoadedValue($report, $field);
-            }
-            
-            // If still no value, skip this item (don't show items without frequency responses)
-            if (!$valueRaw) continue;
-            
-            $hasConfidence = str_contains($valueRaw, ',');
-            $value = trim(explode(',', $valueRaw)[0]);
-            
-            // Ensure we have a valid frequency response
-            if (empty($value) || $value === '-99') continue;
-            
-            $prefix = ucfirst(strtolower($value));
-            
-            $itemSuffix = $hasConfidence ? ' *' : '';
-            if (isset($fieldsThatNeedDagger[$field])) {
-                $itemSuffix .= ' †';
-            }
-            
-            $sentence = "{$prefix} {$fieldMessages[$field]}{$itemSuffix}";
-            $category = $this->categorizeFieldValue($field, $value);
-            
-            $results[$category][] = $sentence;
-        }
-        
-        return $results;
-    }
-
-    /**
      * Get value for cross-loaded item from its primary field if secondary is empty
      */
     /**
