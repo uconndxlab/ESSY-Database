@@ -8,24 +8,17 @@
             font-family: Arial, sans-serif;
             margin: 30px;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1em;
         }
-
-
         th, td {
             border: 1px solid #000;
             padding: 6px;
             text-align: left;
             vertical-align: top;
-            height: auto;
-            overflow: visible;
         }
-    
-
         .label-cell {
             width: 25%;
         }
@@ -396,8 +389,9 @@
     <p>The table below is organized using three categories: strengths to maintain, areas to monitor 
     (e.g., watch, gather additional data), and concerns for follow-up (problem solve, intervene).</p>
 
-    {{-- Table View --}}
-    @php
+    <!-- DEBUG: After table description text -->
+
+@php
     // Process all domains using the appropriate service based on configuration
     $concernDomains = array_map(fn($domain) => trim(explode('*', $domain)[0]), array_merge($someConcern, $substantialConcern));
     
@@ -421,270 +415,243 @@
         $sewbResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
         $sosResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
-    // Helper function to chunk array items into groups of max 10
-    function chunkDomainItems($items, $maxPerChunk = 10) {
-        return array_chunk($items, $maxPerChunk);
-    }
+@endphp
+
+{{-- DEBUG INFORMATION - Uncomment to debug frequency responses and categorization
+<div style="background: #f0f0f0; padding: 20px; margin: 20px 0; font-family: monospace; font-size: 12px;">
+    <h4>DEBUG: Frequency Responses and Categorization</h4>
+    <pre>{{ print_r($debugInfo, true) }}</pre>
     
-    // Helper function to get the maximum number of chunks needed across all categories
-    function getMaxChunks($strengths, $monitor, $concerns, $maxPerChunk = 10) {
-        $strengthsChunks = ceil(count($strengths) / $maxPerChunk);
-        $monitorChunks = ceil(count($monitor) / $maxPerChunk);
-        $concernsChunks = ceil(count($concerns) / $maxPerChunk);
-        return max($strengthsChunks, $monitorChunks, $concernsChunks, 1); // At least 1 row
-    }
-    
-    // Helper function to get items for a specific chunk
-    function getChunkItems($items, $chunkIndex, $maxPerChunk = 10) {
-        $start = $chunkIndex * $maxPerChunk;
-        return array_slice($items, $start, $maxPerChunk);
-    }
-    @endphp
+    <h4>DEBUG: Domain Processing Results</h4>
+    <pre>Academic Results: {{ print_r($academicResults, true) }}</pre>
+    <pre>Behavior Results: {{ print_r($behaviorResults, true) }}</pre>
+</div>
+--}}
 
-    <table>
-        <thead>
-            <tr>
-                <th>Domain</th>
-                <th style="background-color: #C8E6C9;">Strengths to Maintain</th>
-                <th style="background-color: #BBDEFB;">Areas to Monitor</th>
-                <th style="background-color: #EF9A9A;">Concerns for Follow Up</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(in_array('Academic Skills', $concernDomains))
-                @php
-                    $maxChunks = getMaxChunks($academicResults['strengths'], $academicResults['monitor'], $academicResults['concerns']);
-                @endphp
-                @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
-                    <tr>
-                        <td>{{ $chunkIndex === 0 ? 'Academic Skills' : '' }}</td>
-                        <td style="background-color: #C8E6C9;">
-                            @foreach (getChunkItems($academicResults['strengths'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #BBDEFB;">
-                            @foreach (getChunkItems($academicResults['monitor'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #EF9A9A;">
-                            @foreach (getChunkItems($academicResults['concerns'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                    </tr>
-                @endfor
-            @endif
 
-            @if(in_array('Behavior', $concernDomains))
-                @php
-                    $maxChunks = getMaxChunks($behaviorResults['strengths'], $behaviorResults['monitor'], $behaviorResults['concerns']);
-                @endphp
-                @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
-                    <tr>
-                        <td>{{ $chunkIndex === 0 ? 'Behavior' : '' }}</td>
-                        <td style="background-color: #C8E6C9;">
-                            @foreach (getChunkItems($behaviorResults['strengths'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #BBDEFB;">
-                            @foreach (getChunkItems($behaviorResults['monitor'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #EF9A9A;">
-                            @foreach (getChunkItems($behaviorResults['concerns'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                    </tr>
-                @endfor
-            @endif
 
-            @if(in_array('Physical Health', $concernDomains))
-                @php
-                    $maxChunks = getMaxChunks($physicalResults['strengths'], $physicalResults['monitor'], $physicalResults['concerns']);
-                @endphp
-                @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
-                    <tr>
-                        <td>{{ $chunkIndex === 0 ? 'Physical Health' : '' }}</td>
-                        <td style="background-color: #C8E6C9;">
-                            @foreach (getChunkItems($physicalResults['strengths'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #BBDEFB;">
-                            @foreach (getChunkItems($physicalResults['monitor'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #EF9A9A;">
-                            @foreach (getChunkItems($physicalResults['concerns'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                    </tr>
-                @endfor
-            @endif
+{{-- Table View --}}
 
-            @if(in_array('Social & Emotional Well-Being', $concernDomains))
-                @php
-                    $maxChunks = getMaxChunks($sewbResults['strengths'], $sewbResults['monitor'], $sewbResults['concerns']);
-                @endphp
-                @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
-                    <tr>
-                        <td>{{ $chunkIndex === 0 ? 'Social & Emotional Well-Being' : '' }}</td>
-                        <td style="background-color: #C8E6C9;">
-                            @foreach (getChunkItems($sewbResults['strengths'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #BBDEFB;">
-                            @foreach (getChunkItems($sewbResults['monitor'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #EF9A9A;">
-                            @foreach (getChunkItems($sewbResults['concerns'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                    </tr>
-                @endfor
-            @endif
-
-            @if(in_array('Supports Outside of School', $concernDomains))
-                @php
-                    $maxChunks = getMaxChunks($sosResults['strengths'], $sosResults['monitor'], $sosResults['concerns']);
-                @endphp
-                @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
-                    <tr>
-                        <td>{{ $chunkIndex === 0 ? 'Supports Outside of School' : '' }}</td>
-                        <td style="background-color: #C8E6C9;">
-                            @foreach (getChunkItems($sosResults['strengths'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #BBDEFB;">
-                            @foreach (getChunkItems($sosResults['monitor'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                        <td style="background-color: #EF9A9A;">
-                            @foreach (getChunkItems($sosResults['concerns'], $chunkIndex) as $item)
-                                <p>{!! $item !!}</p>
-                            @endforeach
-                        </td>
-                    </tr>
-                @endfor
-            @endif
-        </tbody>
-    </table>
-
-    <p>* Rater reported less confidence in these responses.</p>
-    <p>† Item appears on multiple domains.</p>
-    <br/>
-    <h4>Additional Information</h4>
-    <table>
+<table>
+    <thead>
         <tr>
-            <td>
-                # of unanswered items:
-                @php
-                    $missingItems = [];
-                    $crossLoadedDomainService = app(\App\Services\CrossLoadedDomainService::class);
-                    $crossLoadedGroups = $crossLoadedDomainService->getCrossLoadedItemGroups();
-                    $fieldMessages = $crossLoadedDomainService->getFieldMessages();
-                    $fieldToDomainMap = $crossLoadedDomainService->getFieldToDomainMap();
-                    
-                    // Track which cross-loaded groups have been processed to avoid duplicates
-                    $processedCrossLoadedGroups = [];
-                    
-                    foreach ($fieldMessages as $field => $message) {
-                        // Skip comment fields
-                        if (str_starts_with($field, 'COMMENTS_')) {
-                            continue;
-                        }
-                        
-                        // Skip Gate 2 essential items - they should not be counted as unanswered
-                        // Gate 2 items should only appear if they are concerns, not because they're unanswered
-                        if (in_array($field, ['E_SHARM', 'E_BULLIED', 'E_EXCLUDE', 'E_WITHDRAW', 'E_REGULATE', 'E_RESTED'])) {
-                            continue;
-                        }
-                        
-                        // Only count fields from concern domains
-                        $fieldDomain = $fieldToDomainMap[$field] ?? null;
-                        if (!$fieldDomain || !in_array($fieldDomain, $concernDomains)) {
-                            continue;
-                        }
-                        
-                        // Check if this field is part of a cross-loaded group
-                        $crossLoadedGroupIndex = null;
-                        foreach ($crossLoadedGroups as $groupIndex => $group) {
-                            if (in_array($field, $group)) {
-                                $crossLoadedGroupIndex = $groupIndex;
-                                break;
-                            }
-                        }
-                        
-                        // Check if this specific field is unanswered (-99)
-                        $rawValue = trim($report->getAttribute($field) ?? '');
-                        if ($rawValue === '-99') {
-                            // This field is specifically unanswered, count it as missing
-                            $missingItems[] = $message;
-                        }
-                        // Note: We no longer use complex cross-loaded group logic for unanswered items
-                        // Each -99 field in a concern domain counts as missing, regardless of cross-loading
-                    }
-                @endphp
-
-                @php
-                    // Remove duplicates from missing items
-                    $uniqueMissingItems = array_unique($missingItems);
-                @endphp
-                {{ count($uniqueMissingItems) }}
-                @if (!empty($uniqueMissingItems))
-                    <ul>
-                        @foreach ($uniqueMissingItems as $msg)
-                            <li>{{ $msg }}</li>
-                        @endforeach
-                    </ul>
-                @endif
-                
-
+            <th>Domain</th>
+            <th style="background-color: #C8E6C9;">Strengths to Maintain</th>
+            <th style="background-color: #BBDEFB;">Areas to Monitor</th>
+            <th style="background-color: #EF9A9A;">Concerns for Follow Up</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(in_array('Academic Skills', $concernDomains))
+        <tr>
+            <td>Academic Skills</td>
+            <td style="background-color: #C8E6C9;">
+                @foreach ($academicResults['strengths'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #BBDEFB;">
+                @foreach ($academicResults['monitor'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #EF9A9A;">
+                @foreach ($academicResults['concerns'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
             </td>
         </tr>
-        <tr>
-            <td>
-                Rater comments:
-                <ul>
-                    @php
-                        $comments = [
-                            'COMMENTS_GATE1' => 'Gate 1',
-                            'COMMENTS_STR'   => 'Student-rater relationship',
-                            'COMMENTS_ESS'   => 'Essential Items',
-                            'COMMENTS_AS'    => 'Academics',
-                            'COMMENTS_BEH'   => 'Behavior',
-                            'COMMENTS_PH'    => 'Physical Health',
-                            'COMMENTS_SEW'   => 'Social & Emotional Well-Being',
-                            'COMMENTS_SOS'   => 'Supports Outside of School',
-                        ];
-                    @endphp
+        @endif
 
-                    @foreach ($comments as $field => $label)
-                        @php
-                            $commentValue = $report->$field ?? '';
-                            $cleanValue = trim($commentValue);
-                        @endphp
-                        @if (!empty($cleanValue) && $cleanValue !== '-99')
-                            <li><strong>{{ $label }}:</strong> {{ $cleanValue }}</li>
-                        @endif
+        @if(in_array('Behavior', $concernDomains))
+        <tr>
+            <td>Behavior</td>
+            <td style="background-color: #C8E6C9;">
+                @foreach ($behaviorResults['strengths'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #BBDEFB;">
+                @foreach ($behaviorResults['monitor'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #EF9A9A;">
+                @foreach ($behaviorResults['concerns'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+        </tr>
+        @endif
+
+        @if(in_array('Physical Health', $concernDomains))
+        <tr>
+            <td>Physical Health</td>
+            <td style="background-color: #C8E6C9;">
+                @foreach ($physicalResults['strengths'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #BBDEFB;">
+                @foreach ($physicalResults['monitor'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #EF9A9A;">
+                @foreach ($physicalResults['concerns'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+        </tr>
+        @endif
+
+        @if(in_array('Social & Emotional Well-Being', $concernDomains))
+        <tr>
+            <td>Social & Emotional Well-Being</td>
+            <td style="background-color: #C8E6C9;">
+                @foreach ($sewbResults['strengths'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #BBDEFB;">
+                @foreach ($sewbResults['monitor'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #EF9A9A;">
+                @foreach ($sewbResults['concerns'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+        </tr>
+        @endif
+
+        @if(in_array('Supports Outside of School', $concernDomains))
+        <tr>
+            <td>Supports Outside of School</td>
+            <td style="background-color: #C8E6C9;">
+                @foreach ($sosResults['strengths'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #BBDEFB;">
+                @foreach ($sosResults['monitor'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+            <td style="background-color: #EF9A9A;">
+                @foreach ($sosResults['concerns'] as $item)
+                    <p>{!! $item !!}</p>
+                @endforeach
+            </td>
+        </tr>
+        @endif
+    </tbody>
+</table>
+
+
+<p>* Rater reported less confidence in these responses.</p>
+<p>† Item appears on multiple domains.</p>
+<br/>
+<h4>Additional Information</h4>
+<table>
+    <tr>
+        <td>
+            # of unanswered items:
+            @php
+                $missingItems = [];
+                $crossLoadedDomainService = app(\App\Services\CrossLoadedDomainService::class);
+                $crossLoadedGroups = $crossLoadedDomainService->getCrossLoadedItemGroups();
+                $fieldMessages = $crossLoadedDomainService->getFieldMessages();
+                $fieldToDomainMap = $crossLoadedDomainService->getFieldToDomainMap();
+                
+                // Track which cross-loaded groups have been processed to avoid duplicates
+                $processedCrossLoadedGroups = [];
+                
+                foreach ($fieldMessages as $field => $message) {
+                    // Skip comment fields
+                    if (str_starts_with($field, 'COMMENTS_')) {
+                        continue;
+                    }
+                    
+                    // Skip Gate 2 essential items - they should not be counted as unanswered
+                    // Gate 2 items should only appear if they are concerns, not because they're unanswered
+                    if (in_array($field, ['E_SHARM', 'E_BULLIED', 'E_EXCLUDE', 'E_WITHDRAW', 'E_REGULATE', 'E_RESTED'])) {
+                        continue;
+                    }
+                    
+                    // Only count fields from concern domains
+                    $fieldDomain = $fieldToDomainMap[$field] ?? null;
+                    if (!$fieldDomain || !in_array($fieldDomain, $concernDomains)) {
+                        continue;
+                    }
+                    
+                    // Check if this field is part of a cross-loaded group
+                    $crossLoadedGroupIndex = null;
+                    foreach ($crossLoadedGroups as $groupIndex => $group) {
+                        if (in_array($field, $group)) {
+                            $crossLoadedGroupIndex = $groupIndex;
+                            break;
+                        }
+                    }
+                    
+                    // Check if this specific field is unanswered (-99)
+                    $rawValue = trim($report->getAttribute($field) ?? '');
+                    if ($rawValue === '-99') {
+                        // This field is specifically unanswered, count it as missing
+                        $missingItems[] = $message;
+                    }
+                    // Note: We no longer use complex cross-loaded group logic for unanswered items
+                    // Each -99 field in a concern domain counts as missing, regardless of cross-loading
+                }
+            @endphp
+
+            @php
+                // Remove duplicates from missing items
+                $uniqueMissingItems = array_unique($missingItems);
+            @endphp
+            {{ count($uniqueMissingItems) }}
+            @if (!empty($uniqueMissingItems))
+                <ul>
+                    @foreach ($uniqueMissingItems as $msg)
+                        <li>{{ $msg }}</li>
                     @endforeach
                 </ul>
-            </td>
-        </tr>
-    </table>
+            @endif
+            
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Rater comments:
+            <ul>
+                @php
+                    $comments = [
+                        'COMMENTS_GATE1' => 'Gate 1',
+                        'COMMENTS_STR'   => 'Student-rater relationship',
+                        'COMMENTS_ESS'   => 'Essential Items',
+                        'COMMENTS_AS'    => 'Academics',
+                        'COMMENTS_BEH'   => 'Behavior',
+                        'COMMENTS_PH'    => 'Physical Health',
+                        'COMMENTS_SEW'   => 'Social & Emotional Well-Being',
+                        'COMMENTS_SOS'   => 'Supports Outside of School',
+                    ];
+                @endphp
+
+                @foreach ($comments as $field => $label)
+                    @php
+                        $commentValue = $report->$field ?? '';
+                        $cleanValue = trim($commentValue);
+                    @endphp
+                    @if (!empty($cleanValue) && $cleanValue !== '-99')
+                        <li><strong>{{ $label }}:</strong> {{ $cleanValue }}</li>
+                    @endif
+                @endforeach
+            </ul>
+        </td>
+    </tr>
+</table>
 
 @else
     {{-- Special case: No concerns at Gate 1 --}}
