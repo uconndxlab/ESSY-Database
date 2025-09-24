@@ -90,29 +90,16 @@ class DecisionRulesService
             $fieldToDomainMap = $this->crossLoadedService->getFieldToDomainMap();
             
             $results = ['strengths' => [], 'monitor' => [], 'concerns' => []];
-            $processedCrossLoadedGroups = []; // Track which cross-loaded groups we've already processed
             
             foreach ($fieldToDomainMap as $field => $fieldDomain) {
                 if ($fieldDomain !== $domain) continue;
                 if (!isset($fieldMessages[$field])) continue;
                 
-                // Check if this field is part of a cross-loaded group that we've already processed
+                // No de-duplication across cross-loaded groups: allow each field to render in its domain
                 $crossLoadedGroups = $this->crossLoadedService->getCrossLoadedItemGroups();
-                $skipField = false;
-                foreach ($crossLoadedGroups as $groupIndex => $group) {
-                    if (in_array($field, $group)) {
-                        if (isset($processedCrossLoadedGroups[$groupIndex])) {
-                            $skipField = true;
-                            break;
-                        }
-                        $processedCrossLoadedGroups[$groupIndex] = $field;
-                        break;
-                    }
-                }
-                
-                if ($skipField) continue;
                 
                 $valueRaw = $this->crossLoadedService->safeGetFieldValue($report, $field);
+                $lookupField = $field; // default: use current field for decision rule lookup
                 
                 // Log field value extraction
                 $this->logFieldValueExtraction($field, $valueRaw, 'initial');
@@ -121,13 +108,16 @@ class DecisionRulesService
                 if (!$valueRaw) {
                     // Use the CrossLoadedDomainService method to get cross-loaded values
                     $crossLoadedValue = null;
+                    $crossLoadedSourceField = null;
                     $crossLoadedGroups = $this->crossLoadedService->getCrossLoadedItemGroups();
                     foreach ($crossLoadedGroups as $group) {
                         if (in_array($field, $group)) {
                             foreach ($group as $groupField) {
                                 if ($groupField !== $field) {
-                                    $crossLoadedValue = $this->crossLoadedService->safeGetFieldValue($report, $groupField);
-                                    if ($crossLoadedValue !== null) {
+                                    $candidateValue = $this->crossLoadedService->safeGetFieldValue($report, $groupField);
+                                    if ($candidateValue !== null) {
+                                        $crossLoadedValue = $candidateValue;
+                                        $crossLoadedSourceField = $groupField;
                                         break 2; // Break out of both loops
                                     }
                                 }
@@ -135,6 +125,9 @@ class DecisionRulesService
                         }
                     }
                     $valueRaw = $crossLoadedValue;
+                    if ($crossLoadedSourceField !== null) {
+                        $lookupField = $crossLoadedSourceField; // use the actual source field for decision rules lookup
+                    }
                     $this->logFieldValueExtraction($field, $valueRaw, 'cross_loaded');
                 }
                 
@@ -158,10 +151,15 @@ class DecisionRulesService
                 
                 // Try to get decision rule text first
                 // Use the field message text as the item code for lookup
-                $fieldMessage = $fieldMessages[$field] ?? '';
+                // Use field message aligned with the lookup field first; fall back to original field's message
+                $lookupFieldMessage = $fieldMessages[$lookupField] ?? ($fieldMessages[$field] ?? '');
                 
-                // Generate comprehensive item code variations to handle new field name patterns
-                $itemCodeVariations = $this->generateItemCodeVariations($field, $fieldMessage);
+                // Generate comprehensive item code variations prioritizing the lookup field (actual data source)
+                $itemCodeVariations = $this->generateItemCodeVariations($lookupField, $lookupFieldMessage);
+                
+                // Also include variations from the original field as a secondary attempt (kept ordered, then de-duped below)
+                $originalFieldVariations = $this->generateItemCodeVariations($field, $fieldMessages[$field] ?? $lookupFieldMessage);
+                $itemCodeVariations = array_values(array_unique(array_merge($itemCodeVariations, $originalFieldVariations)));
                 
                 $decisionText = null;
                 $matchedVariation = null;
