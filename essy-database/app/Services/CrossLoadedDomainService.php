@@ -190,6 +190,7 @@ class CrossLoadedDomainService
         return new ValidationResult(empty($errors), $errors, $warnings);
     }
 
+
     /**
      * Check for potential field name typos
      */
@@ -549,6 +550,16 @@ class CrossLoadedDomainService
     private function getCrossLoadedValue(ReportData $report, string $field): ?string
     {
         try {
+            // 1) Try alias for the requested field itself (handles misspellings like HYGEINE)
+            if (isset($this->fieldAliasMap[$field])) {
+                $aliasField = $this->fieldAliasMap[$field];
+                $aliasValue = $report->getAttribute($aliasField);
+                if (!($aliasValue === null || $aliasValue === '' || trim($aliasValue) === '-99')) {
+                    return trim($aliasValue);
+                }
+            }
+
+            // 2) Fall back to any other field in the same group
             foreach ($this->crossLoadedItemGroups as $group) {
                 if (in_array($field, $group)) {
                     // Try to get value from ANY other field in the group

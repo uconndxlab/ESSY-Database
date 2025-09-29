@@ -48,6 +48,8 @@ class ImportDataSanitized extends Command
             $headers = [];
             foreach ($rawHeaders as $key => $header) {
                 $sanitizedHeader = preg_replace('/[^a-zA-Z0-9_]/', '', $header);
+                // Normalize known misspellings: HYGEINE -> HYGIENE (handles any case)
+                $sanitizedHeader = preg_replace('/HYGEINE/i', 'HYGIENE', $sanitizedHeader);
                 $this->info("Sanitized header: $sanitizedHeader");
                 $headers[$key] = $sanitizedHeader;
             }
