@@ -30,9 +30,10 @@ class ImportDataSanitized extends Command
 
             $spreadsheet = IOFactory::load($filePath);
             
-            // Extract and store decision rules from the uploaded Excel file
-            $this->extractAndStoreDecisionRules($spreadsheet, $filePath);
-            $this->info("Spreadsheet loaded successfully.");
+            // Decision rules are now managed in the database only
+            // All rules should be pre-seeded using: php artisan db:seed --class=DecisionRulesSeeder
+            // $this->extractAndStoreDecisionRules($spreadsheet, $filePath);
+            $this->info("Spreadsheet loaded successfully. Decision rules will be loaded from database.");
 
             $sheet = $spreadsheet->getSheetByName('Qualtrics Output');
             if (!$sheet) {

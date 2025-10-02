@@ -150,8 +150,17 @@ class DecisionRulesService
                 // Log value parsing
                 $this->logValueParsing($field, $valueRaw, $value, $hasConfidence);
                 
+                // List of valid frequency values
+                $validFrequencies = [
+                    'Almost Always',
+                    'Frequently',
+                    'Sometimes',
+                    'Occasionally',
+                    'Almost Never'
+                ];
+                
                 // Ensure we have a valid frequency response
-                if (empty($value) || $value === '-99') {
+                if (empty($value) || $value === '-99' || !in_array($value, $validFrequencies)) {
                     $this->logItemSkipped($field, 'invalid_frequency', ['value' => $value]);
                     continue;
                 }
@@ -183,15 +192,16 @@ class DecisionRulesService
                     // Log successful decision rule usage
                     $this->logDecisionRuleSuccess($field, $value, $matchedVariation, $decisionText);
                 } else {
-                    // Decision rule not found - this indicates missing data
-                    $this->logDecisionRuleError('Decision rule not found', [
+                    // Decision rule not found - skip this item but continue processing others
+                    $this->logDecisionRuleError('Decision rule not found - skipping item', [
                         'field' => $field,
                         'frequency' => $value,
                         'variations_tried' => $itemCodeVariations,
                         'report_id' => $report->id ?? 'unknown'
                     ]);
                     
-                    throw new \Exception("Decision rule not found for field '{$field}' with frequency '{$value}'. Please ensure all decision rules are properly imported.");
+                    // Skip this item and continue with the next one
+                    continue;
                 }
                 
                 // Apply confidence and dagger symbols
@@ -216,14 +226,16 @@ class DecisionRulesService
             
             return $results;
         } catch (\Exception $e) {
-            $this->logDecisionRuleError('Error processing domain items', [
+            // Log the error but continue processing - return partial results
+            $this->logDecisionRuleError('Error processing domain items - returning partial results', [
                 'domain' => $domain,
                 'report_id' => $report->id ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'items_processed' => count($results['strengths']) + count($results['monitor']) + count($results['concerns'])
             ]);
             
-            // Re-throw the exception - no fallback
-            throw $e;
+            // Return whatever results we have so far instead of failing completely
+            return $results;
         }
     }
 

@@ -406,19 +406,34 @@
     
     // Always use DecisionRulesService for domain processing
     $domainService = app(\App\Services\DecisionRulesService::class);
-    
+
     try {
         $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);
+    } catch (Exception $e) {
+        $academicResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+    }
+
+    try {
         $behaviorResults = $domainService->processDomainItems($report, 'Behavior', $concernDomains);
+    } catch (Exception $e) {
+        $behaviorResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+    }
+
+    try {
         $physicalResults = $domainService->processDomainItems($report, 'Physical Health', $concernDomains);
+    } catch (Exception $e) {
+        $physicalResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+    }
+
+    try {
         $sewbResults = $domainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
+    } catch (Exception $e) {
+        $sewbResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+    }
+
+    try {
         $sosResults = $domainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
     } catch (Exception $e) {
-        // Fallback to empty arrays if there's an error
-        $academicResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
-        $behaviorResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
-        $physicalResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
-        $sewbResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
         $sosResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
     // Helper function to chunk array items into groups of max 10
