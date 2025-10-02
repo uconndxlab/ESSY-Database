@@ -42,8 +42,11 @@ class DecisionRulesSeeder extends Seeder
             $decisionText = trim($data[2], '"');
             $domain = trim($data[3], '"');
 
+            // Normalize item_code to uppercase for consistency (handles hygiene, HYGIENE, etc.)
+            $itemCode = strtoupper($itemCode);
+
             // Skip invalid entries
-            if (empty($itemCode) || empty($frequency) || empty($decisionText) || $itemCode === 'Qualtrics Column') {
+            if (empty($itemCode) || empty($frequency) || empty($decisionText) || $itemCode === 'QUALTRICS COLUMN') {
                 $skipped++;
                 continue;
             }

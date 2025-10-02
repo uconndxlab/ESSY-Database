@@ -279,8 +279,8 @@ class DecisionRulesService
             $variations[] = 'physical health appears to be addressed.';
         }
         
-        // Handle hygiene fields (O_P_hygiene_CL1/CL2) - note Excel spelling
-        if (str_contains($field, 'hygiene')) {
+        // Handle hygiene fields (O_P_HYGIENE_CL1/CL2)
+        if (str_contains($field, 'HYGIENE')) {
             $variations[] = 'Appears to have the resources to address basic hygiene needs.';
             $variations[] = 'appears to have the resources to address basic hygiene needs.';
         }
@@ -349,7 +349,7 @@ class DecisionRulesService
             'B_O_FAMSTRESS' => 'family is experiencing significant stressors.',
             'B_O_NBHDSTRESS' => 'neighborhood is experiencing significant stressors.',
             'O_P_HUNGER' => 'reports being hungry.',
-            'O_P_hygiene' => 'appears to have the resources to address basic hygiene needs.',
+            'O_P_HYGIENE' => 'appears to have the resources to address basic hygiene needs.',
             'O_P_CLOTHES' => 'shows up to school with adequate clothing.',
             'S_O_COMMCONN' => 'appears to experience a sense of connection in their community.',
             'A_S_O_ACTIVITY' => 'engaged in at least one extracurricular activity.'

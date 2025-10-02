@@ -133,9 +133,18 @@ class ImportDataSanitized extends Command
                     break;
                 }
                 
+                // Normalize item_code to uppercase for consistency (handles hygiene, HYGIENE, etc.)
+                $itemCode = strtoupper($itemCode);
+                
                 // Skip incomplete rows
                 if (empty($itemCode) || empty($frequency) || empty($decisionText)) {
                     $this->warn("Skipping incomplete row $row: itemCode='$itemCode', frequency='$frequency', decisionText='" . substr($decisionText, 0, 50) . "'");
+                    $row++;
+                    continue;
+                }
+                
+                // Skip the header/placeholder rows
+                if ($itemCode === 'QUALTRICS COLUMN') {
                     $row++;
                     continue;
                 }
