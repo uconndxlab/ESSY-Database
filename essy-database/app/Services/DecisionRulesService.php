@@ -162,6 +162,7 @@ class DecisionRulesService
                 // Ensure we have a valid frequency response
                 if (empty($value) || $value === '-99' || !in_array($value, $validFrequencies)) {
                     $this->logItemSkipped($field, 'invalid_frequency', ['value' => $value]);
+                    $erroredItems[] = $field;
                     continue;
                 }
                 
@@ -199,7 +200,6 @@ class DecisionRulesService
                         'variations_tried' => $itemCodeVariations,
                         'report_id' => $report->id ?? 'unknown'
                     ]);
-                    
                     // Skip this item and continue with the next one
                     continue;
                 }
@@ -219,6 +219,7 @@ class DecisionRulesService
                 $this->logItemCategorization($field, $value, $category, $sentence, $decisionText !== null);
                 
                 $results[$category][] = $sentence;
+                $results['errored'][] = $erroredItems;
             }
             
             // Log the completion of domain processing

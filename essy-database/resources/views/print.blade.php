@@ -406,33 +406,39 @@
     
     // Always use DecisionRulesService for domain processing
     $domainService = app(\App\Services\DecisionRulesService::class);
+    $erroredItems = [];
 
     try {
         $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);
+        $erroredItems = array_merge($erroredItems, $academicResults['errored']);
     } catch (Exception $e) {
         $academicResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
 
     try {
         $behaviorResults = $domainService->processDomainItems($report, 'Behavior', $concernDomains);
+        $erroredItems = array_merge($erroredItems, $behaviorResults['errored']);
     } catch (Exception $e) {
         $behaviorResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
 
     try {
         $physicalResults = $domainService->processDomainItems($report, 'Physical Health', $concernDomains);
+        $erroredItems = array_merge($erroredItems, $physicalResults['errored']);
     } catch (Exception $e) {
         $physicalResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
 
     try {
         $sewbResults = $domainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
+        $erroredItems = array_merge($erroredItems, $sewbResults['errored']);
     } catch (Exception $e) {
         $sewbResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
 
     try {
         $sosResults = $domainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
+        $erroredItems = array_merge($erroredItems, $sosResults['errored']);
     } catch (Exception $e) {
         $sosResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
@@ -653,6 +659,8 @@
                         // Each -99 field in a concern domain counts as missing, regardless of cross-loading
                     }
                 @endphp
+                    
+                    
 
                 @php
                     // Remove duplicates from missing items
@@ -663,6 +671,29 @@
                     <ul>
                         @foreach ($uniqueMissingItems as $msg)
                             <li>{{ $msg }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+                
+                
+                @if (!empty($erroredItems))
+                @php
+                    $c = collect($erroredItems);
+                    $c = $c->unique();
+                    $erroredItems = $c->toArray();
+                @endphp
+                <p>Failed to parse from Qualtrics ({{ count($erroredItems) }}):</p>
+                    <ul>
+                        
+                        @foreach ($erroredItems as $error)
+                            @php
+                                // If $error is an array, convert to string for display
+                                $errorString = is_array($error) ? implode(', ', $error) : $error;
+                                if(empty($errorString)) {
+                                    continue;
+                                }
+                            @endphp
+                            <li style="color: red;">{!! $errorString !!}</li>
                         @endforeach
                     </ul>
                 @endif
