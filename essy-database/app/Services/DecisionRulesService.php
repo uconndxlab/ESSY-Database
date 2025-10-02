@@ -89,7 +89,7 @@ class DecisionRulesService
             $fieldsThatNeedDagger = $this->crossLoadedService->getFieldsRequiringDagger($concernDomains);
             $fieldToDomainMap = $this->crossLoadedService->getFieldToDomainMap();
             
-            $results = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+            $results = ['strengths' => [], 'monitor' => [], 'concerns' => [], 'errored' => []];
             $processedCrossLoadedGroups = []; // Track which cross-loaded groups we've already processed
             
             foreach ($fieldToDomainMap as $field => $fieldDomain) {
@@ -162,7 +162,7 @@ class DecisionRulesService
                 // Ensure we have a valid frequency response
                 if (empty($value) || $value === '-99' || !in_array($value, $validFrequencies)) {
                     $this->logItemSkipped($field, 'invalid_frequency', ['value' => $value]);
-                    $erroredItems[] = $field;
+                    $results['errored'][] = $field;
                     continue;
                 }
                 
@@ -219,7 +219,6 @@ class DecisionRulesService
                 $this->logItemCategorization($field, $value, $category, $sentence, $decisionText !== null);
                 
                 $results[$category][] = $sentence;
-                $results['errored'][] = $erroredItems;
             }
             
             // Log the completion of domain processing
