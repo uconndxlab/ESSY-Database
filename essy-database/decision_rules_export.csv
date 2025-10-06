@@ -3,7 +3,7 @@ item_code,frequency,decision_text,domain
 "A_READ","Frequently","Frequently meets grade-level expectations for reading skills.","General"
 "A_READ","Sometimes","Sometimes meets grade-level expectations for reading skills.","General"
 "A_READ","Occasionally","Occasionally meets grade-level expectations for reading skills.","General"
-"A_READ","Almost Never","Almost never","General"
+"A_READ","Almost Never","Almost never meets grade-level expectations for reading skills.","General"
 "A_WRITE","Almost Always","Almost always meets expectations for grade-level writing skills.","General"
 "A_WRITE","Frequently","Frequently meets expectations for grade-level writing skills.","General"
 "A_WRITE","Sometimes","Sometimes meets expectations for grade-level writing skills.","General"

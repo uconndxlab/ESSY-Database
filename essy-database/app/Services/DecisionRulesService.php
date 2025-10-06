@@ -162,7 +162,7 @@ class DecisionRulesService
                 // Ensure we have a valid frequency response
                 if (empty($value) || $value === '-99' || !in_array($value, $validFrequencies)) {
                     $this->logItemSkipped($field, 'invalid_frequency', ['value' => $value]);
-                    $results['errored'][] = $field;
+                    $results['errored'][] = $fieldMessages[$field] . ' (' . $field . ')';
                     continue;
                 }
                 

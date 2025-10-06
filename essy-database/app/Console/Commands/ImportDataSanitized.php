@@ -20,6 +20,7 @@ class ImportDataSanitized extends Command
         try {
             $batchId = (string) Str::uuid();
             $filePath = $this->argument('file');
+            $importDate = now();
 
             $this->info("File path provided: $filePath");
 
@@ -76,8 +77,8 @@ class ImportDataSanitized extends Command
                     continue;
                 }
 
-                $data['created_at'] = now();
-                $data['updated_at'] = now();
+                $data['created_at'] = $importDate;
+                $data['updated_at'] = $importDate;
                 $data['batch_id'] = $batchId;
 
                 ReportData::create($data);
