@@ -11,7 +11,7 @@ class ReportController extends Controller
     public function index()
     {
         $batches = ReportData::whereNotNull('batch_id')
-            ->select('batch_id')
+            ->select('batch_id', 'created_at')
             ->distinct()
             ->orderByDesc('created_at')
             ->get();
