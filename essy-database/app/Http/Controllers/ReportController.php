@@ -33,7 +33,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('print', compact('report'))
                 ->setPaper('letter', 'portrait');
 
-        return $pdf->download("report_{$report->id}.pdf");
+        return $pdf->download("ESSY_{$report->SCHOOL}_{$report->DEM_GRADE}_{$report->LN_STUDENT}.pdf");
     }
 
     public function destroy($id)
