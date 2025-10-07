@@ -89,7 +89,7 @@ class DecisionRulesService
             $fieldsThatNeedDagger = $this->crossLoadedService->getFieldsRequiringDagger($concernDomains);
             $fieldToDomainMap = $this->crossLoadedService->getFieldToDomainMap();
             
-            $results = ['strengths' => [], 'monitor' => [], 'concerns' => [], 'errored' => []];
+            $results = ['strengths' => [], 'monitor' => [], 'concerns' => [], 'errored' => [], 'checkboxError' => []];
             $processedCrossLoadedGroups = []; // Track which cross-loaded groups we've already processed
             
             foreach ($fieldToDomainMap as $field => $fieldDomain) {
@@ -162,7 +162,11 @@ class DecisionRulesService
                 // Ensure we have a valid frequency response
                 if (empty($value) || $value === '-99' || !in_array($value, $validFrequencies)) {
                     $this->logItemSkipped($field, 'invalid_frequency', ['value' => $value]);
-                    $results['errored'][] = $fieldMessages[$field] . ' (' . $field . ')';
+                    if (str_contains($value, 'Check box')) {
+                    $results['checkboxError'][] = $fieldMessages[$field] . ' (' . $field . ')';
+                    } else {        
+                        $results['errored'][] = $fieldMessages[$field] . ' (' . $field . ')';
+                    }
                     continue;
                 }
                 
