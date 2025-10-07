@@ -407,10 +407,12 @@
     // Always use DecisionRulesService for domain processing
     $domainService = app(\App\Services\DecisionRulesService::class);
     $erroredItems = [];
+    $checkboxErrorItems = [];
 
     try {
         $academicResults = $domainService->processDomainItems($report, 'Academic Skills', $concernDomains);
         $erroredItems = array_merge($erroredItems, $academicResults['errored']);
+        $checkboxErrorItems = array_merge($checkboxErrorItems, $academicResults['checkboxError']);
     } catch (Exception $e) {
         $academicResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
@@ -418,6 +420,7 @@
     try {
         $behaviorResults = $domainService->processDomainItems($report, 'Behavior', $concernDomains);
         $erroredItems = array_merge($erroredItems, $behaviorResults['errored']);
+        $checkboxErrorItems = array_merge($checkboxErrorItems, $behaviorResults['checkboxError']);
     } catch (Exception $e) {
         $behaviorResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
@@ -425,6 +428,7 @@
     try {
         $physicalResults = $domainService->processDomainItems($report, 'Physical Health', $concernDomains);
         $erroredItems = array_merge($erroredItems, $physicalResults['errored']);
+        $checkboxErrorItems = array_merge($checkboxErrorItems, $physicalResults['checkboxError']);
     } catch (Exception $e) {
         $physicalResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
@@ -432,6 +436,7 @@
     try {
         $sewbResults = $domainService->processDomainItems($report, 'Social & Emotional Well-Being', $concernDomains);
         $erroredItems = array_merge($erroredItems, $sewbResults['errored']);
+        $checkboxErrorItems = array_merge($checkboxErrorItems, $sewbResults['checkboxError']);
     } catch (Exception $e) {
         $sewbResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
@@ -439,6 +444,7 @@
     try {
         $sosResults = $domainService->processDomainItems($report, 'Supports Outside of School', $concernDomains);
         $erroredItems = array_merge($erroredItems, $sosResults['errored']);
+        $checkboxErrorItems = array_merge($checkboxErrorItems, $sosResults['checkboxError']);
     } catch (Exception $e) {
         $sosResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
@@ -694,6 +700,21 @@
                                 }
                             @endphp
                             <li style="color: red;">{!! $errorString !!}</li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                @if (!empty($checkboxErrorItems ))
+                @php
+                    $c = collect($checkboxErrorItems);
+                    $c = $c->unique();
+                    $checkboxErrorItems = $c->toArray();
+                @endphp
+                <p>Checked Box for Not Confident in rating ({{ count($checkboxErrorItems) }}):</p>
+                    <ul>
+                        
+                        @foreach ($checkboxErrorItems as $error)
+                            <li style="color: black;">{!! $error !!}</li>
                         @endforeach
                     </ul>
                 @endif
