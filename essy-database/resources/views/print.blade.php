@@ -448,6 +448,16 @@
     } catch (Exception $e) {
         $sosResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
+
+    // Process Gate 2 Essential Items 
+    //These arent really used only the errors generated from them are used
+    try {
+        $essentialResults = $domainService->processDomainItems($report, 'Gate 2 Essential Items', $concernDomains);
+        $erroredItems = array_merge($erroredItems, $essentialResults['errored']);
+        $checkboxErrorItems = array_merge($checkboxErrorItems, $essentialResults['checkboxError']);
+    } catch (Exception $e) {
+        $essentialResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
+    }
     // Helper function to chunk array items into groups of max 10
     function chunkDomainItems($items, $maxPerChunk = 10) {
         return array_chunk($items, $maxPerChunk);
