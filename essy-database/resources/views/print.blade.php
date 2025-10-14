@@ -644,18 +644,6 @@
                             continue;
                         }
                         
-                        // Skip Gate 2 essential items - they should not be counted as unanswered
-                        // Gate 2 items should only appear if they are concerns, not because they're unanswered
-                        if (in_array($field, ['E_SHARM', 'E_BULLIED', 'E_EXCLUDE', 'E_WITHDRAW', 'E_REGULATE', 'E_RESTED'])) {
-                            continue;
-                        }
-                        
-                        // Only count fields from concern domains
-                        $fieldDomain = $fieldToDomainMap[$field] ?? null;
-                        if (!$fieldDomain || !in_array($fieldDomain, $concernDomains)) {
-                            continue;
-                        }
-                        
                         // Check if this field is part of a cross-loaded group
                         $crossLoadedGroupIndex = null;
                         foreach ($crossLoadedGroups as $groupIndex => $group) {
@@ -669,7 +657,7 @@
                         $rawValue = trim($report->getAttribute($field) ?? '');
                         if ($rawValue === '-99') {
                             // This field is specifically unanswered, count it as missing
-                            $missingItems[] = $message;
+                            $missingItems[] = $message . " ($field)";
                         }
                         // Note: We no longer use complex cross-loaded group logic for unanswered items
                         // Each -99 field in a concern domain counts as missing, regardless of cross-loading
