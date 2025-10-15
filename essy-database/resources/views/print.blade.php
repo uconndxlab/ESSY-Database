@@ -643,6 +643,14 @@
                         if (str_starts_with($field, 'COMMENTS_')) {
                             continue;
                         }
+
+                        if (!in_array($field, ['E_SHARM', 'E_BULLIED', 'E_EXCLUDE', 'E_WITHDRAW', 'E_REGULATE', 'E_RESTED'])) {
+                            // Only count fields from concern domains
+                            $fieldDomain = $fieldToDomainMap[$field] ?? null;
+                            if (!$fieldDomain || !in_array($fieldDomain, $concernDomains)) {
+                                continue;
+                            }
+                        }
                         
                         // Check if this field is part of a cross-loaded group
                         $crossLoadedGroupIndex = null;
