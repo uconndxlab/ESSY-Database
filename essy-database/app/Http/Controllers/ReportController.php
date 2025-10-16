@@ -25,6 +25,18 @@ class ReportController extends Controller
         return view('print', compact('report'));
     }
 
+    public function showGate1Batch($batch)
+    {
+        // Get all reports for this Gate 1 batch
+        $reports = ReportData::where('batch_id', $batch)->get();
+        
+        if ($reports->isEmpty()) {
+            return redirect('/')->with('error', 'No Gate 1 reports found for this batch.');
+        }
+        
+        return view('printGate1', compact('reports', 'batch'));
+    }
+
 
     public function downloadPdf($id)
     {
@@ -45,6 +57,5 @@ class ReportController extends Controller
         return redirect()->route('batches.show', ['batch' => $batchId])
                         ->with('success', 'Report Deleted Successfully.');
     }
-    
 
 }

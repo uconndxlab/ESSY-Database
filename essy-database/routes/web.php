@@ -13,7 +13,11 @@ Route::get('/reports/print/{id}', [ReportController::class, 'print_all']);
 
 Route::get('/reports/{id}', [ReportController::class, 'print_all']);
 
+Route::get('/gate1/batch/{batch}', [ReportController::class, 'showGate1Batch'])->name('gate1.batch');
+
 Route::post('/import', [ReportImportController::class, 'import'])->name('reports.import');
+
+Route::post('/importGate1', [ReportImportController::class, 'importGate1'])->name('reports.importGate1');
 
 Route::get('/batches/{batch}', [BatchController::class, 'show'])->name('batches.show');
 

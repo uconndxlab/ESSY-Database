@@ -53,4 +53,21 @@
     
         
     @endif
+
+    <h1>ESSY GATE 1 Reports</h1>
+    <form action="{{ route('reports.importGate1') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <label for="file">Upload New Batch File:</label>
+        <input type="file" name="file" required>
+        <button type="submit" class="btn btn-success">Import</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Report ID</th>
+                <th>View</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+    </table>
 @endsection
