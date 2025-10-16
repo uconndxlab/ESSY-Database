@@ -12,6 +12,11 @@ class ReportData extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     protected $fillable = [
         'batch_id', 'excel_file_path',
         'StartDate', 'EndDate', 'Status', 'IPAddress', 'Progress', 'Duration', 'Finished', 'RecordedDate',
