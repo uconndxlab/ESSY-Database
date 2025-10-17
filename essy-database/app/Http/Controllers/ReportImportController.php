@@ -58,8 +58,7 @@ class ReportImportController extends Controller
         $batchId = File::exists($batchFile) ? trim(File::get($batchFile)) : null;
 
         if ($batchId) {
-            return redirect()->route('gate1.batch', ['batch' => $batchId])
-                ->with('success', 'Gate 1 data imported successfully.');
+            return redirect('/')->with('success', "Gate 1 data imported successfully. Batch ID: {$batchId}");
         } else {
             return redirect()->back()->with('error', 'Import succeeded, but batch ID not found.');
         }

@@ -47,8 +47,9 @@
         }
 
         .legend-table {
-            width: auto;
+            width: 80%;
             margin: 0 auto 20px auto;
+            table-layout: fixed;
         }
 
         .legend-table th {
@@ -62,6 +63,7 @@
         .legend-table td {
             padding: 16px 24px;
             text-align: center;
+            width: 16.666%;
         }
 
         .legend-table td span {
@@ -131,6 +133,12 @@
             text-align: center;
             font-size: 10pt;
         }
+
+        .no-print {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -171,11 +179,14 @@
     <table class="legend-table">
         <thead>
             <tr>
-                <th colspan="5">Legend:</th>
+                <th colspan="6">Legend:</th>
             </tr>
         </thead>
         <tbody>
             <tr>
+                <td style="background-color: #e5e7eb;">
+                    <span>No Response</span>
+                </td>
                 <td style="background-color: #ff989b;">
                     <span>Area of Substantial Concern</span>
                 </td>
@@ -183,7 +194,7 @@
                     <span>Area of Some Concern</span>
                 </td>
                 <td style="background-color: #bed6ef;">
-                    <span>No Concern or Strength</span>
+                    <span>Neither Concern nor Strength</span>
                 </td>
                 <td style="background-color: #c6e1b4;">
                     <span>Area of Some Strength</span>
@@ -235,12 +246,12 @@
             @endforeach
             <tr class="summary-row">
                 <td colspan="3">% of students exhibiting needs</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[0] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[1] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[2] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[3] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[4] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[5] / $totalStudents) * 100, 1) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[0] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[1] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[2] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[3] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[4] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[5] / $totalStudents) * 100, 0) : 0 }}%</td>
             </tr>
         </tbody>
     </table>

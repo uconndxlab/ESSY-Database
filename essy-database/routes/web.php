@@ -15,6 +15,8 @@ Route::get('/reports/{id}', [ReportController::class, 'print_all']);
 
 Route::get('/gate1/batch/{batch}', [ReportController::class, 'showGate1Batch'])->name('gate1.batch');
 
+Route::get('/gate1/batch/{batch}/pdf', [ReportController::class, 'downloadGate1Pdf'])->name('gate1.download');
+
 Route::post('/import', [ReportImportController::class, 'import'])->name('reports.import');
 
 Route::post('/importGate1', [ReportImportController::class, 'importGate1'])->name('reports.importGate1');
