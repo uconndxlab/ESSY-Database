@@ -13,7 +13,23 @@
 
         body {
             font-family: Arial, sans-serif;
-            margin: 30px;
+            margin: 30px 0;
+            padding: 0;
+        }
+
+        @media not print{
+            .data-table {
+                margin-top: 1em;
+                max-width: 1200px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        
+        @media print {
+            body {
+                margin: 0.5in 0;
+            }
         }
 
         h1 {
@@ -33,10 +49,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1em;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 1em auto 0 auto;
         }
 
         th, td {
@@ -67,7 +80,7 @@
         }
 
         .legend-table td span {
-            font-weight: 900;
+            font-weight: bold;
             font-size: 12pt;
         }
 
