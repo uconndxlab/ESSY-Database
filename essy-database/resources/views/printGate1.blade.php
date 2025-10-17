@@ -13,7 +13,23 @@
 
         body {
             font-family: Arial, sans-serif;
-            margin: 30px;
+            margin: 30px 0;
+            padding: 0;
+        }
+
+        @media not print{
+            .data-table {
+                margin-top: 1em;
+                max-width: 1200px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        
+        @media print {
+            body {
+                margin: 0.5in 0;
+            }
         }
 
         h1 {
@@ -33,10 +49,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1em;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 1em auto 0 auto;
         }
 
         th, td {
@@ -47,8 +60,9 @@
         }
 
         .legend-table {
-            width: auto;
+            width: 80%;
             margin: 0 auto 20px auto;
+            table-layout: fixed;
         }
 
         .legend-table th {
@@ -62,10 +76,11 @@
         .legend-table td {
             padding: 16px 24px;
             text-align: center;
+            width: 16.666%;
         }
 
         .legend-table td span {
-            font-weight: 900;
+            font-weight: bold;
             font-size: 12pt;
         }
 
@@ -131,6 +146,12 @@
             text-align: center;
             font-size: 10pt;
         }
+
+        .no-print {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -171,11 +192,14 @@
     <table class="legend-table">
         <thead>
             <tr>
-                <th colspan="5">Legend:</th>
+                <th colspan="6">Legend:</th>
             </tr>
         </thead>
         <tbody>
             <tr>
+                <td style="background-color: #e5e7eb;">
+                    <span>No Response</span>
+                </td>
                 <td style="background-color: #ff989b;">
                     <span>Area of Substantial Concern</span>
                 </td>
@@ -183,7 +207,7 @@
                     <span>Area of Some Concern</span>
                 </td>
                 <td style="background-color: #bed6ef;">
-                    <span>No Concern or Strength</span>
+                    <span>Neither Concern nor Strength</span>
                 </td>
                 <td style="background-color: #c6e1b4;">
                     <span>Area of Some Strength</span>
@@ -235,12 +259,12 @@
             @endforeach
             <tr class="summary-row">
                 <td colspan="3">% of students exhibiting needs</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[0] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[1] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[2] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[3] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[4] / $totalStudents) * 100, 1) : 0 }}%</td>
-                <td class="domain-column">{{ $totalStudents > 0 ? number_format(($domainNeedCounts[5] / $totalStudents) * 100, 1) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[0] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[1] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[2] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[3] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[4] / $totalStudents) * 100, 0) : 0 }}%</td>
+                <td class="domain-column">{{ $totalStudents > 0 ? round(($domainNeedCounts[5] / $totalStudents) * 100, 0) : 0 }}%</td>
             </tr>
         </tbody>
     </table>

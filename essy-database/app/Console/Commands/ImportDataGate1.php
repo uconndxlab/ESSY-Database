@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\ReportData;
-use App\Models\DecisionRule;
+use App\Models\Gate1Report;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Str;
 use Exception;
@@ -73,7 +72,7 @@ class ImportDataGate1 extends Command
                 $data['updated_at'] = $importDate;
                 $data['batch_id'] = $batchId;
 
-                ReportData::create($data);
+                Gate1Report::create($data);
                 $recordsProcessed++;
             }
 

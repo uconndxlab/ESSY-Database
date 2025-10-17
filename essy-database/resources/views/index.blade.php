@@ -61,13 +61,43 @@
         <input type="file" name="file" required>
         <button type="submit" class="btn btn-success">Import</button>
     </form>
+
+    <br>
+
+    @if ($gate1Batches->isEmpty())
+        <p>No Gate 1 reports found.</p>
+    @else
     <table>
-        <thead>
+        <thead style="background-color: #f0f0f0;">
             <tr>
-                <th>Report ID</th>
-                <th>View</th>
+                <th>Batch ID</th>
+                <th>Date Imported</th>
+                <th>View Report</th>
+                <th>Download PDF</th>
                 <th>Delete</th>
             </tr>
         </thead>
+        <tbody>
+            @foreach ($gate1Batches as $batch)
+                <tr>
+                    <td>{{ $batch->batch_id }}</td>
+                    <td>{{ \Carbon\Carbon::parse($batch->created_at)->format('m/d/Y') }}</td>
+                    <td>
+                        <a href="{{ route('gate1.batch', ['batch' => $batch->batch_id]) }}" target="_blank">View</a>
+                    </td>
+                    <td>
+                        <a href="{{ route('gate1.download', ['batch' => $batch->batch_id]) }}" class="btn btn-sm btn-primary">PDF</a>
+                    </td>
+                    <td>
+                        <form action="{{ route('batches.destroy', $batch->batch_id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
     </table>
+    @endif
 @endsection

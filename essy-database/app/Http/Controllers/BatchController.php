@@ -6,8 +6,8 @@ use ZipArchive;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-
 use App\Models\ReportData;
+use App\Models\Gate1Report;
 
 class BatchController extends Controller
 {
@@ -55,9 +55,18 @@ class BatchController extends Controller
 
     public function destroy($batch)
     {
-        $deleted = ReportData::where('batch_id', $batch)->delete();
+        // Try deleting from both Gate 1 and Gate 2 (regular) tables
+        $deletedGate1 = Gate1Report::where('batch_id', $batch)->delete();
+        $deletedGate2 = ReportData::where('batch_id', $batch)->delete();
+        
+        //Fancy way of just getting whatevr isnt null kinda cool 
+        $totalDeleted = $deletedGate1 + $deletedGate2;
 
-        return redirect('/')->with('success', "Batch Deleted Successfully ($deleted Reports were Removed).");
+        if ($totalDeleted > 0) {
+            return redirect('/')->with('success', "Batch Deleted Successfully ($totalDeleted Reports were Removed).");
+        } else {
+            return redirect('/')->with('error', "Batch not found.");
+        }
     }
 }
 

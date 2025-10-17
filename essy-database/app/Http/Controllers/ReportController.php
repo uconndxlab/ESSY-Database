@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ReportData;
+use App\Models\Gate1Report;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -16,7 +17,13 @@ class ReportController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('index', compact('batches'));
+        //Now we fetch from the gate 1 table to on the index to display those jobs :)
+        $gate1Batches = Gate1Report::select('batch_id', 'created_at')
+            ->distinct()
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('index', compact('batches', 'gate1Batches'));
     }
 
     public function print_all($id)
@@ -27,14 +34,27 @@ class ReportController extends Controller
 
     public function showGate1Batch($batch)
     {
-        // Get all reports for this Gate 1 batch
-        $reports = ReportData::where('batch_id', $batch)->get();
+        $reports = Gate1Report::where('batch_id', $batch)->get();
         
         if ($reports->isEmpty()) {
             return redirect('/')->with('error', 'No Gate 1 reports found for this batch.');
         }
         
         return view('printGate1', compact('reports', 'batch'));
+    }
+
+    public function downloadGate1Pdf($batch)
+    {
+        $reports = Gate1Report::where('batch_id', $batch)->get();
+        
+        if ($reports->isEmpty()) {
+            return redirect('/')->with('error', 'No Gate 1 reports found for this batch.');
+        }
+
+        $pdf = Pdf::loadView('printGate1', compact('reports', 'batch'))
+                ->setPaper('letter', 'landscape');
+
+        return $pdf->download("ESSY_Gate1_Batch_{$batch}.pdf");
     }
 
 
