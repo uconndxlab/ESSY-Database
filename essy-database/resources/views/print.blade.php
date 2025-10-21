@@ -4,10 +4,23 @@
     <meta charset="UTF-8">
     <title>ESSY Data Report</title>
     <style>
+        @page {
+            margin: 100px 30px 30px 30px;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 30px;
-            padding-top:35px;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            position: fixed;
+            top: -70px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            text-align: left;
         }
 
         table {
@@ -33,9 +46,11 @@
 </head>
 <body>
 
-    <div style="page-break-inside: avoid;">
-        <img src="{{ public_path('assets/essy-logo-trimmed.png') }}" alt="ESSY Logo" style="width:140px;"/>
+    <header>
+        <img src="{{ public_path('assets/essy-logo-trimmed.png') }}" alt="ESSY Logo" style="height:50px;"/>
+    </header>
 
+    <div style="page-break-inside: avoid;">
         <p>The ESSY Whole Child Screener is a measure to provide a holistic snapshot of each student. It assesses both individual student characteristics as well as conditions of the student's environment. There are six broad domains of focus: </p>
         <img src="{{ public_path('assets/essy-header-block.png') }}" alt="ESSY Domains" style="width:100%; max-width:800px;"/>
         
@@ -233,7 +248,7 @@
     <table>
         <tbody>
             <td>
-                <p><strong>Proceed:</strong></p>
+                <img src="{{ public_path('assets/icons/PROCEED.PNG.png') }}" alt="Proceed Icon" style="width:60px; vertical-align: middle;"/>                <p><strong>Proceed:</strong></p>
                 <ul>
                     @if (
                         str_contains(strtolower($report->RELATION_CLOSE), 'positive') &&
@@ -247,6 +262,7 @@
                 </ul>
             </td>
             <td>
+                <img src="{{ public_path('assets/icons/CAUTION.png') }}" alt="Caution Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Caution:</strong></p>
                 <ul>
                     @if ($raterConfidenceFlag)
@@ -376,6 +392,7 @@
     <table>
         <tbody>
             <td>
+                <img src="{{ public_path('assets/icons/PROCEED.PNG.png') }}" alt="Proceed Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Proceed:</strong></p>
                 <ul>
                     @foreach ($proceedItems as $item)
@@ -384,6 +401,7 @@
                 </ul>
             </td>
             <td>
+                <img src="{{ public_path('assets/icons/CAUTION.png') }}" alt="Caution Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Caution:</strong></p>
                 <ul>
                     @foreach ($cautionItems as $item)
