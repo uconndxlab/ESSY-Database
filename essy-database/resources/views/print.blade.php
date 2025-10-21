@@ -33,18 +33,20 @@
 </head>
 <body>
 
-    <img src="{{ public_path('assets/essy-logo-trimmed.png') }}" alt="ESSY Logo" style="width:140px;"/>
+    <div style="page-break-inside: avoid;">
+        <img src="{{ public_path('assets/essy-logo-trimmed.png') }}" alt="ESSY Logo" style="width:140px;"/>
 
-    <p>The ESSY Whole Child Screener is a measure to provide a holistic snapshot of each student. It assesses both individual student characteristics as well as conditions of the student's environment. There are six broad domains of focus: </p>
-    <img src="{{ public_path('assets/essy-header-block.png') }}" alt="ESSY Domains" style="width:100%;"/>
-    
-    <p>The ESSY Whole Child Screener includes two main sections in the rating process, also known as “gates.” A gated process helps us to build efficiency by not asking unnecessary questions for all students, focusing more detailed questions only in areas of need for identified students. </p>
+        <p>The ESSY Whole Child Screener is a measure to provide a holistic snapshot of each student. It assesses both individual student characteristics as well as conditions of the student's environment. There are six broad domains of focus: </p>
+        <img src="{{ public_path('assets/essy-header-block.png') }}" alt="ESSY Domains" style="width:100%; max-width:800px;"/>
+        
+        <p>The ESSY Whole Child Screener includes two main sections in the rating process, also known as "gates." A gated process helps us to build efficiency by not asking unnecessary questions for all students, focusing more detailed questions only in areas of need for identified students. </p>
 
-   <p>At Gate 1, raters respond to a single, broad item about each of the six domains to identify areas of strength and concern.</p>
+        <p>At Gate 1, raters respond to a single, broad item about each of the six domains to identify areas of strength and concern.</p>
 
  
 
-   <p>If concerns are identified at Gate 1, raters are presented with more detailed items in the areas of concern (Gate 2) to inform decisions about further assessment or support.</p>
+        <p>If concerns are identified at Gate 1, raters are presented with more detailed items in the areas of concern (Gate 2) to inform decisions about further assessment or support.</p>
+    </div>
 
 <div style="page-break-after: always;"></div>
 
