@@ -4,9 +4,23 @@
     <meta charset="UTF-8">
     <title>ESSY Data Report</title>
     <style>
+        @page {
+            margin: 100px 30px 30px 30px;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 30px;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            position: fixed;
+            top: -70px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            text-align: left;
         }
 
         table {
@@ -14,7 +28,6 @@
             border-collapse: collapse;
             margin-top: 1em;
         }
-
 
         th, td {
             border: 1px solid #000;
@@ -32,6 +45,26 @@
     </style>
 </head>
 <body>
+
+    <header>
+        <img src="{{ public_path('assets/essy-logo-trimmed.png') }}" alt="ESSY Logo" style="height:50px;"/>
+    </header>
+
+    <div style="page-break-inside: avoid;">
+        <p>The ESSY Whole Child Screener is a measure to provide a holistic snapshot of each student. It assesses both individual student characteristics as well as conditions of the student's environment. There are six broad domains of focus: </p>
+        <img src="{{ public_path('assets/essy-header-block.png') }}" alt="ESSY Domains" style="width:100%; max-width:800px;"/>
+        
+        <p>The ESSY Whole Child Screener includes two main sections in the rating process, also known as "gates." A gated process helps us to build efficiency by not asking unnecessary questions for all students, focusing more detailed questions only in areas of need for identified students. </p>
+
+        <p>At Gate 1, raters respond to a single, broad item about each of the six domains to identify areas of strength and concern.</p>
+
+ 
+
+        <p>If concerns are identified at Gate 1, raters are presented with more detailed items in the areas of concern (Gate 2) to inform decisions about further assessment or support.</p>
+    </div>
+
+<div style="page-break-after: always;"></div>
+
 
     <h2>ESSY Whole Child Screener Report</h2>
 
@@ -215,7 +248,7 @@
     <table>
         <tbody>
             <td>
-                <p><strong>Proceed:</strong></p>
+                <img src="{{ public_path('assets/icons/PROCEED.PNG.png') }}" alt="Proceed Icon" style="width:60px; vertical-align: middle;"/>                <p><strong>Proceed:</strong></p>
                 <ul>
                     @if (
                         str_contains(strtolower($report->RELATION_CLOSE), 'positive') &&
@@ -229,6 +262,7 @@
                 </ul>
             </td>
             <td>
+                <img src="{{ public_path('assets/icons/CAUTION.png') }}" alt="Caution Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Caution:</strong></p>
                 <ul>
                     @if ($raterConfidenceFlag)
@@ -358,6 +392,7 @@
     <table>
         <tbody>
             <td>
+                <img src="{{ public_path('assets/icons/PROCEED.PNG.png') }}" alt="Proceed Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Proceed:</strong></p>
                 <ul>
                     @foreach ($proceedItems as $item)
@@ -366,6 +401,7 @@
                 </ul>
             </td>
             <td>
+                <img src="{{ public_path('assets/icons/CAUTION.png') }}" alt="Caution Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Caution:</strong></p>
                 <ul>
                     @foreach ($cautionItems as $item)
@@ -478,8 +514,8 @@
     }
     @endphp
 
-    <table>
-        <thead>
+    <table style="page-break-inside: avoid;">
+        <thead style="display: table-row-group;">
             <tr>
                 <th>Domain</th>
                 <th style="background-color: #C8E6C9;">Strengths to Maintain</th>
