@@ -68,7 +68,7 @@
 <div style="page-break-after: always;"></div>
 
 
-    <h2>ESSY Whole Child Screener Report</h2>
+    <h2 style="text-align: center">ESSY Whole Child Screener Report</h2>
 
     <!-- Demographic Information Table -->
     <table>
@@ -208,38 +208,38 @@
     <table>
         <thead>
             <tr>
-                <th style="background-color: #C8E6C9;">Area of Substantial Strength</th>
-                <th style="background-color: #DCEDC8;">Area of Some Strength</th>
-                <th style="background-color: #BBDEFB;">Area of Neither Strength Nor Concern</th>
-                <th style="background-color: #F8BBD0;">Area of Some Concern</th>
-                <th style="background-color: #EF9A9A;">Area of Substantial Concern</th>
+                <th style="background-color: #C8E6C9; width: 20%;">Area of Substantial Strength</th>
+                <th style="background-color: #DCEDC8; width: 20%;">Area of Some Strength</th>
+                <th style="background-color: #BBDEFB; width: 20%;">Area of Neither Strength Nor Concern</th>
+                <th style="background-color: #F8BBD0; width: 20%;">Area of Some Concern</th>
+                <th style="background-color: #EF9A9A; width: 20%;">Area of Substantial Concern</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td style="background-color: #C8E6C9;">
+                <td style="background-color: #C8E6C9; width: 20%;">
                     @foreach ($substantialStrength as $domain)
-                        <div>{{ $domain }}</div>
+                        <div>{{ $domain }}</div> <br>
                     @endforeach
                 </td>
-                <td style="background-color: #DCEDC8;">
+                <td style="background-color: #DCEDC8; width: 20%;">
                     @foreach ($someStrength as $domain)
-                        <div>{{ $domain }}</div>
+                        <div>{{ $domain }}</div> <br>
                     @endforeach
                 </td>
-                <td style="background-color: #BBDEFB;">
+                <td style="background-color: #BBDEFB; width: 20%;">
                     @foreach ($neutral as $domain)
-                        <div>{{ $domain }}</div>
+                        <div>{{ $domain }}</div> <br>
                     @endforeach
                 </td>
-                <td style="background-color: #F8BBD0;">
+                <td style="background-color: #F8BBD0; width: 20%;">
                     @foreach ($someConcern as $domain)
-                        <div>{{ $domain }}</div>
+                        <div>{{ $domain }}</div> <br>
                     @endforeach
                 </td>
-                <td style="background-color: #EF9A9A;">
+                <td style="background-color: #EF9A9A; width: 20%;">
                     @foreach ($substantialConcern as $domain)
-                        <div>{{ $domain }}</div>
+                        <div>{{ $domain }}</div> <br>
                     @endforeach
                 </td>
             </tr>
@@ -249,7 +249,7 @@
     <p><strong>In addition, please consider the following information regarding endorsed items:</strong></p>
     <table>
         <tbody>
-            <td>
+            <td style="width: 50%;">
                 <img src="{{ public_path('assets/icons/PROCEED.PNG.png') }}" alt="Proceed Icon" style="width:60px; vertical-align: middle;"/>                <p><strong>Proceed:</strong></p>
                 <ul>
                     @if (
@@ -263,7 +263,7 @@
 
                 </ul>
             </td>
-            <td>
+            <td style="width: 50%;">
                 <img src="{{ public_path('assets/icons/CAUTION.png') }}" alt="Caution Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Caution:</strong></p>
                 <ul>
@@ -393,7 +393,7 @@
 
     <table>
         <tbody>
-            <td>
+            <td style="width: 50%;">
                 <img src="{{ public_path('assets/icons/PROCEED.PNG.png') }}" alt="Proceed Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Proceed:</strong></p>
                 <ul>
@@ -402,7 +402,7 @@
                     @endforeach
                 </ul>
             </td>
-            <td>
+            <td style="width: 50%;">
                 <img src="{{ public_path('assets/icons/CAUTION.png') }}" alt="Caution Icon" style="width:60px; vertical-align: middle;"/>
                 <p><strong>Caution:</strong></p>
                 <ul>
@@ -519,14 +519,14 @@
     <table style="page-break-inside: avoid;">
         <thead style="display: table-row-group;">
             <tr>
-                <th>Domain</th>
-                <th style="background-color: #C8E6C9; padding-top: 12px; padding-bottom: 12px;">
+                <th style="width: 15%;">Domain</th>
+                <th style="background-color: #C8E6C9; padding-top: 12px; padding-bottom: 12px; width: 28.33%;">
                     <i style="font-size:22px; margin-right: 5px;" class="bi bi-hand-thumbs-up-fill"></i>
                     Strengths to Maintain</th>
-                <th style="background-color: #BBDEFB; padding-top: 12px; padding-bottom: 12px;">
+                <th style="background-color: #BBDEFB; padding-top: 12px; padding-bottom: 12px; width: 28.33%;">
                     <i style="font-size:22px; margin-right: 5px;" class="bi bi-search"></i>
                     Areas to Monitor</th>
-                <th style="background-color: #EF9A9A; padding-top: 12px; padding-bottom: 12px;">
+                <th style="background-color: #EF9A9A; padding-top: 12px; padding-bottom: 12px; width: 28.33%;">
                     <i style="font-size:22px; margin-right: 5px;" class="bi bi-exclamation-triangle-fill"></i>
                     Concerns for Follow Up</th>
             </tr>
@@ -538,23 +538,23 @@
                 @endphp
                 @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
                     <tr>
-                        <td style="text-align: center; vertical-align: middle;">
+                        <td style="text-align: center; vertical-align: middle; width: 15%;">
                             @if ($chunkIndex === 0)
                                 <img src="{{ public_path('assets/icons/ACADEMICS.png') }}" alt="Academic Skills" style="width:80px; display: block; margin: 0 auto;"/>
                                 <div>Academic Skills</div>
                             @endif
                         </td>
-                        <td style="background-color: #C8E6C9;">
+                        <td style="background-color: #C8E6C9; width: 28.33%;">
                             @foreach (getChunkItems($academicResults['strengths'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #BBDEFB;">
+                        <td style="background-color: #BBDEFB; width: 28.33%;">
                             @foreach (getChunkItems($academicResults['monitor'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #EF9A9A;">
+                        <td style="background-color: #EF9A9A; width: 28.33%;">
                             @foreach (getChunkItems($academicResults['concerns'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
@@ -569,23 +569,23 @@
                 @endphp
                 @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
                     <tr>
-                        <td style="text-align: center; vertical-align: middle;">
+                        <td style="text-align: center; vertical-align: middle; width: 15%;">
                             @if ($chunkIndex === 0)
                                 <img src="{{ public_path('assets/icons/BEHAVIOR.png') }}" alt="Behavior" style="width:80px; display: block; margin: 0 auto;"/>
                                 <div>Behavior</div>
                             @endif
                         </td>
-                        <td style="background-color: #C8E6C9;">
+                        <td style="background-color: #C8E6C9; width: 28.33%;">
                             @foreach (getChunkItems($behaviorResults['strengths'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #BBDEFB;">
+                        <td style="background-color: #BBDEFB; width: 28.33%;">
                             @foreach (getChunkItems($behaviorResults['monitor'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #EF9A9A;">
+                        <td style="background-color: #EF9A9A; width: 28.33%;">
                             @foreach (getChunkItems($behaviorResults['concerns'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
@@ -600,23 +600,23 @@
                 @endphp
                 @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
                     <tr>
-                        <td style="text-align: center; vertical-align: middle;">
+                        <td style="text-align: center; vertical-align: middle; width: 15%;">
                             @if ($chunkIndex === 0)
                                 <img src="{{ public_path('assets/icons/PHYSICAL HEALTH.png') }}" alt="Physical Health" style="width:80px; display: block; margin: 0 auto;"/>
                                 <div>Physical Health</div>
                             @endif
                         </td>
-                        <td style="background-color: #C8E6C9;">
+                        <td style="background-color: #C8E6C9; width: 28.33%;">
                             @foreach (getChunkItems($physicalResults['strengths'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #BBDEFB;">
+                        <td style="background-color: #BBDEFB; width: 28.33%;">
                             @foreach (getChunkItems($physicalResults['monitor'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #EF9A9A;">
+                        <td style="background-color: #EF9A9A; width: 28.33%;">
                             @foreach (getChunkItems($physicalResults['concerns'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
@@ -631,23 +631,23 @@
                 @endphp
                 @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
                     <tr>
-                        <td style="text-align: center; vertical-align: middle;">
+                        <td style="text-align: center; vertical-align: middle; width: 15%;">
                             @if ($chunkIndex === 0)
                                 <img src="{{ public_path('assets/icons/SOCIAL&EMOTIONAL WELL-BEING.png') }}" alt="Social & Emotional Well-Being" style="width:80px; display: block; margin: 0 auto;"/>
                                 <div>Social & Emotional Well-Being</div>
                             @endif
                         </td>
-                        <td style="background-color: #C8E6C9;">
+                        <td style="background-color: #C8E6C9; width: 28.33%;">
                             @foreach (getChunkItems($sewbResults['strengths'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #BBDEFB;">
+                        <td style="background-color: #BBDEFB; width: 28.33%;">
                             @foreach (getChunkItems($sewbResults['monitor'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #EF9A9A;">
+                        <td style="background-color: #EF9A9A; width: 28.33%;">
                             @foreach (getChunkItems($sewbResults['concerns'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
@@ -662,23 +662,23 @@
                 @endphp
                 @for ($chunkIndex = 0; $chunkIndex < $maxChunks; $chunkIndex++)
                     <tr>
-                        <td style="text-align: center; vertical-align: middle;">
+                        <td style="text-align: center; vertical-align: middle; width: 15%;">
                             @if ($chunkIndex === 0)
                                 <img src="{{ public_path('assets/icons/SUPPORTS OUTSIDE OF SCHOOL.png') }}" alt="Supports Outside of School" style="width:80px; display: block; margin: 0 auto;"/>
                                 <div>Supports Outside of School</div>
                             @endif
                         </td>
-                        <td style="background-color: #C8E6C9;">
+                        <td style="background-color: #C8E6C9; width: 28.33%;">
                             @foreach (getChunkItems($sosResults['strengths'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #BBDEFB;">
+                        <td style="background-color: #BBDEFB; width: 28.33%;">
                             @foreach (getChunkItems($sosResults['monitor'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach
                         </td>
-                        <td style="background-color: #EF9A9A;">
+                        <td style="background-color: #EF9A9A; width: 28.33%;">
                             @foreach (getChunkItems($sosResults['concerns'], $chunkIndex) as $item)
                                 <p>{!! $item !!}</p>
                             @endforeach

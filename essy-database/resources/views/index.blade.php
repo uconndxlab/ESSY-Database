@@ -116,7 +116,7 @@
                                     <form action="{{ route('batches.destroy', $batch->batch_id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this batch?')">Delete</button>
                                     </form>
                                 </td>
                             </tr>

@@ -181,9 +181,9 @@
 
     <table>
         <tr style="text-align: center;">
-            <td>School: {{ $reports->first()->SCHOOL }}</td>
-            <td>Grade: {{ $reports->first()->DEM_GRADE }}</td>
-            <td>Total Students Screened: {{ $reports->count() }}</td>
+            <td><strong>School:</strong> {{ $reports->first()->SCHOOL }}</td>
+            <td><strong>Grade:</strong> {{ $reports->first()->DEM_GRADE }}</td>
+            <td><strong>Total Students Screened:</strong> {{ $reports->count() }}</td>
         </tr>
     </table>    
     <h1>ESSY Gate 1 Summary of Broad Concerns</h1>
