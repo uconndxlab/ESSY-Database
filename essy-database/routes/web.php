@@ -7,7 +7,7 @@ use App\Http\Controllers\ReportImportController;
 use App\Http\Controllers\BatchController;
 
 
-Route::get('/', [ReportController::class, 'index']);
+Route::get('/', [ReportController::class, 'index'])->name('home');
 
 Route::get('/reports/print/{id}', [ReportController::class, 'print_all']);
 
