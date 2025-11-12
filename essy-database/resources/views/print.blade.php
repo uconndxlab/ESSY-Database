@@ -496,23 +496,30 @@
     } catch (Exception $e) {
         $essentialResults = ['strengths' => [], 'monitor' => [], 'concerns' => []];
     }
+
+
     // Helper function to chunk array items into groups of max 10
-    function chunkDomainItems($items, $maxPerChunk = 10) {
-        return array_chunk($items, $maxPerChunk);
+    if ( !function_exists('chunkDomainItems') ) {
+        function chunkDomainItems($items, $maxPerChunk = 10) {
+            return array_chunk($items, $maxPerChunk);
+        }
     }
-    
     // Helper function to get the maximum number of chunks needed across all categories
-    function getMaxChunks($strengths, $monitor, $concerns, $maxPerChunk = 10) {
-        $strengthsChunks = ceil(count($strengths) / $maxPerChunk);
-        $monitorChunks = ceil(count($monitor) / $maxPerChunk);
-        $concernsChunks = ceil(count($concerns) / $maxPerChunk);
-        return max($strengthsChunks, $monitorChunks, $concernsChunks, 1); // At least 1 row
+    if ( !function_exists('getMaxChunks') ) {
+        function getMaxChunks($strengths, $monitor, $concerns, $maxPerChunk = 10) {
+            $strengthsChunks = ceil(count($strengths) / $maxPerChunk);
+            $monitorChunks = ceil(count($monitor) / $maxPerChunk);
+            $concernsChunks = ceil(count($concerns) / $maxPerChunk);
+            return max($strengthsChunks, $monitorChunks, $concernsChunks, 1); // At least 1 row
+        }
     }
     
     // Helper function to get items for a specific chunk
-    function getChunkItems($items, $chunkIndex, $maxPerChunk = 10) {
-        $start = $chunkIndex * $maxPerChunk;
-        return array_slice($items, $start, $maxPerChunk);
+    if ( !function_exists('getChunkItems') ) {
+        function getChunkItems($items, $chunkIndex, $maxPerChunk = 10) {
+            $start = $chunkIndex * $maxPerChunk;
+            return array_slice($items, $start, $maxPerChunk);
+        }
     }
     @endphp
 
