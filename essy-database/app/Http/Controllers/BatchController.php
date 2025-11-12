@@ -5,52 +5,94 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use ZipArchive;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 use App\Models\ReportData;
 use App\Models\Gate1Report;
+use App\Models\BatchDownloadJob;
+use App\Jobs\GenerateBatchPdfZip;
 
 class BatchController extends Controller
 {
     public function show($batch)
     {
         $reports = ReportData::where('batch_id', $batch)->get();
+        
+        // Get the latest download job for this batch
+        $downloadJob = BatchDownloadJob::where('batch_id', $batch)
+            ->latest()
+            ->first();
 
-        return view('batches.show', compact('reports', 'batch'));
+        return view('batches.show', compact('reports', 'batch', 'downloadJob'));
     }
 
     public function downloadZip($batch)
     {
-        $reports = \App\Models\ReportData::where('batch_id', $batch)->get();
+        $reports = ReportData::where('batch_id', $batch)->get();
 
         if ($reports->isEmpty()) {
             return redirect()->back()->with('error', 'No reports found for this batch.');
         }
 
-        $zipFileName = "batch_{$batch}.zip";
-        $tempDir = storage_path("app/tmp-pdfs-" . Str::uuid());
-        mkdir($tempDir, 0755, true);
+        // Check if there's already a job in progress for this batch
+        $existingJob = BatchDownloadJob::where('batch_id', $batch)
+            ->whereIn('status', ['pending', 'processing'])
+            ->first();
 
-        foreach ($reports as $report) {
-            $pdf = Pdf::loadView('print', compact('report'));
-            $filename = "Report_{$report->FN_STUDENT}_{$report->LN_STUDENT}_{$report->id}.pdf";
-            $pdfPath = $tempDir . '/' . $filename;
-            $pdf->save($pdfPath);
+        if ($existingJob) {
+            return redirect()->back()->with('info', 'A download is already being prepared for this batch. Please wait for it to complete.');
         }
 
-        $zipPath = storage_path("app/{$zipFileName}");
-        $zip = new ZipArchive;
-        $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        // Create a new download job record
+        $downloadJob = BatchDownloadJob::create([
+            'batch_id' => $batch,
+            'status' => 'pending'
+        ]);
 
-        foreach (glob("$tempDir/*.pdf") as $file) {
-            $zip->addFile($file, basename($file));
+        // Dispatch the job to the queue
+        GenerateBatchPdfZip::dispatch($batch, $downloadJob->id);
+
+        return redirect()->back()->with('success', 'Your download is being prepared. This page will refresh automatically to show progress.');
+    }
+
+    public function downloadJobStatus($batch)
+    {
+        $downloadJob = BatchDownloadJob::where('batch_id', $batch)
+            ->latest()
+            ->first();
+
+        if (!$downloadJob) {
+            return response()->json(['status' => 'not_found']);
         }
 
-        $zip->close();
+        return response()->json([
+            'status' => $downloadJob->status,
+            'progress_percentage' => $downloadJob->progress_percentage,
+            'processed_reports' => $downloadJob->processed_reports,
+            'total_reports' => $downloadJob->total_reports,
+            'error_message' => $downloadJob->error_message,
+            'download_url' => $downloadJob->getDownloadUrl(),
+            'completed_at' => $downloadJob->completed_at?->format('Y-m-d H:i:s')
+        ]);
+    }
 
-        collect(glob("$tempDir/*"))->each(fn($f) => unlink($f));
-        rmdir($tempDir);
+    public function downloadFile($downloadJobId)
+    {
+        $downloadJob = BatchDownloadJob::find($downloadJobId);
 
-        return response()->download($zipPath)->deleteFileAfterSend(true);
+        if (!$downloadJob || !$downloadJob->isCompleted() || !$downloadJob->file_path) {
+            return redirect()->back()->with('error', 'Download file not found or not ready.');
+        }
+
+        $filePath = storage_path("app/{$downloadJob->file_path}");
+
+        if (!file_exists($filePath)) {
+            return redirect()->back()->with('error', 'Download file not found on disk.');
+        }
+
+        $filename = "batch_{$downloadJob->batch_id}.zip";
+        
+        return response()->download($filePath, $filename);
     }
 
     public function destroy($batch)

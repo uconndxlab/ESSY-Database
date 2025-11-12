@@ -27,6 +27,10 @@ Route::get('/reports/pdf/{id}', [ReportController::class, 'downloadPdf'])->name(
 
 Route::get('/batches/{batch}/download-zip', [\App\Http\Controllers\BatchController::class, 'downloadZip'])->name('batches.downloadZip');
 
+Route::get('/batches/{batch}/download-status', [BatchController::class, 'downloadJobStatus'])->name('batches.downloadStatus');
+
+Route::get('/batch-downloads/{downloadJobId}', [BatchController::class, 'downloadFile'])->name('batch-downloads.download');
+
 Route::delete('/batches/{batch}', [BatchController::class, 'destroy'])->name('batches.destroy');
 
 Route::delete('/reports/{id}', [ReportController::class, 'destroy'])->name('reports.destroy');
